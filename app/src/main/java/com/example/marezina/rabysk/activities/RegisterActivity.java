@@ -1,5 +1,6 @@
 package com.example.marezina.rabysk.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,30 +9,122 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.marezina.rabysk.R;
 
+import java.util.Calendar;
+
+import helper.SQLiteHandler;
+import helper.SessionManager;
+
 public class RegisterActivity extends ActionBarActivity {
 
-    private EditText txtInput;
-    private Button btnGoToLoginPage;
+    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private Button btnRegister;
+    private Button btnLinkToLogin;
+    private EditText inputFullName;
+    private EditText inputEmail;
+    private EditText inputPassword;
+    private ProgressDialog pDialog;
+    private SessionManager session;
+    private SQLiteHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        txtInput = (EditText) findViewById(R.id.txtInput);
-        btnGoToLoginPage = (Button) findViewById(R.id.btnGoToLoginPage);
+        inputFullName = (EditText) findViewById(R.id.name);
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.password);
+        btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
 
-        btnGoToLoginPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        // Progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+
+        // Session manager
+        session = new SessionManager(getApplicationContext());
+
+        // SQLite database handler
+        db = new SQLiteHandler(getApplicationContext());
+
+        // Check if user is already logged in or not
+        if (session.isLoggedIn()) {
+            // User is already logged in. Take him to main activity
+            Intent intent = new Intent(RegisterActivity.this,
+                    MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        // Register Button Click event
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                String name = inputFullName.getText().toString();
+                String email = inputEmail.getText().toString();
+                String password = inputPassword.getText().toString();
+
+                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
+                    registerUser(name, email, password);
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Please enter your details!", Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
+
+        // Link to Login Screen
+        btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),
+                        LoginActivity.class);
                 startActivity(i);
                 finish();
             }
         });
+    }
+
+    /**
+     * Function to store user in MySQL database will post params(tag, name,
+     * email, password) to register url
+     * */
+    private void registerUser(final String name, final String email, final String password) {
+        pDialog.setMessage("Registering ...");
+        showDialog();
+
+        Calendar c = Calendar.getInstance();
+//        int day = c.get(Calendar.DATE);
+//        int month = c.get(Calendar.MONTH);
+//        int year = c.get(Calendar.YEAR);
+        String day = String.valueOf(c.get(Calendar.DATE));
+        String month = String.valueOf(c.get(Calendar.MONTH));
+        String year = String.valueOf(c.get(Calendar.YEAR));
+        String date = day + " - "+ month + " - " + year;
+
+        // Inserting row in users table
+        db.addUser(name, email, password, date);
+        hideDialog();
+        // Launch login activity
+        Intent intent = new Intent(
+                RegisterActivity.this,
+                LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 
     @Override
