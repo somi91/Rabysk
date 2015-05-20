@@ -16,7 +16,7 @@ public class SessionManager {
     private SharedPreferences pref;
     Editor editor;
     Context _context;
-//     Shared pref mode
+//  Shared pref mode
     int PRIVATE_MODE = 0;
 
 //    Shared preferences file name
