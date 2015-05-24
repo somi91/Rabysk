@@ -139,8 +139,7 @@ public class MainActivity extends ActionBarActivity {
         db.addClub(new Club("kuce1", "url_do_slike_1", image1InByte, "uuid_slike_1", "21.05.2015"));
         db.addClub(new Club("kuce2", "url_do_slike_2", image2InByte, "uuid_slike_2", "22.05.2015"));
         db.addClub(new Club("kuce3", "url_do_slike_3", image3InByte, "uuid_slike_3", "23.05.2015"));
-
-
+        db.addClub(new Club("mace", "url_do_mace", image3InByte, "uuid_mace", "01.06.2015"));
 
     }
 
@@ -184,8 +183,20 @@ public class MainActivity extends ActionBarActivity {
         }
 
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
+                List<Club> clubs = db.getClubsBySpecificParametar(query);
+                for (Club club : clubs) {
+                    String log = "ID:" + club.get_id() + " Name: " + club.get_name() + " Url: " + club.get_url()
+                            + " Image: " + club.get_image() + " Uid: " + club.get_uid() + " Created_at: " + club.get_created_at();
+
+                    // Writing Clubs to log
+                    Toast.makeText(getBaseContext(), log, Toast.LENGTH_SHORT).show();
+                    Log.i("Result: ", log);
+                    //add contacts data in arrayList
+//                    imageArry.add(club);
+
+                }
                 return true;
             }
 
@@ -196,16 +207,16 @@ public class MainActivity extends ActionBarActivity {
 
                 Club searchResult = null;
 
-                Club cl = db.getClubByString(query);
-                if(cl != null){
-                    String value = "ID:" + cl.get_id() + " Name: " + cl.get_name() + " Url: " + cl.get_url()
-                            + " Image: " + cl.get_image() + " Uid: " + cl.get_uid() + " Created_at: " + cl.get_created_at();
-                    Toast.makeText(getBaseContext(), value, Toast.LENGTH_LONG).show();
-                }
+//                Club cl = db.getClubByString(query);
+//                if(cl != null){
+//                    String value = "ID:" + cl.get_id() + " Name: " + cl.get_name() + " Url: " + cl.get_url()
+//                            + " Image: " + cl.get_image() + " Uid: " + cl.get_uid() + " Created_at: " + cl.get_created_at();
+//                    Toast.makeText(getBaseContext(), value, Toast.LENGTH_LONG).show();
+//                }
 
-                List<Club> clubs = db.getAllClubs();
+                List<Club> clubs = db.getClubsBySpecificParametar(query);
                 for (Club club : clubs) {
-                    if(club.get_name() == query ){
+                    if(club.get_name().equals(query)){
                         searchResult = club;
                     }
                     String log = "ID:" + club.get_id() + " Name: " + club.get_name() + " Url: " + club.get_url()

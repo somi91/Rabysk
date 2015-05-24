@@ -189,8 +189,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     /**
      * Getting clubs data from database
-     * */
-    // Getting All Contacts
+     **/
     public List<Club> getAllClubs() {
         List<Club> contactList = new ArrayList<Club>();
         // Select All Query
@@ -216,7 +215,33 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         // return contact list
         return contactList;
+    }
 
+    // Search for clubs by some value
+    public List<Club> getClubsBySpecificParametar(String value) {
+        List<Club> contactList = new ArrayList<Club>();
+        // Select All Query
+        String selectQuery = "Select * FROM club WHERE name LIKE '"+ value +"%'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Club club = new Club();
+                club.set_id(Integer.parseInt(cursor.getString(0)));
+                club.set_name(cursor.getString(1));
+                club.set_url(cursor.getString(2));
+                club.set_image(cursor.getBlob(3));
+                club.set_uid(cursor.getString(4));
+                club.set_created_at(cursor.getString(5));
+                // Adding contact to list
+                contactList.add(club);
+            } while (cursor.moveToNext());
+        }
+        // close inserting data from database
+        db.close();
+        // return contact list
+        return contactList;
     }
 
     /**
