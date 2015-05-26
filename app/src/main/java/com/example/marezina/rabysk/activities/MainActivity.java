@@ -64,13 +64,24 @@ public class MainActivity extends ActionBarActivity {
         db = new SQLiteHandler(getApplicationContext());
         List<Club> clubs = db.getAllClubs();
         gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(this, clubs));
+        ImageAdapter adapter = new ImageAdapter(this, clubs);
+        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getBaseContext(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+                Club club = (Club) gridview.getItemAtPosition(position);
+                Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
+                clubIntent.putExtra("club_id", club.get_id());
+                clubIntent.putExtra("club_name", club.get_name());
+                clubIntent.putExtra("club_uid", club.get_uid());
+                clubIntent.putExtra("club_url", club.get_url());
+                clubIntent.putExtra("club_created_at", club.get_created_at());
+                startActivity(clubIntent);
+                finish();
+
+//                adapter.getItem(position);
+//                Toast.makeText(getBaseContext(), "" + club.get_name(), Toast.LENGTH_SHORT).show();
             }
         });
 

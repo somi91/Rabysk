@@ -24,6 +24,10 @@
             android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
+        <activity
+            android:name=".activities.ClubActivity"
+            android:label="@string/title_activity_club" >
+        </activity>
     </application>
 
 </manifest>

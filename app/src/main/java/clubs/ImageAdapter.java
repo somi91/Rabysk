@@ -22,16 +22,16 @@ import models.Club;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Bitmap> images;
+    private List<Club> _clubs;
 
     public ImageAdapter(Context c, List<Club> clubs) {
         mContext = c;
         images = new ArrayList<Bitmap>();
-        if(clubs != null) {
-            byte[] img;
-            for (Club club : clubs) {
-                img = club.get_image();
-                images.add(BitmapFactory.decodeByteArray(img, 0, img.length));
-            }
+        _clubs = clubs;
+        byte[] img;
+        for (Club club : clubs) {
+            img = club.get_image();
+            images.add(BitmapFactory.decodeByteArray(img, 0, img.length));
         }
     }
 
@@ -41,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return null;
+        return _clubs.get(position);
     }
 
     public long getItemId(int position) {
