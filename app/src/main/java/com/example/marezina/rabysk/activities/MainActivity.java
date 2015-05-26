@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -19,21 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marezina.rabysk.R;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import clubs.ImageAdapter;
-import clubs.SearchClubAdapter;
 import helper.SQLiteHandler;
 import helper.SessionManager;
 import models.Club;
@@ -51,8 +46,7 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-    ArrayList<Club> imageArry = new ArrayList<Club>();
-    SearchClubAdapter adapter;
+    GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +59,12 @@ public class MainActivity extends ActionBarActivity {
             logoutUser();
         }
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(this));
+        GetSetDataForGrid();
+        // Search and initial Grid View
+        db = new SQLiteHandler(getApplicationContext());
+        List<Club> clubs = db.getAllClubs();
+        gridview = (GridView) findViewById(R.id.gridview);
+        gridview.setAdapter(new ImageAdapter(this, clubs));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -110,10 +108,13 @@ public class MainActivity extends ActionBarActivity {
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+    }
+
+    public void GetSetDataForGrid(){
+        db = new SQLiteHandler(getApplicationContext());
         //Part for inserting pictures in SQLite
         Bitmap image = BitmapFactory.decodeResource(getResources(),
                 R.drawable.sample_0);
@@ -123,24 +124,42 @@ public class MainActivity extends ActionBarActivity {
                 R.drawable.sample_2);
         Bitmap image3 = BitmapFactory.decodeResource(getResources(),
                 R.drawable.sample_3);
+        Bitmap image4 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.sample_4);
+        Bitmap image5 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.sample_5);
+
         // convert bitmap to byte
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte imageInByte[] = stream.toByteArray();
-        image1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte image1InByte[] = stream.toByteArray();
-        image2.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte image2InByte[] = stream.toByteArray();
-        image3.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte image3InByte[] = stream.toByteArray();
 
-        db = new SQLiteHandler(getApplicationContext());
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        image1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+        byte image1InByte[] = stream1.toByteArray();
+
+        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+        image2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+        byte image2InByte[] = stream2.toByteArray();
+
+        ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
+        image3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
+        byte image3InByte[] = stream3.toByteArray();
+
+        ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
+        image4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
+        byte image4InByte[] = stream4.toByteArray();
+
+        ByteArrayOutputStream stream5 = new ByteArrayOutputStream();
+        image5.compress(Bitmap.CompressFormat.JPEG, 100, stream5);
+        byte image5InByte[] = stream5.toByteArray();
+
         db.addClub(new Club("kuce", "url_do_slike", imageInByte, "uuid_slike", "20.05.2015"));
         db.addClub(new Club("kuce1", "url_do_slike_1", image1InByte, "uuid_slike_1", "21.05.2015"));
         db.addClub(new Club("kuce2", "url_do_slike_2", image2InByte, "uuid_slike_2", "22.05.2015"));
-        db.addClub(new Club("kuce3", "url_do_slike_3", image3InByte, "uuid_slike_3", "23.05.2015"));
-        db.addClub(new Club("mace", "url_do_mace", image3InByte, "uuid_mace", "01.06.2015"));
-
+        db.addClub(new Club("pace", "url_do_slike_3", image3InByte, "uuid_pace", "23.05.2015"));
+        db.addClub(new Club("mace", "url_do_mace", image4InByte, "uuid_mace", "01.06.2015"));
+        db.addClub(new Club("mace1", "url_do_mace1", image5InByte, "uuid_mace1", "01.06.2015"));
     }
 
     /**
@@ -187,58 +206,27 @@ public class MainActivity extends ActionBarActivity {
                 // this is your adapter that will be filtered
                 List<Club> clubs = db.getClubsBySpecificParametar(query);
                 for (Club club : clubs) {
-                    String log = "ID:" + club.get_id() + " Name: " + club.get_name() + " Url: " + club.get_url()
-                            + " Image: " + club.get_image() + " Uid: " + club.get_uid() + " Created_at: " + club.get_created_at();
-
-                    // Writing Clubs to log
-                    Toast.makeText(getBaseContext(), log, Toast.LENGTH_SHORT).show();
-                    Log.i("Result: ", log);
-                    //add contacts data in arrayList
-//                    imageArry.add(club);
 
                 }
+                gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
                 return true;
             }
 
             public boolean onQueryTextSubmit(String query) {
-                //Here u can get the value "query" which is entered in the search box.
-
-                // Reading all contacts from database
-
                 Club searchResult = null;
-
-//                Club cl = db.getClubByString(query);
-//                if(cl != null){
-//                    String value = "ID:" + cl.get_id() + " Name: " + cl.get_name() + " Url: " + cl.get_url()
-//                            + " Image: " + cl.get_image() + " Uid: " + cl.get_uid() + " Created_at: " + cl.get_created_at();
-//                    Toast.makeText(getBaseContext(), value, Toast.LENGTH_LONG).show();
-//                }
-
                 List<Club> clubs = db.getClubsBySpecificParametar(query);
                 for (Club club : clubs) {
                     if(club.get_name().equals(query)){
                         searchResult = club;
                     }
-                    String log = "ID:" + club.get_id() + " Name: " + club.get_name() + " Url: " + club.get_url()
-                            + " Image: " + club.get_image() + " Uid: " + club.get_uid() + " Created_at: " + club.get_created_at();
-
-                    // Writing Clubs to log
-                    Log.d("Result: ", log);
-                    //add contacts data in arrayList
-                    imageArry.add(club);
 
                 }
-//                adapter = new SearchClubAdapter(getBaseContext(), R.layout.search_list, imageArry);
-//                ListView dataList = (ListView) findViewById(R.id.list);
-//                dataList.setAdapter(adapter);
                 if(searchResult != null){
-                    String value = "ID:" + searchResult.get_id() + " Name: " + searchResult.get_name() + " Url: " + searchResult.get_url()
-                            + " Image: " + searchResult.get_image() + " Uid: " + searchResult.get_uid() + " Created_at: " + searchResult.get_created_at();
-                    Toast.makeText(getBaseContext(), value, Toast.LENGTH_LONG).show();
-                    return true;
+                    gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
+                }else {
+                    Toast.makeText(getBaseContext(), "No results on that query!!!", Toast.LENGTH_SHORT).show();
                 }
 
-                Toast.makeText(getBaseContext(), "No results on that query!!!", Toast.LENGTH_SHORT).show();
                 return true;
             }
         };

@@ -1,6 +1,8 @@
 package clubs;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,18 +11,33 @@ import android.widget.ImageView;
 
 import com.example.marezina.rabysk.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import models.Club;
+
 /**
  * Created by milos on 5/21/2015.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private List<Bitmap> images;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c, List<Club> clubs) {
         mContext = c;
+        images = new ArrayList<Bitmap>();
+        if(clubs != null) {
+            byte[] img;
+            for (Club club : clubs) {
+                img = club.get_image();
+                images.add(BitmapFactory.decodeByteArray(img, 0, img.length));
+            }
+        }
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return images.size();
+//        return mThumbIds.length;
     }
 
     public Object getItem(int position) {
@@ -44,7 +61,10 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+//        imageView.setImageResource(mThumbIds[position]);
+
+        imageView.setImageBitmap(images.get(position));
+
         return imageView;
     }
 
