@@ -1,4 +1,4 @@
-package com.example.marezina.rabysk.activities;
+package com.uslive.rabyks.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;

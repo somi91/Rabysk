@@ -1,9 +1,8 @@
-package helper;
+package com.uslive.rabyks.helper;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import models.Club;
+import com.uslive.rabyks.models.Club;
 
 /**
  * Created by marezina on 19.5.2015.

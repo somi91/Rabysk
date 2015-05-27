@@ -1,4 +1,4 @@
-package clubs;
+package com.uslive.rabyks.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +14,7 @@ import com.example.marezina.rabysk.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Club;
+import com.uslive.rabyks.models.Club;
 
 /**
  * Created by milos on 5/21/2015.

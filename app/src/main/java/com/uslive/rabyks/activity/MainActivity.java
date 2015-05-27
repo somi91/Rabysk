@@ -1,4 +1,4 @@
-package com.example.marezina.rabysk.activities;
+package com.uslive.rabyks.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +27,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import clubs.ImageAdapter;
-import helper.SQLiteHandler;
-import helper.SessionManager;
-import models.Club;
+import com.uslive.rabyks.adapter.ImageAdapter;
+import com.uslive.rabyks.helper.SQLiteHandler;
+import com.uslive.rabyks.helper.SessionManager;
+import com.uslive.rabyks.models.Club;
 
 
 public class MainActivity extends ActionBarActivity {

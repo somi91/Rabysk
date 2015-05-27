@@ -2,17 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.marezina.rabysk" >
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.uslive.rabyks.activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.uslive.rabyks.activity.LoginActivity"
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,11 +23,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name="com.uslive.rabyks.activity.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-            android:name=".activities.ClubActivity"
+            android:name="com.uslive.rabyks.activity.ClubActivity"
             android:label="@string/title_activity_club" >
         </activity>
     </application>

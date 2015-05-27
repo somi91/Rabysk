@@ -1,11 +1,10 @@
-package com.example.marezina.rabysk.activities;
+package com.uslive.rabyks.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.marezina.rabysk.R;
 
-import helper.SessionManager;
+import com.uslive.rabyks.helper.SessionManager;
 
 public class LoginActivity extends ActionBarActivity {
 

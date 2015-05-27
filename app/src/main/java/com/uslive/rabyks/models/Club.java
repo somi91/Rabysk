@@ -1,4 +1,4 @@
-package models;
+package com.uslive.rabyks.models;
 
 /**
  * Created by milos on 5/24/2015.
