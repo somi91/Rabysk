@@ -71,7 +71,8 @@ public class MainActivity extends ActionBarActivity {
                                     int position, long id) {
                 Club club = (Club) gridview.getItemAtPosition(position);
                 Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
-                clubIntent.putExtra("club_id", club.get_id());
+                String club_id = "" + club.get_id();
+                clubIntent.putExtra("club_id", club_id);
                 clubIntent.putExtra("club_name", club.get_name());
                 clubIntent.putExtra("club_uid", club.get_uid());
                 clubIntent.putExtra("club_url", club.get_url());

@@ -1,7 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.uslive.rabyks.activity.ClubActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item android:id="@+id/mon" android:title="@string/mon" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/tue" android:title="@string/tue" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/wen" android:title="@string/wen" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/thu" android:title="@string/thu" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/fri" android:title="@string/fri" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/sat" android:title="@string/sat" android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/sun" android:title="@string/sun" android:orderInCategory="100" app:showAsAction="never" />
+
 </menu>

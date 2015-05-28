@@ -22,6 +22,14 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
 
+    <string name="mon">Monday</string>
+    <string name="tue">Tuesday</string>
+    <string name="wen">Wednesday</string>
+    <string name="thu">Thursday</string>
+    <string name="fri">Friday</string>
+    <string name="sat">Saturday</string>
+    <string name="sun">Sunday</string>
+
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>
