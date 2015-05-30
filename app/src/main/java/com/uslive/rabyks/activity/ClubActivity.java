@@ -1,7 +1,11 @@
 package com.uslive.rabyks.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.IBinder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -12,10 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.Services.SocketService;
 
 public class ClubActivity extends ActionBarActivity {
 
@@ -31,6 +37,10 @@ public class ClubActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+
+    private SocketService mBoundService;
+    private Boolean mIsBound;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +99,13 @@ public class ClubActivity extends ActionBarActivity {
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+        Button stop = (Button)findViewById(R.id.cancelButton);
+        stop.setOnClickListener(stopListener);
+
+        Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
+        btnSendMessage.setOnClickListener(sendMessage);
+
+        doBindService();
     }
 
 
@@ -156,4 +173,48 @@ public class ClubActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mBoundService = ((SocketService.LocalBinder) service).getService();
+            mBoundService.IsBoundable();
+
+        }
+        public void onServiceDisconnected(ComponentName className) {
+            mBoundService = null;
+        }
+    };
+
+    private void doBindService() {
+        startService(new Intent(ClubActivity.this, SocketService.class));
+        getApplicationContext().bindService(new Intent(this, SocketService.class), mConnection, Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    private void doUnbindService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            getApplicationContext().unbindService(mConnection);
+            mIsBound = false;
+        }
+    }
+
+    private View.OnClickListener stopListener = new View.OnClickListener() {
+        public void onClick(View v){
+            stopService(new Intent(ClubActivity.this,SocketService.class));
+        }
+    };
+
+    private View.OnClickListener sendMessage = new View.OnClickListener() {
+        public void onClick(View v){
+            mBoundService.WriteToServer();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
+    }
+
 }
