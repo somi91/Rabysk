@@ -6,6 +6,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.uslive.rabyks.models.Message;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -20,6 +24,7 @@ public class SocketService extends Service {
     Socket s;
     PrintStream os;
     PrintWriter pw;
+    Runnable connect = new connectSocket();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,7 +61,7 @@ public class SocketService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         super.onStartCommand(intent, flags, startId);
         Toast.makeText(this,"Service created ...", Toast.LENGTH_LONG).show();
-        Runnable connect = new connectSocket();
+
         new Thread(connect).start();
         return START_NOT_STICKY;
 
@@ -69,6 +74,7 @@ public class SocketService extends Service {
             SocketAddress socketAddress = new InetSocketAddress("10.0.2.2", 4444);
             try {
                 s.connect(socketAddress);
+                pw = new PrintWriter(s.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -77,14 +83,12 @@ public class SocketService extends Service {
 
     }
 
-    public void WriteToServer(){
+    public void WriteToServer(String message){
         try {
-            pw = new PrintWriter(s.getOutputStream());
-            pw.write("Moja poruka");
+//            pw.write("Moja poruka");
+            pw.println(message);
             pw.flush();
-            pw.close();
         } catch (Exception ex){
-
         }
 
     }
@@ -93,6 +97,7 @@ public class SocketService extends Service {
     public void onDestroy() {
         super.onDestroy();
         try {
+            pw.close();
             s.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block

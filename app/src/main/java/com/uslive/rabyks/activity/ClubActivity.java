@@ -22,6 +22,12 @@ import android.widget.TextView;
 
 import com.example.marezina.rabysk.R;
 import com.uslive.rabyks.Services.SocketService;
+import com.uslive.rabyks.helper.JsonUtil;
+import com.uslive.rabyks.models.Message;
+import com.uslive.rabyks.models.Partner;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class ClubActivity extends ActionBarActivity {
 
@@ -207,7 +213,22 @@ public class ClubActivity extends ActionBarActivity {
 
     private View.OnClickListener sendMessage = new View.OnClickListener() {
         public void onClick(View v){
-            mBoundService.WriteToServer();
+            Message message = new Message();
+            message.setId("123");
+            message.setUser_id("321");
+            message.setPerson_count("4");
+            Calendar calendar = Calendar.getInstance();
+            message.setDate_of_reservation( new java.sql.Timestamp(calendar.getTime().getTime()) );
+
+            Partner partner = new Partner();
+            partner.setPartner_id("1");
+            partner.setName("sumnjivi moral");
+            partner.setAddress("sumnjivi moral at olimp");
+            partner.setNumber("06432198765");
+            message.setPartner(partner);
+
+            JsonUtil jsonUtil = new JsonUtil();
+            mBoundService.WriteToServer(jsonUtil.toJson(message));
         }
     };
 
