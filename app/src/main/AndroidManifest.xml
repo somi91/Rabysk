@@ -11,11 +11,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.uslive.rabyks.activity.MainActivity"
+            android:name="com.uslive.rabyks.activities.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.uslive.rabyks.activity.LoginActivity"
+            android:name="com.uslive.rabyks.activities.LoginActivity"
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +24,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.uslive.rabyks.activity.RegisterActivity"
+            android:name="com.uslive.rabyks.activities.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-            android:name="com.uslive.rabyks.activity.ClubActivity"
+            android:name="com.uslive.rabyks.activities.ClubActivity"
             android:label="@string/title_activity_club" >
         </activity>
 
         <service
-            android:name="com.uslive.rabyks.Services.SocketService"
+            android:name="com.uslive.rabyks.services.SocketService"
             android:enabled="true"
             android:exported="true" >
         </service>
