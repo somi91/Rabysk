@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.util.Calendar;
 
 import com.uslive.rabyks.AsyncTasks.RegisterAsyncTask;
+import com.uslive.rabyks.common.Common;
 import com.uslive.rabyks.helper.SQLiteHandler;
 import com.uslive.rabyks.helper.SessionManager;
 
@@ -92,6 +93,23 @@ public class RegisterActivity extends ActionBarActivity {
         });
     }
 
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_register, menu);
+        return true;
+    }
+
     /**
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
@@ -125,7 +143,7 @@ public class RegisterActivity extends ActionBarActivity {
             jsonUser.accumulate("number", number);
             String userToHash = username + " " + email + " " + password + " " + number;
             // hash url and user json object
-            String hashed = hashPost(getString(R.string.register_url), userToHash);
+            String hashed = Common.hashRequest(getString(R.string.register_url), userToHash);
 
             // add hash hex string to post object
             jsonUser.accumulate("hash", hashed);
@@ -143,41 +161,6 @@ public class RegisterActivity extends ActionBarActivity {
         }
     }
 
-    private void showDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
-    }
 
-    private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_register, menu);
-        return true;
-    }
-
-    private String hashPost(String url, String user) {
-        try {
-            String salt = "registration salt";
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.reset();
-            digest.update(salt.getBytes());
-            byte[] hash = digest.digest((url + user).getBytes("UTF-8"));
-            StringBuffer hexString = new StringBuffer();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            Log.d("Hash failed!", e.getMessage());
-            return "";
-        }
-    }
 }
