@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.R;
 
 import java.util.ArrayList;
 import java.util.List;

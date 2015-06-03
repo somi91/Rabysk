@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.R;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;

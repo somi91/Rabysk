@@ -21,7 +21,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;

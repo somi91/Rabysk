@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.R;
 import com.uslive.rabyks.Services.SocketService;
 import com.uslive.rabyks.helper.JsonUtil;
 import com.uslive.rabyks.models.Message;
