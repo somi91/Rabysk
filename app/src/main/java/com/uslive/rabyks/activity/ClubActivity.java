@@ -5,6 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.IBinder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,8 +24,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marezina.rabysk.R;
 import com.uslive.rabyks.Services.SocketService;
@@ -26,10 +36,13 @@ import com.uslive.rabyks.helper.JsonUtil;
 import com.uslive.rabyks.models.Message;
 import com.uslive.rabyks.models.Partner;
 
-import java.sql.Timestamp;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Calendar;
 
 public class ClubActivity extends ActionBarActivity {
+
+    int sdk = android.os.Build.VERSION.SDK_INT;
 
     private TextView club_id;
     private TextView club_name;
@@ -47,11 +60,19 @@ public class ClubActivity extends ActionBarActivity {
     private SocketService mBoundService;
     private Boolean mIsBound;
 
+    private RelativeLayout clubActivityRelativeLayout;
+
+//    LayoutInflater inflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_club);
+//
+//        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        inflater.inflate(R.layout.club_map, R.layout.activity_club);
+
+        clubActivityRelativeLayout = (RelativeLayout) findViewById(R.id.clubActivityRelativeLayout);
 
         TextView club_id = (TextView) findViewById(R.id.id);
         TextView club_name = (TextView) findViewById(R.id.name);
@@ -65,8 +86,6 @@ public class ClubActivity extends ActionBarActivity {
         club_uuid.setText(myIntent.getStringExtra("club_uuid"));
         club_url.setText(myIntent.getStringExtra("club_url"));
         club_created_at.setText(myIntent.getStringExtra("club_created_at"));
-
-
 
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
         mTitle = mDrawerTitle = getTitle();
@@ -111,9 +130,65 @@ public class ClubActivity extends ActionBarActivity {
         Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
         btnSendMessage.setOnClickListener(sendMessage);
 
-        doBindService();
+        Button btn1 = new Button(getApplicationContext());
+        setButton(btn1, 100, 300, Color.GREEN);
+
+        Button btn2 = new Button(getApplicationContext());
+        setButton(btn2, 300, 600, Color.RED);
+
+        Button btn3 = new Button(getApplicationContext());
+        setButton(btn3, 600, 350, Color.GREEN);
+
+        Button btn4 = new Button(getApplicationContext());
+        setButton(btn4, 600, 700, Color.RED);
+
+        setBackGroundImage();
+//        doBindService();
     }
 
+    public void setBackGroundImage(){
+
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            clubActivityRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sample_0, null) );
+        } else {
+            clubActivityRelativeLayout.setBackground(getResources().getDrawable(R.drawable.sample_0, null));
+        }
+    }
+
+    public void setButton(Button btn, final int x, final int y, int color){
+        ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
+        biggerCircle.setIntrinsicHeight( 50 );
+        biggerCircle.setIntrinsicWidth( 50);
+        biggerCircle.setBounds(new Rect(0, 0, 50, 50));
+        biggerCircle.getPaint().setColor(Color.WHITE);
+
+        ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
+        smallerCircle.setIntrinsicHeight( 10 );
+        smallerCircle.setIntrinsicWidth( 10);
+        smallerCircle.setBounds(new Rect(0, 0, 10, 10));
+        smallerCircle.getPaint().setColor(color);
+        smallerCircle.setPadding(40,40,40,40);
+        Drawable[] d = {smallerCircle,biggerCircle};
+
+        LayerDrawable composite1 = new LayerDrawable(d);
+
+        btn = new Button(getApplicationContext());
+        btn.setX(x);
+        btn.setY(y);
+        btn.setLayoutParams(new LinearLayout.LayoutParams(140, 140));
+        btn.setBackgroundDrawable(composite1);
+        btn.setBackground(composite1);
+        btn.setText("4");
+        btn.setTextColor(Color.BLACK);
+        clubActivityRelativeLayout.addView(btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "x: "+ x +" y: " + y, Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
