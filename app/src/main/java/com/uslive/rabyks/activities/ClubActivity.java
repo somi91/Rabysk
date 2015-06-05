@@ -1,4 +1,4 @@
-package com.uslive.rabyks.activity;
+package com.uslive.rabyks.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
