@@ -46,4 +46,9 @@
     <string name="title_activity_club">ClubActivity</string>
 
     <string name="register_url">"http://10.0.2.2:8080/register"</string>
+
+    <string name="dialog_reservation">Rezervacija</string>
+    <string name="cancel">Otkazi</string>
+    <string name="confirme">Potvrdi</string>
+
 </resources>

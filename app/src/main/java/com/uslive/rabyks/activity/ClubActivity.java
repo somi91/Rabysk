@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.IBinder;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +22,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.marezina.rabysk.R;
 import com.uslive.rabyks.Services.SocketService;
+import com.uslive.rabyks.dialogs.ReservationDialog;
 import com.uslive.rabyks.helper.JsonUtil;
 import com.uslive.rabyks.models.Message;
 import com.uslive.rabyks.models.Partner;
@@ -29,7 +34,7 @@ import com.uslive.rabyks.models.Partner;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class ClubActivity extends ActionBarActivity {
+public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener {
 
     private TextView club_id;
     private TextView club_name;
@@ -111,9 +116,24 @@ public class ClubActivity extends ActionBarActivity {
         Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
         btnSendMessage.setOnClickListener(sendMessage);
 
-        doBindService();
+        Button btnPopup1 = (Button) findViewById(R.id.btnPopup1);
+        Button btnPopup2 = (Button) findViewById(R.id.btnPopup2);
+
+        btnPopup1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
+//        doBindService();
     }
 
+    void showDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        ReservationDialog editNameDialog = new ReservationDialog();
+        editNameDialog.show(fm, "reservation_name");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,6 +150,11 @@ public class ClubActivity extends ActionBarActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 //        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onFinishEditDialog(String inputText) {
+        Toast.makeText(getApplicationContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
