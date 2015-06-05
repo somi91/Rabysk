@@ -30,14 +30,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.marezina.rabysk.R;
-import com.uslive.rabyks.Services.SocketService;
-import com.uslive.rabyks.helper.JsonUtil;
+import com.uslive.rabyks.R;
+import com.uslive.rabyks.services.SocketService;
+import com.uslive.rabyks.helpers.JsonUtil;
 import com.uslive.rabyks.models.Message;
 import com.uslive.rabyks.models.Partner;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Calendar;
 
 public class ClubActivity extends ActionBarActivity {
@@ -62,15 +60,10 @@ public class ClubActivity extends ActionBarActivity {
 
     private RelativeLayout clubActivityRelativeLayout;
 
-//    LayoutInflater inflater;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_club);
-//
-//        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        inflater.inflate(R.layout.club_map, R.layout.activity_club);
 
         clubActivityRelativeLayout = (RelativeLayout) findViewById(R.id.clubActivityRelativeLayout);
 

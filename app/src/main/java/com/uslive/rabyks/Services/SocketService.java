@@ -1,14 +1,10 @@
-package com.uslive.rabyks.Services;
+package com.uslive.rabyks.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
-
-import com.uslive.rabyks.models.Message;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintStream;

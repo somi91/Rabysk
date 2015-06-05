@@ -1,4 +1,4 @@
-package com.uslive.rabyks.helper;
+package com.uslive.rabyks.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;

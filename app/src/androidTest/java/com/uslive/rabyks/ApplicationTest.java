@@ -1,4 +1,4 @@
-package com.example.marezina.rabysk;
+package com.uslive.rabyks;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

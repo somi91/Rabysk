@@ -1,4 +1,4 @@
-package com.uslive.rabyks.activity;
+package com.uslive.rabyks.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -21,15 +21,15 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.marezina.rabysk.R;
+import com.uslive.rabyks.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import com.uslive.rabyks.adapter.ImageAdapter;
-import com.uslive.rabyks.helper.SQLiteHandler;
-import com.uslive.rabyks.helper.SessionManager;
+import com.uslive.rabyks.adapters.ImageAdapter;
+import com.uslive.rabyks.helpers.SQLiteHandler;
+import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.Club;
 
 
