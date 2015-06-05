@@ -1,10 +1,11 @@
-package com.uslive.rabyks.activity;
+package com.uslive.rabyks.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -12,23 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.marezina.rabysk.R;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.uslive.rabyks.R;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Calendar;
 
-import com.uslive.rabyks.helper.SQLiteHandler;
-import com.uslive.rabyks.helper.SessionManager;
+import com.uslive.rabyks.asyncTasks.RegisterAsyncTask;
+import com.uslive.rabyks.commons.Common;
+import com.uslive.rabyks.helpers.SQLiteHandler;
+import com.uslive.rabyks.helpers.SessionManager;
 
 public class RegisterActivity extends ActionBarActivity {
 
@@ -98,46 +91,6 @@ public class RegisterActivity extends ActionBarActivity {
         });
     }
 
-    /**
-     * Function to store user in MySQL database will post params(tag, name,
-     * email, password) to register url
-     * */
-    private void registerUser(final String name, final String email, final String password) {
-
-        pDialog.setMessage("Registering ...");
-        showDialog();
-
-        Calendar c = Calendar.getInstance();
-
-        String day = String.valueOf(c.get(Calendar.DATE));
-        String month = String.valueOf(c.get(Calendar.MONTH));
-        String year = String.valueOf(c.get(Calendar.YEAR));
-        String date = day + " - "+ month + " - " + year;
-
-
-        // Inserting row in users table
-        db.addUser(name, email, password, date);
-        hideDialog();
-
-        String user = "";
-        JSONObject jsonUser = new JSONObject();
-        try {
-            jsonUser.accumulate("name", name);
-            jsonUser.accumulate("email", email);
-            jsonUser.accumulate("password", password);
-        } catch (Exception e) {
-            Log.e("User json crap", e.getMessage());
-        }
-        user = jsonUser.toString();
-        // Register user on server
-        new HttpAsyncTask().execute(getString(R.string.register_url), user);
-
-        // Launch login activity
-        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
     private void showDialog() {
         if (!pDialog.isShowing())
             pDialog.show();
@@ -155,49 +108,57 @@ public class RegisterActivity extends ActionBarActivity {
         return true;
     }
 
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+    /**
+     * Function to store user in MySQL database will post params(tag, name,
+     * email, password) to register url
+     * */
+    private void registerUser(final String username, final String email, final String password) {
 
-        @Override
-        protected String doInBackground(String... urls) {
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(urls[0]);
-                StringEntity se = new StringEntity(urls[1]);
-                httpPost.setEntity(se);
-                httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-                HttpResponse httpResponse = httpclient.execute(httpPost);
-                inputStream = httpResponse.getEntity().getContent();
+        pDialog.setMessage("Registering ...");
+        showDialog();
 
-                if (inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else
-                    result = "Did not work!";
-            } catch (Exception ex) {
-                Log.d("HTTP POST ERROR", ex.getMessage());
-            }
-            return result;
-        }
+        Calendar c = Calendar.getInstance();
 
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+        String day = String.valueOf(c.get(Calendar.DATE));
+        String month = String.valueOf(c.get(Calendar.MONTH));
+        String year = String.valueOf(c.get(Calendar.YEAR));
+        String date = day + " - "+ month + " - " + year;
+
+
+        // Inserting row in users table
+        db.addUser(username, email, password, date);
+        hideDialog();
+
+        // Get user phone number (requires user permissions in manifest file)
+        TelephonyManager tMgr = (TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String number = tMgr.getLine1Number();
+
+        JSONObject jsonUser = new JSONObject();
+        try {
+            jsonUser.accumulate("username", username);
+            jsonUser.accumulate("email", email);
+            jsonUser.accumulate("password", password);
+            jsonUser.accumulate("number", number);
+            String userToHash = username + " " + email + " " + password + " " + number;
+            // hash url and user json object
+            String hashed = Common.hashRequest(getString(R.string.register_url), userToHash);
+
+            // add hash hex string to post object
+            jsonUser.accumulate("hash", hashed);
+            String userJson = jsonUser.toString();
+
+            // Register user on server
+            RegisterAsyncTask rast = new RegisterAsyncTask(getApplicationContext());
+            rast.execute(getString(R.string.register_url), userJson);
+            // Launch login activity
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            Log.e("User json crap", e.getMessage());
         }
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
 
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-    }
 }
