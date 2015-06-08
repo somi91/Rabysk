@@ -1,4 +1,4 @@
-package com.uslive.rabyks.activity;
+package com.uslive.rabyks.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,7 +14,9 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -34,6 +36,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
+import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
+import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.services.SocketService;
 import com.uslive.rabyks.helpers.JsonUtil;
 import com.uslive.rabyks.dialogs.ReservationDialog;
@@ -43,7 +47,7 @@ import com.uslive.rabyks.models.Partner;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener {
+public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener, EmployeeReservationDialog.EditDialogListener {
 
     int sdk = android.os.Build.VERSION.SDK_INT;
 
@@ -61,9 +65,11 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private CharSequence mTitle;
 
     private SocketService mBoundService;
-    private Boolean mIsBound;
+    private Boolean mIsBound = false;
 
     private RelativeLayout clubActivityRelativeLayout;
+    float scale;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         setContentView(R.layout.activity_club);
 
         clubActivityRelativeLayout = (RelativeLayout) findViewById(R.id.clubActivityRelativeLayout);
+        scale = getApplicationContext().getResources().getDisplayMetrics().density;
 
         TextView club_id = (TextView) findViewById(R.id.id);
         TextView club_name = (TextView) findViewById(R.id.name);
@@ -129,16 +136,16 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         btnSendMessage.setOnClickListener(sendMessage);
 
         Button btn1 = new Button(getApplicationContext());
-        setButton(btn1, 100, 300, Color.GREEN);
+        setButton(btn1, 50, 100, Color.GREEN);
 
         Button btn2 = new Button(getApplicationContext());
-        setButton(btn2, 300, 600, Color.RED);
+        setButton(btn2, 100, 200, Color.RED);
 
         Button btn3 = new Button(getApplicationContext());
-        setButton(btn3, 600, 350, Color.GREEN);
+        setButton(btn3, 200, 120, Color.GREEN);
 
         Button btn4 = new Button(getApplicationContext());
-        setButton(btn4, 600, 700, Color.RED);
+        setButton(btn4, 200, 220, Color.RED);
 
         setBackGroundImage();
 //        doBindService();
@@ -165,6 +172,10 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     public void setButton(Button btn, final int x, final int y, int color){
+
+        final int pixelsX = (int) (x * scale + 0.5f);
+        final int pixelsY = (int) (y * scale + 0.5f);
+
         ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
         biggerCircle.setIntrinsicHeight( 50 );
         biggerCircle.setIntrinsicWidth( 50);
@@ -182,8 +193,8 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         LayerDrawable composite1 = new LayerDrawable(d);
 
         btn = new Button(getApplicationContext());
-        btn.setX(x);
-        btn.setY(y);
+        btn.setX(pixelsX);
+        btn.setY(pixelsY);
         btn.setLayoutParams(new LinearLayout.LayoutParams(140, 140));
         btn.setBackgroundDrawable(composite1);
         btn.setBackground(composite1);
@@ -193,11 +204,12 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "x: "+ x +" y: " + y, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "x: "+ pixelsX +" y: " + pixelsY, Toast.LENGTH_LONG).show();
             }
         });
 
     }
+
     void showDialog() {
         FragmentManager fm = getSupportFragmentManager();
         ReservationDialog editNameDialog = new ReservationDialog();
@@ -223,7 +235,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     @Override
     public void onFinishEditDialog(String inputText) {
-        Toast.makeText(getApplicationContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -236,6 +248,21 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        switch (position) {
+            case 0:
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainIntent);
+                finish();
+                break;
+
+            case 8:
+                transaction.replace(R.id.your_placeholder, new EditPosition());
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+        }
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(mPlanetTitles[position]);
@@ -330,6 +357,11 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
+    }
+
+    @Override
+    public void onFinishDialog(String inputText) {
+        Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
     }
 
 }

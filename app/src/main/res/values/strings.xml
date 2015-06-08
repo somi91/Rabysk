@@ -31,7 +31,7 @@
     <string name="sun">Sunday</string>
 
     <string-array name="planets_array">
-        <item>Mercury</item>
+        <item>Pocetna</item>
         <item>Venus</item>
         <item>Earth</item>
         <item>Mars</item>
@@ -39,6 +39,7 @@
         <item>Saturn</item>
         <item>Uranus</item>
         <item>Neptune</item>
+        <item>Promeni Raspored</item>
     </string-array>
 
     <string name="hello_world">Hello world!</string>

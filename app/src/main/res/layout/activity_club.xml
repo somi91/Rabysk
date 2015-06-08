@@ -11,78 +11,84 @@ android:layout_height="match_parent">
         android:layout_height="match_parent"
         tools:context="${relativePackage}.${activityClass}" >
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-            android:id="@+id/clubActivityRelativeLayout"
-            android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            tools:context="com.uslive.rabyks.activities.ClubActivity">
+        <FrameLayout
+            android:id="@+id/your_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView android:id="@+id/id" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:id="@+id/clubActivityRelativeLayout"
+                android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context="com.uslive.rabyks.activities.ClubActivity">
 
-            <TextView android:text="" android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/name"
-                android:layout_centerVertical="true" />
+                <TextView android:id="@+id/id" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-            <TextView android:text="" android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/url"
-                android:layout_alignParentBottom="false"
-                android:layout_marginTop="50dp" />
+                <TextView android:text="" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name"
+                    android:layout_centerVertical="true" />
 
-            <TextView android:text="" android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/uuid"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="201dp" />
+                <TextView android:text="" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/url"
+                    android:layout_alignParentBottom="false"
+                    android:layout_marginTop="50dp" />
 
-            <TextView android:text="" android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/created_at"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="84dp" />
+                <TextView android:text="" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/uuid"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="201dp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="cancel service"
-                android:id="@+id/cancelButton"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
+                <TextView android:text="" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/created_at"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="84dp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send message"
-                android:id="@+id/btnSendMessage"
-                android:layout_above="@+id/cancelButton"
-                android:layout_centerHorizontal="true" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="cancel service"
+                    android:id="@+id/cancelButton"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="btnPopup1"
-                android:id="@+id/btnPopup1"
-                android:layout_below="@+id/created_at"
-                android:layout_toRightOf="@+id/uuid"
-                android:layout_toEndOf="@+id/uuid" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Send message"
+                    android:id="@+id/btnSendMessage"
+                    android:layout_above="@+id/cancelButton"
+                    android:layout_centerHorizontal="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="btnPopup2"
-                android:id="@+id/btnPopup2"
-                android:layout_above="@+id/btnSendMessage"
-                android:layout_toRightOf="@+id/uuid"
-                android:layout_toEndOf="@+id/uuid"
-                android:layout_marginBottom="43dp" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="btnPopup1"
+                    android:id="@+id/btnPopup1"
+                    android:layout_below="@+id/created_at"
+                    android:layout_toRightOf="@+id/uuid"
+                    android:layout_toEndOf="@+id/uuid" />
 
-        </RelativeLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="btnPopup2"
+                    android:id="@+id/btnPopup2"
+                    android:layout_above="@+id/btnSendMessage"
+                    android:layout_toRightOf="@+id/uuid"
+                    android:layout_toEndOf="@+id/uuid"
+                    android:layout_marginBottom="43dp" />
+
+            </RelativeLayout>
+        </FrameLayout>
 
     </RelativeLayout>
 
