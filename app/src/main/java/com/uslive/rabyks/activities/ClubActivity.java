@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -358,23 +359,23 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        out.println("bye:dragstor");
-        try {
-            if (thrd != null)
-                thrd.interrupt();
-            if (sock != null) {
-                sock.getOutputStream().close();
-                sock.getInputStream().close();
-                sock.close();
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "onPause error! " + e.getMessage());
-        }
-        thrd = null;
-    }
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        out.println("bye:dragstor");
+//        try {
+//            if (thrd != null)
+//                thrd.interrupt();
+//            if (sock != null) {
+//                sock.getOutputStream().close();
+//                sock.getInputStream().close();
+//                sock.close();
+//            }
+//        } catch (IOException e) {
+//            Log.e(TAG, "onPause error! " + e.getMessage());
+//        }
+//        thrd = null;
+//    }
 
     @Override
     protected void onDestroy() {
