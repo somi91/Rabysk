@@ -389,7 +389,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 sock.getInputStream().close();
                 sock.close();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "onPause error! " + e.getMessage());
         }
         thrd = null;
