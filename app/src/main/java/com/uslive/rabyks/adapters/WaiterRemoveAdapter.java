@@ -59,11 +59,12 @@ public class WaiterRemoveAdapter extends BaseAdapter {
             holder.txtName = (TextView) convertView.findViewById(R.id.txtName);
             holder.imageButton = (ImageButton) convertView.findViewById(R.id.btnImageRemove);
             final String waiterName = holder.txtName.getText().toString();
+            final int pos = position;
             holder.imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(),
-                            "Waiter name: " + waiterName + " : " + rowItems.get(position),
+                            "Waiter name: " + waiterName + " : " + rowItems.get(pos),
                             Toast.LENGTH_SHORT).show();
                 }
             });
