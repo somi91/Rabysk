@@ -12,8 +12,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.IBinder;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +33,8 @@ import android.widget.Toast;
 
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
+import com.uslive.rabyks.fragments.ClubOwnerDetail;
+import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.services.SocketService;
 import com.uslive.rabyks.helpers.JsonUtil;
@@ -43,7 +42,6 @@ import com.uslive.rabyks.dialogs.ReservationDialog;
 import com.uslive.rabyks.models.Message;
 import com.uslive.rabyks.models.Partner;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 
 public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener, EmployeeReservationDialog.EditDialogListener {
@@ -254,6 +252,18 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mainIntent);
                 finish();
+                break;
+
+            case 6:
+                transaction.replace(R.id.your_placeholder, new ClubOwnerDetail());
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+
+            case 7:
+                transaction.replace(R.id.your_placeholder, new ClubOwnerWaiter());
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
 
             case 8:
