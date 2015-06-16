@@ -64,9 +64,9 @@ public class EditPosition extends Fragment {
     public void setBackGroundImage(){
 
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            edit_content.setBackgroundDrawable(getResources().getDrawable(R.drawable.sample_3, null) );
+            edit_content.setBackgroundDrawable(getResources().getDrawable(R.drawable.sample_0, null) );
         } else {
-            edit_content.setBackground(getResources().getDrawable(R.drawable.sample_3, null));
+            edit_content.setBackground(getResources().getDrawable(R.drawable.sample_0, null));
         }
     }
 
