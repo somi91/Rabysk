@@ -1,9 +1,6 @@
 package com.uslive.rabyks.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -11,9 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.os.IBinder;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -37,18 +31,19 @@ import android.widget.Toast;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.EditPosition;
-import com.uslive.rabyks.services.SocketService;
-import com.uslive.rabyks.helpers.JsonUtil;
 import com.uslive.rabyks.dialogs.ReservationDialog;
-import com.uslive.rabyks.models.Message;
-import com.uslive.rabyks.models.Partner;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener, EmployeeReservationDialog.EditDialogListener {
 
     int sdk = android.os.Build.VERSION.SDK_INT;
+
+    private static final String TAG = "ClubActivity";
 
     private TextView club_id;
     private TextView club_name;
@@ -63,12 +58,13 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-    private SocketService mBoundService;
-    private Boolean mIsBound = false;
-
     private RelativeLayout clubActivityRelativeLayout;
     float scale;
 
+    private Socket sock;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Thread thrd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,62 +296,75 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         return super.onOptionsItemSelected(item);
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((SocketService.LocalBinder) service).getService();
-            mBoundService.IsBoundable();
-
-        }
-        public void onServiceDisconnected(ComponentName className) {
-            mBoundService = null;
-        }
-    };
-
-    private void doBindService() {
-        startService(new Intent(ClubActivity.this, SocketService.class));
-        getApplicationContext().bindService(new Intent(this, SocketService.class), mConnection, Context.BIND_AUTO_CREATE);
-        mIsBound = true;
-    }
-
-    private void doUnbindService() {
-        if (mIsBound) {
-            // Detach our existing connection.
-            getApplicationContext().unbindService(mConnection);
-            mIsBound = false;
-        }
-    }
-
     private View.OnClickListener stopListener = new View.OnClickListener() {
         public void onClick(View v){
-            stopService(new Intent(ClubActivity.this,SocketService.class));
         }
     };
 
     private View.OnClickListener sendMessage = new View.OnClickListener() {
         public void onClick(View v){
-            Message message = new Message();
-            message.setId("123");
-            message.setUser_id("321");
-            message.setPerson_count("4");
-            Calendar calendar = Calendar.getInstance();
-            message.setDate_of_reservation( new java.sql.Timestamp(calendar.getTime().getTime()) );
 
-            Partner partner = new Partner();
-            partner.setPartner_id("1");
-            partner.setName("sumnjivi moral");
-            partner.setAddress("sumnjivi moral at olimp");
-            partner.setNumber("06432198765");
-            message.setPartner(partner);
-
-            JsonUtil jsonUtil = new JsonUtil();
-            mBoundService.WriteToServer(jsonUtil.toJson(message));
         }
     };
 
     @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            thrd = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        sock = new Socket("10.0.2.2", 4444);
+                        out = new PrintWriter(sock.getOutputStream(), true);
+                        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                        out.println("club:dragstor");
+                        String data = null;
+                        data = in.readLine();
+                        Log.i(TAG, data);
+                        while (!Thread.interrupted()) {
+                            data = in.readLine();
+                            Log.i(TAG, "BRATE KAKO PROLAZIS");
+                            if(data != null) Log.i(TAG, "STIGLO NESTO " + data);
+//                            if (data != null)
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        // do something in ui thread with the data var
+//                                    }
+//                                });
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "onResume error inside thread! " + e.getMessage());
+                    }
+                }
+            });
+            thrd.start();
+        } catch (Exception e) {
+            Log.e(TAG, "onResume error! " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        out.println("bye:dragstor");
+        try {
+            if (thrd != null)
+                thrd.interrupt();
+            if (sock != null) {
+                sock.getOutputStream().close();
+                sock.getInputStream().close();
+                sock.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "onPause error! " + e.getMessage());
+        }
+        thrd = null;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        doUnbindService();
     }
 
     @Override
