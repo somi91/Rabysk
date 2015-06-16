@@ -303,7 +303,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     private View.OnClickListener sendMessage = new View.OnClickListener() {
         public void onClick(View v){
-
+            out.println("rezervacija:dragstor:1:1:1");
         }
     };
 
@@ -365,6 +365,19 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        try {
+            out.println("bye:dragstor");
+            if (thrd != null)
+                thrd.interrupt();
+            if (sock != null) {
+                sock.getOutputStream().close();
+                sock.getInputStream().close();
+                sock.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "onPause error! " + e.getMessage());
+        }
+        thrd = null;
     }
 
     @Override
