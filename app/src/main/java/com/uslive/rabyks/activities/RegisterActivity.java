@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 import com.uslive.rabyks.asyncTasks.RegisterAsyncTask;
-import com.uslive.rabyks.commons.Common;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 
@@ -139,12 +138,7 @@ public class RegisterActivity extends ActionBarActivity {
             jsonUser.accumulate("email", email);
             jsonUser.accumulate("password", password);
             jsonUser.accumulate("number", number);
-            String userToHash = username + " " + email + " " + password + " " + number;
-            // hash url and user json object
-            String hashed = Common.hashRequest(getString(R.string.register_url), userToHash);
 
-            // add hash hex string to post object
-            jsonUser.accumulate("hash", hashed);
             String userJson = jsonUser.toString();
 
             // Register user on server

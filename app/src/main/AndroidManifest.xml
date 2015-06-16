@@ -32,11 +32,6 @@
             android:label="@string/title_activity_club" >
         </activity>
 
-        <service
-            android:name="com.uslive.rabyks.services.SocketService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
     </application>
 
 </manifest>
