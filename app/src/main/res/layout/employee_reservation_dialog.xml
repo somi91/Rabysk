@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageButton"
-                    android:src="@drawable/Arrow_up_32" />
+                    android:src="@drawable/arrow_up_32" />
 
                 <EditText
                     android:layout_width="36dp"
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageButton2"
-                    android:src="@drawable/Arrow_down_32" />
+                    android:src="@drawable/arrow_down_32" />
 
             </LinearLayout>
 
@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageButton3"
-                    android:src="@drawable/Arrow_up_32" />
+                    android:src="@drawable/arrow_up_32" />
 
                 <EditText
                     android:layout_width="61dp"
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageButton4"
-                    android:src="@drawable/Arrow_down_32" />
+                    android:src="@drawable/arrow_down_32" />
 
             </LinearLayout>
 
