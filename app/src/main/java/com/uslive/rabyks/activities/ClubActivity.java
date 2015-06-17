@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
+import com.uslive.rabyks.Services.GPSTracker;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.ClubOwnerDetail;
 import com.uslive.rabyks.fragments.ClubOwnerWaiter;
@@ -37,8 +37,6 @@ import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.dialogs.ReservationDialog;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -63,6 +61,8 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     private RelativeLayout clubActivityRelativeLayout;
     float scale;
+
+    GPSTracker gps;
 
     private Socket sock;
     private PrintWriter out;
@@ -127,11 +127,43 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+
         Button stop = (Button)findViewById(R.id.cancelButton);
-        stop.setOnClickListener(stopListener);
+//        stop.setOnClickListener(stopListener);
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gps = new GPSTracker(ClubActivity.this);
+                gps.stopUsingGPS();
+            }
+        });
 
         Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
-        btnSendMessage.setOnClickListener(sendMessage);
+//        btnSendMessage.setOnClickListener(sendMessage);
+
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                gps = new GPSTracker(ClubActivity.this);
+                // check if GPS enabled
+                if(gps.canGetLocation()){
+
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+
+                    // \n is for new line
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                    gps.stopUsingGPS();
+                }else{
+                    // can't get location
+                    // GPS or Network is not enabled
+                    // Ask user to enable GPS/network in settings
+                    gps.showSettingsAlert();
+                    Toast.makeText(getApplicationContext(), "NESTO NE VALJA", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         Button btn1 = new Button(getApplicationContext());
         setButton(btn1, 50, 100, Color.GREEN);
@@ -322,42 +354,42 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         }
     };
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            thrd = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        sock = new Socket("10.0.2.2", 4444);
-                        out = new PrintWriter(sock.getOutputStream(), true);
-                        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-                        out.println("club:dragstor");
-                        String data = null;
-                        data = in.readLine();
-                        Log.i(TAG, data);
-                        while (!Thread.interrupted()) {
-                            data = in.readLine();
-                            Log.i(TAG, "BRATE KAKO PROLAZIS");
-                            if(data != null) Log.i(TAG, "STIGLO NESTO " + data);
-//                            if (data != null)
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        // do something in ui thread with the data var
-//                                    }
-//                                });
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "onResume error inside thread! " + e.getMessage());
-                    }
-                }
-            });
-            thrd.start();
-        } catch (Exception e) {
-            Log.e(TAG, "onResume error! " + e.getMessage());
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        try {
+//            thrd = new Thread(new Runnable() {
+//                public void run() {
+//                    try {
+//                        sock = new Socket("10.0.2.2", 4444);
+//                        out = new PrintWriter(sock.getOutputStream(), true);
+//                        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+//                        out.println("club:dragstor");
+//                        String data = null;
+//                        data = in.readLine();
+//                        Log.i(TAG, data);
+//                        while (!Thread.interrupted()) {
+//                            data = in.readLine();
+//                            Log.i(TAG, "BRATE KAKO PROLAZIS");
+//                            if(data != null) Log.i(TAG, "STIGLO NESTO " + data);
+////                            if (data != null)
+////                                runOnUiThread(new Runnable() {
+////                                    @Override
+////                                    public void run() {
+////                                        // do something in ui thread with the data var
+////                                    }
+////                                });
+//                        }
+//                    } catch (IOException e) {
+//                        Log.e(TAG, "onResume error inside thread! " + e.getMessage());
+//                    }
+//                }
+//            });
+//            thrd.start();
+//        } catch (Exception e) {
+//            Log.e(TAG, "onResume error! " + e.getMessage());
+//        }
+//    }
 
 //    @Override
 //    public void onPause() {
