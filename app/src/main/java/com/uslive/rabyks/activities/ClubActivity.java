@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
-import com.uslive.rabyks.Services.GPSTracker;
+import com.uslive.rabyks.services.GPSTracker;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.ClubOwnerDetail;
 import com.uslive.rabyks.fragments.ClubOwnerWaiter;
