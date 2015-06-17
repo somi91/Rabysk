@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
-import com.uslive.rabyks.services.GPSTracker;
+//import com.uslive.rabyks.services.GPSTracker;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.ClubOwnerDetail;
 import com.uslive.rabyks.fragments.ClubOwnerWaiter;
@@ -62,7 +62,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private RelativeLayout clubActivityRelativeLayout;
     float scale;
 
-    GPSTracker gps;
+//    GPSTracker gps;
 
     private Socket sock;
     private PrintWriter out;
@@ -130,40 +130,40 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
         Button stop = (Button)findViewById(R.id.cancelButton);
 //        stop.setOnClickListener(stopListener);
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gps = new GPSTracker(ClubActivity.this);
-                gps.stopUsingGPS();
-            }
-        });
-
-        Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
-//        btnSendMessage.setOnClickListener(sendMessage);
-
-        btnSendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                gps = new GPSTracker(ClubActivity.this);
-                // check if GPS enabled
-                if(gps.canGetLocation()){
-
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
-
-                    // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-                    gps.stopUsingGPS();
-                }else{
-                    // can't get location
-                    // GPS or Network is not enabled
-                    // Ask user to enable GPS/network in settings
-                    gps.showSettingsAlert();
-                    Toast.makeText(getApplicationContext(), "NESTO NE VALJA", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+//        stop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                gps = new GPSTracker(ClubActivity.this);
+//                gps.stopUsingGPS();
+//            }
+//        });
+//
+//        Button btnSendMessage = (Button) findViewById(R.id.btnSendMessage);
+////        btnSendMessage.setOnClickListener(sendMessage);
+//
+//        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                gps = new GPSTracker(ClubActivity.this);
+//                // check if GPS enabled
+//                if(gps.canGetLocation()){
+//
+//                    double latitude = gps.getLatitude();
+//                    double longitude = gps.getLongitude();
+//
+//                    // \n is for new line
+//                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+//                    gps.stopUsingGPS();
+//                }else{
+//                    // can't get location
+//                    // GPS or Network is not enabled
+//                    // Ask user to enable GPS/network in settings
+//                    gps.showSettingsAlert();
+//                    Toast.makeText(getApplicationContext(), "NESTO NE VALJA", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
 
         Button btn1 = new Button(getApplicationContext());
         setButton(btn1, 50, 100, Color.GREEN);
