@@ -32,11 +32,9 @@
 
     <string-array name="planets_array">
         <item>Pocetna</item>
-        <item>Venus</item>
         <item>Earth</item>
         <item>Mars</item>
         <item>Jupiter</item>
-        <item>Saturn</item>
         <item>Gazda Detalji</item>
         <item>Gazda Konobari</item>
         <item>Promeni Raspored</item>

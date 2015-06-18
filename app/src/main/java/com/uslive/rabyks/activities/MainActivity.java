@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.uslive.rabyks.adapters.ImageAdapter;
+import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.Club;
@@ -58,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
             logoutUser();
         }
 
-        GetSetDataForGrid();
+//        GetSetDataForGrid();
         // Search and initial Grid View
         db = new SQLiteHandler(getApplicationContext());
         List<Club> clubs = db.getAllClubs();
@@ -94,8 +95,10 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+//        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, mPlanetTitles));
+
+        mDrawerList.setAdapter(new MainDrawerAdapter(this, mPlanetTitles));
+
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -266,10 +269,18 @@ public class MainActivity extends ActionBarActivity {
 
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
+        int counter = 0;
+        if ( position >= 1 && position <= 4) {
+            counter = 1;
+        } else if (position >= 5 && position <= 7) {
+            counter = 2;
+        } else if (position >= 8 ) {
+            counter = 3;
+        }
 
         // Highlight the selected item, update the title, and close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        mDrawerList.setItemChecked(position - counter, true);
+        setTitle(mPlanetTitles[position - counter]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 

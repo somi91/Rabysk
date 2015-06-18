@@ -3,11 +3,14 @@ package com.uslive.rabyks.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.uslive.rabyks.R;
 
@@ -23,11 +26,13 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Bitmap> images;
     private List<Club> _clubs;
+    private LayoutInflater mInflater;
 
     public ImageAdapter(Context c, List<Club> clubs) {
         mContext = c;
         images = new ArrayList<Bitmap>();
         _clubs = clubs;
+        mInflater = LayoutInflater.from(mContext);
         byte[] img;
         for (Club club : clubs) {
             img = club.get_image();
@@ -36,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return images.size();
+        return _clubs.size();
 //        return mThumbIds.length;
     }
 
@@ -49,37 +54,23 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
+        View v = convertView;
+        TextView name;
         ImageView imageView;
-        if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(400, 400));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
+        if (v == null) {
+            v = mInflater.inflate(R.layout.grid_item, viewGroup, false);
+            v.setTag(R.id.picture, v.findViewById(R.id.picture));
+            v.setTag(R.id.text, v.findViewById(R.id.text));
         }
 
-//        imageView.setImageResource(mThumbIds[position]);
+        imageView = (ImageView) v.getTag(R.id.picture);
+        name = (TextView) v.getTag(R.id.text);
 
         imageView.setImageBitmap(images.get(position));
+        name.setText(_clubs.get(position).get_name());
 
-        return imageView;
+        return v;
     }
 
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7
-    };
 }
