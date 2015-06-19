@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         String CREATE_CLUB_TABLE = "CREATE TABLE " + TABLE_CLUB + "("
                 + KEY_CLUB_ID + " INTEGER PRIMARY KEY," + KEY_CLUB_NAME + " TEXT,"
                 + KEY_CLUB_URL + " TEXT UNIQUE," + KEY_CLUB_IMG + " BLOB,"
-                + KEY_CLUB_UID + " TEXT," + KEY_CLUB_CREATED_AT + " TEXT" + ")";
+                + KEY_CLUB_UID + " TEXT," + KEY_CLUB_CREATED_AT + " TIMESTAMP" + ")";
         db.execSQL(CREATE_CLUB_TABLE);
 
         Log.d(TAG, "Database tables created");
@@ -144,7 +145,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public Club getClubByString(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("Select * FROM club WHERE name LIKE '"+ name +"'", null);
+        Cursor cursor = db.rawQuery("Select * FROM club WHERE name LIKE '" + name + "'", null);
         if (cursor != null) {
             cursor.moveToFirst();
 
@@ -271,6 +272,30 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         // return row count
         return rowCount;
+    }
+
+    /**
+     * Getting timestamp of last added partner
+     * */
+    public Long getTimestampOfLastPartner() {
+
+        String getQuery = "SELECT " + KEY_CLUB_CREATED_AT + " FROM " + TABLE_CLUB + "ORDER BY " + KEY_CLUB_CREATED_AT + " DESC LIMIT 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(getQuery, null);
+        Long timestamp = null;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            timestamp = cursor.getLong(3);
+
+        }else{
+            db.close();
+            return null;
+        }
+        db.close();
+        cursor.close();
+
+        // return row count
+        return timestamp;
     }
 
     /**
