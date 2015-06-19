@@ -6,8 +6,10 @@ package com.uslive.rabyks.models;
 public class Partner {
     private String partner_id;
     private String name;
+    private String socket_url;
     private String number;
     private String address;
+    private String imageUrl;
 
     public String getPartner_id() {
         return partner_id;
@@ -23,6 +25,14 @@ public class Partner {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSocket_url() {
+        return socket_url;
+    }
+
+    public void setSocket_url(String socket_url) {
+        this.socket_url = socket_url;
     }
 
     public String getNumber() {
@@ -41,4 +51,11 @@ public class Partner {
         this.address = address;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
