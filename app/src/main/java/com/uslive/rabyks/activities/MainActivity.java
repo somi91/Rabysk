@@ -16,11 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.GetPartners;
 import com.uslive.rabyks.R;
 
 import java.io.ByteArrayOutputStream;
@@ -52,6 +52,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new GetPartners(getApplicationContext()).execute("", "", "");
+
         // session manager
         session = new SessionManager(getApplicationContext());
 
@@ -124,7 +127,6 @@ public class MainActivity extends ActionBarActivity {
         };
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
     }
 
     public void GetSetDataForGrid(){

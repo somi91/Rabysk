@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-import com.uslive.rabyks.asyncTasks.RegisterAsyncTask;
+import com.uslive.rabyks.AsyncTasks.RegisterAsyncTask;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 

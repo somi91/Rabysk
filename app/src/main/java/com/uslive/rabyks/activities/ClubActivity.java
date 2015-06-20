@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -28,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
-import com.uslive.rabyks.services.GPSTracker;
+import com.uslive.rabyks.Services.GPSTracker;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.ClubOwnerDetail;
