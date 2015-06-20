@@ -63,6 +63,16 @@ public class MainActivity extends ActionBarActivity {
         }
 
 //        GetSetDataForGrid();
+        /**
+         * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa
+         * proveri da li treba raditi update sqlite-a? (da li ima novih partnera sa novijim timestampom)
+         *
+         * Za svakog partnera koji je nov napravi novi FetchPartnerData task (ubacuje partnera u sqlite)
+         *
+         * Pa tek onda iscitaj sve podatke iz sqlite i prikazi u main_view
+         *
+         */
+
         // Search and initial Grid View
         db = new SQLiteHandler(getApplicationContext());
         List<Club> clubs = db.getAllClubs();
