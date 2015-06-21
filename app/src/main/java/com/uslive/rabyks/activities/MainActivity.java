@@ -65,7 +65,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         // test data
-        GetSetDataForGrid();
+//        GetSetDataForGrid();
 
         /**
          * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa

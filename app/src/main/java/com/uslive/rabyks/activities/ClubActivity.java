@@ -37,7 +37,13 @@ import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.dialogs.ReservationDialog;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -69,6 +75,9 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private PrintWriter out;
     private BufferedReader in;
     private Thread thrd;
+    int partnerId;
+    JSONArray partnerSetup;
+    JSONObject objectTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,18 +87,19 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         clubActivityRelativeLayout = (RelativeLayout) findViewById(R.id.clubActivityRelativeLayout);
         scale = getApplicationContext().getResources().getDisplayMetrics().density;
 
+        // data for partner
+        Intent myIntent = getIntent(); // gets the previously created intent
+        partnerId = myIntent.getIntExtra("club_url", 0);
+        Log.i("PARTNER ID ", partnerId+"");
+
         TextView club_id = (TextView) findViewById(R.id.id);
         TextView club_name = (TextView) findViewById(R.id.name);
         TextView club_uuid = (TextView) findViewById(R.id.uuid);
         TextView club_url = (TextView) findViewById(R.id.url);
-        TextView club_created_at = (TextView) findViewById(R.id.created_at);
 
-        Intent myIntent = getIntent(); // gets the previously created intent
         club_id.setText(myIntent.getStringExtra("club_id"));
         club_name.setText(myIntent.getStringExtra("club_name"));
         club_uuid.setText(myIntent.getStringExtra("club_uuid"));
-        club_url.setText(myIntent.getStringExtra("club_url"));
-        club_created_at.setText(myIntent.getStringExtra("club_created_at"));
 
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
         mTitle = mDrawerTitle = getTitle();
@@ -364,60 +374,63 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         }
     };
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        try {
-//            thrd = new Thread(new Runnable() {
-//                public void run() {
-//                    try {
-//                        sock = new Socket("10.0.2.2", 4444);
-//                        out = new PrintWriter(sock.getOutputStream(), true);
-//                        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-//                        out.println("club:dragstor");
-//                        String data = null;
-//                        data = in.readLine();
-//                        Log.i(TAG, data);
-//                        while (!Thread.interrupted()) {
-//                            data = in.readLine();
-//                            Log.i(TAG, "BRATE KAKO PROLAZIS");
-//                            if(data != null) Log.i(TAG, "STIGLO NESTO " + data);
-////                            if (data != null)
-////                                runOnUiThread(new Runnable() {
-////                                    @Override
-////                                    public void run() {
-////                                        // do something in ui thread with the data var
-////                                    }
-////                                });
-//                        }
-//                    } catch (IOException e) {
-//                        Log.e(TAG, "onResume error inside thread! " + e.getMessage());
-//                    }
-//                }
-//            });
-//            thrd.start();
-//        } catch (Exception e) {
-//            Log.e(TAG, "onResume error! " + e.getMessage());
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            thrd = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        sock = new Socket(getApplicationContext().getString(R.string.socketAddress), 4444);
+                        out = new PrintWriter(sock.getOutputStream(), true);
+                        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                        out.println("hi:"+partnerId);
+                        String data = null;
+                        data = in.readLine();
+                        Log.i(TAG, data);
+                        while (!Thread.interrupted() && (data = in.readLine()) != null) {
+                            try {
+                                partnerSetup = new JSONArray(data);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.i(TAG, data);
+                            Log.i("JSONARRAY looks like", partnerSetup.toString());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // do something in ui thread with the data var
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "onResume error inside thread! " + e.getMessage());
+                    }
+                }
+            });
+            thrd.start();
+        } catch (Exception e) {
+            Log.e(TAG, "onResume error! " + e.getMessage());
+        }
+    }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        out.println("bye:dragstor");
-//        try {
-//            if (thrd != null)
-//                thrd.interrupt();
-//            if (sock != null) {
-//                sock.getOutputStream().close();
-//                sock.getInputStream().close();
-//                sock.close();
-//            }
-//        } catch (IOException e) {
-//            Log.e(TAG, "onPause error! " + e.getMessage());
-//        }
-//        thrd = null;
-//    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        out.println("bye:dragstor");
+        try {
+            if (thrd != null)
+                thrd.interrupt();
+            if (sock != null) {
+                sock.getOutputStream().close();
+                sock.getInputStream().close();
+                sock.close();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "onPause error! " + e.getMessage());
+        }
+        thrd = null;
+    }
 
     @Override
     protected void onDestroy() {
