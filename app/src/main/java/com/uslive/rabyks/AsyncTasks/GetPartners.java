@@ -3,6 +3,8 @@ package com.uslive.rabyks.AsyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
@@ -27,9 +29,12 @@ import java.io.InputStreamReader;
 public class GetPartners extends AsyncTask<String, String, JSONArray> {
     Context context;
     OnTaskCompletedUpdateGridView listener;
-    public GetPartners(Context c, OnTaskCompletedUpdateGridView l){
+    ProgressBar bar;
+
+    public GetPartners(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b){
         context = c;
         listener = l;
+        bar = b;
     }
 //    JSONParser jsonParser = new JSONParser();
 
@@ -37,6 +42,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        bar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -62,6 +68,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     }
 
     protected void onPostExecute(JSONArray results) {
+        bar.setVisibility(View.GONE);
         Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
         Log.i("SUCCESS or NO SUCCESS","IZVRSIO SE USPESNO ILI NE USPESNO ALI SE IZVRSIO");
         if (results.length() != 0 && results != null) {
@@ -76,7 +83,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                new FetchPartnerData(context, listener).execute(partner);
+                new FetchPartnerData(context, listener, bar).execute(partner);
             }
         } else {
             listener.onTaskCompletedUpdateGridView();

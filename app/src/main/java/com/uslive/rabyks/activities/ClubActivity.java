@@ -53,11 +53,11 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     private static final String TAG = "ClubActivity";
 
-    private TextView club_id;
-    private TextView club_name;
-    private TextView club_uuid;
-    private TextView club_url;
-    private TextView club_created_at;
+//    private TextView club_id;
+//    private TextView club_name;
+//    private TextView club_uuid;
+//    private TextView club_url;
+//    private TextView club_created_at;
 
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
@@ -92,14 +92,14 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         partnerId = myIntent.getIntExtra("club_url", 0);
         Log.i("PARTNER ID ", partnerId+"");
 
-        TextView club_id = (TextView) findViewById(R.id.id);
-        TextView club_name = (TextView) findViewById(R.id.name);
-        TextView club_uuid = (TextView) findViewById(R.id.uuid);
-        TextView club_url = (TextView) findViewById(R.id.url);
-
-        club_id.setText(myIntent.getStringExtra("club_id"));
-        club_name.setText(myIntent.getStringExtra("club_name"));
-        club_uuid.setText(myIntent.getStringExtra("club_uuid"));
+//        TextView club_id = (TextView) findViewById(R.id.id);
+//        TextView club_name = (TextView) findViewById(R.id.name);
+//        TextView club_uuid = (TextView) findViewById(R.id.uuid);
+//        TextView club_url = (TextView) findViewById(R.id.url);
+//
+//        club_id.setText(myIntent.getStringExtra("club_id"));
+//        club_name.setText(myIntent.getStringExtra("club_name"));
+//        club_uuid.setText(myIntent.getStringExtra("club_uuid"));
 
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
         mTitle = mDrawerTitle = getTitle();
@@ -177,29 +177,29 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             }
         });
 
-        Button btn1 = new Button(getApplicationContext());
-        setButton(btn1, 50, 100, Color.GREEN);
-
-        Button btn2 = new Button(getApplicationContext());
-        setButton(btn2, 100, 200, Color.RED);
-
-        Button btn3 = new Button(getApplicationContext());
-        setButton(btn3, 200, 120, Color.GREEN);
-
-        Button btn4 = new Button(getApplicationContext());
-        setButton(btn4, 200, 220, Color.RED);
+//        Button btn1 = new Button(getApplicationContext());
+//        setButton(btn1, 50, 100, Color.GREEN);
+//
+//        Button btn2 = new Button(getApplicationContext());
+//        setButton(btn2, 100, 200, Color.RED);
+//
+//        Button btn3 = new Button(getApplicationContext());
+//        setButton(btn3, 200, 120, Color.GREEN);
+//
+//        Button btn4 = new Button(getApplicationContext());
+//        setButton(btn4, 200, 220, Color.RED);
 
         setBackGroundImage();
-//        doBindService();
-        Button btnPopup1 = (Button) findViewById(R.id.btnPopup1);
-        Button btnPopup2 = (Button) findViewById(R.id.btnPopup2);
-
-        btnPopup1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog();
-            }
-        });
+//
+//        Button btnPopup1 = (Button) findViewById(R.id.btnPopup1);
+//        Button btnPopup2 = (Button) findViewById(R.id.btnPopup2);
+//
+//        btnPopup1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showDialog();
+//            }
+//        });
 
 //        doBindService();
     }
@@ -213,7 +213,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         }
     }
 
-    public void setButton(Button btn, final int x, final int y, int color){
+    public void setButton(Button btn, final int x, final int y, int color, JSONObject obj){
 
         final int pixelsX = (int) (x * scale + 0.5f);
         final int pixelsY = (int) (y * scale + 0.5f);
@@ -247,6 +247,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "x: "+ pixelsX +" y: " + pixelsY, Toast.LENGTH_LONG).show();
+                showDialog();
             }
         });
 
@@ -254,8 +255,8 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     void showDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        ReservationDialog editNameDialog = new ReservationDialog();
-        editNameDialog.show(fm, "reservation_name");
+        ReservationDialog reservationDialog = new ReservationDialog();
+        reservationDialog.show(fm, "reservation_name");
     }
 
     @Override
@@ -391,6 +392,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                         while (!Thread.interrupted() && (data = in.readLine()) != null) {
                             try {
                                 partnerSetup = new JSONArray(data);
+                                initialPartnerSetup(partnerSetup);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -411,6 +413,43 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             thrd.start();
         } catch (Exception e) {
             Log.e(TAG, "onResume error! " + e.getMessage());
+        }
+    }
+
+    private void initialPartnerSetup(JSONArray partnerSetup) {
+        Log.i("initial Partner Setup", partnerSetup.toString());
+        for (int i = 0; i <= partnerSetup.length(); i++) {
+            Button btn = new Button(getApplicationContext());
+            try {
+                JSONObject obj = partnerSetup.getJSONObject(i);
+                if(obj.getString("type").equals("sto")){
+                    Log.i("Type sto", obj.getString("type"));
+                    if (obj.getBoolean("availability")) {
+                        Log.i("availability", obj.getBoolean("availability")+"");
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                    } else {
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                    }
+                } else if (obj.getString("type").equals("separe")) {
+                    Log.i("Type separe", obj.getString("type"));
+                    if (obj.getBoolean("availability")) {
+                        Log.i("availability", obj.getBoolean("availability")+"");
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                    } else {
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                    }
+                } else {
+                    Log.i("Type stajanje", obj.getString("type"));
+                    if (obj.getBoolean("availability")) {
+                        Log.i("availability", obj.getBoolean("availability")+"");
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                    } else {
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

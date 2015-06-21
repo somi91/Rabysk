@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
@@ -52,6 +53,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
     GridView gridview;
 
+    private ProgressBar bar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             logoutUser();
         }
 
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
         // test data
 //        GetSetDataForGrid();
 
@@ -81,9 +85,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         Long timestampForLastPartner = db.getTimestampOfLastPartner();
         if(timestampForLastPartner == null || timestampForLastPartner == 0){
             Log.i("Nothing in database", "First insert in sqlite for partners");
-            new GetPartners(getApplicationContext(), this).execute("", "", "");
+            new GetPartners(getApplicationContext(), this, bar).execute("", "", "");
         }else{
-            new GetLatestPartners(getApplicationContext(), this).execute(db.getTimestampOfLastPartner().toString());
+            new GetLatestPartners(getApplicationContext(), this, bar).execute(db.getTimestampOfLastPartner().toString());
         }
 
         // Search and initial Grid View

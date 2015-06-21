@@ -68,25 +68,6 @@ android:layout_height="match_parent">
                     android:layout_above="@+id/cancelButton"
                     android:layout_centerHorizontal="true" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="btnPopup1"
-                    android:id="@+id/btnPopup1"
-                    android:layout_below="@+id/created_at"
-                    android:layout_toRightOf="@+id/uuid"
-                    android:layout_toEndOf="@+id/uuid" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="btnPopup2"
-                    android:id="@+id/btnPopup2"
-                    android:layout_above="@+id/btnSendMessage"
-                    android:layout_toRightOf="@+id/uuid"
-                    android:layout_toEndOf="@+id/uuid"
-                    android:layout_marginBottom="43dp" />
-
             </RelativeLayout>
         </FrameLayout>
 
