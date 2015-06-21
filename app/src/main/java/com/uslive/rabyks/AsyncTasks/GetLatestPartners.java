@@ -3,8 +3,6 @@ package com.uslive.rabyks.AsyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.activities.MainActivity;
 import com.uslive.rabyks.models.Partner;
@@ -20,14 +18,15 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 
 /**
- * Created by milos on 6/18/2015.
+ * Created by milos on 6/20/2015.
  */
-public class GetPartners extends AsyncTask<String, String, JSONArray> {
+public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
     Context context;
     OnTaskCompletedUpdateGridView listener;
-    public GetPartners(Context c, OnTaskCompletedUpdateGridView l){
+    public GetLatestPartners(Context c, OnTaskCompletedUpdateGridView l){
         context = c;
         listener = l;
     }
@@ -40,15 +39,12 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     }
 
     @Override
-    protected JSONArray doInBackground(String... urls) {
+    protected JSONArray doInBackground(String... params) {
         InputStream inputStream;
-
+        String broj = params[0];
         try {
-
-
+            HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP)+"/getLatestPartners/"+ params[0]);
             HttpClient httpclient = new DefaultHttpClient();
-
-            HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP)+"/getPartners");
             HttpResponse httpResponse = httpclient.execute(httpGet);
             inputStream = httpResponse.getEntity().getContent();
             if (inputStream != null) {
@@ -56,23 +52,21 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
             }else
                 result = new JSONArray();
         } catch (Exception ex) {
-            Log.d("HTTP POST ERROR", ex.getMessage());
+            Log.d("HTTP GET ERROR", ex.getMessage());
         }
         return result;
     }
 
-    protected void onPostExecute(JSONArray results) {
-        Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
-        Log.i("SUCCESS or NO SUCCESS","IZVRSIO SE USPESNO ILI NE USPESNO ALI SE IZVRSIO");
-        if (results.length() != 0 && results != null) {
-            for (int i = 0; i < results.length(); i++) {
+    protected void onPostExecute(JSONArray partners) {
+        if (partners != null && partners.length() != 0) {
+            for (int i = 0; i < partners.length(); i++) {
                 Partner partner = new Partner();
                 try {
-                    partner.setPartner_id(results.getJSONObject(i).getInt("id"));
-                    partner.setName(results.getJSONObject(i).getString("name"));
-                    partner.setAddress(results.getJSONObject(i).getString("address"));
-                    partner.setImageUrl(results.getJSONObject(i).getString("logoUrl"));
-                    partner.setCreated_at(results.getJSONObject(i).getLong("createdAt"));
+                    partner.setPartner_id(partners.getJSONObject(i).getInt("id"));
+                    partner.setName(partners.getJSONObject(i).getString("name"));
+                    partner.setAddress(partners.getJSONObject(i).getString("address"));
+                    partner.setImageUrl(partners.getJSONObject(i).getString("logoUrl"));
+                    partner.setCreated_at(partners.getJSONObject(i).getLong("createdAt"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -107,7 +101,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
             throw new Exception(e.getMessage());
         }
 
-        // return JSON String
+        // return JSON Array
         return jArray;
 
     }

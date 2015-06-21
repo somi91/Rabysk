@@ -50,4 +50,6 @@
     <string name="cancel">Otkazi</string>
     <string name="confirme">Potvrdi</string>
 
+    <string name="serverIP">http://ec2-52-27-4-76.us-west-2.compute.amazonaws.com:80</string>
+
 </resources>

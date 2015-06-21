@@ -7,10 +7,10 @@ public class Club {
     // private variables
     int _id;
     String _name;
-    String _url;
+    int _url;
     byte[] _image;
-    String _uid;
-    String _created_at;
+    int _uid;
+    Long _created_at;
 
     // Empty constructor
     public Club() {
@@ -18,7 +18,7 @@ public class Club {
     }
 
     // constructor
-    public Club(int keyId, String name, String url, byte[] image, String uid, String created_at) {
+    public Club(int keyId, String name, int url, byte[] image, int uid, Long created_at) {
         this._id = keyId;
         this._name = name;
         this._url = url;
@@ -29,7 +29,7 @@ public class Club {
     }
 
     // constructor
-    public Club(String name, String url, byte[] image, String uid, String created_at) {
+    public Club(String name, int url, byte[] image, int uid, Long created_at) {
         this._name = name;
         this._url = url;
         this._image = image;
@@ -54,11 +54,11 @@ public class Club {
         this._name = name;
     }
 
-    public String get_url() {
+    public int get_url() {
         return _url;
     }
 
-    public void set_url(String url) {
+    public void set_url(int url) {
         this._url = url;
     }
 
@@ -70,19 +70,19 @@ public class Club {
         this._image = image;
     }
 
-    public String get_uid() {
+    public int get_uid() {
         return _uid;
     }
 
-    public void set_uid(String uid) {
+    public void set_uid(int uid) {
         this._uid = uid;
     }
 
-    public String get_created_at() {
+    public Long get_created_at() {
         return _created_at;
     }
 
-    public void set_created_at(String created_at) {
+    public void set_created_at(Long created_at) {
         this._created_at = created_at;
     }
 

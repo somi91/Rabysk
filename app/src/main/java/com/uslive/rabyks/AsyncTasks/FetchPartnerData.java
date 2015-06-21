@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.uslive.rabyks.activities.MainActivity;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.models.Club;
 import com.uslive.rabyks.models.Partner;
@@ -31,9 +32,11 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
 
     private Context context;
     Partner partner;
+    OnTaskCompletedUpdateGridView listener;
 
-    public FetchPartnerData(Context c){
+    public FetchPartnerData(Context c, OnTaskCompletedUpdateGridView l){
         context = c;
+        listener = l;
     }
 
     @Override
@@ -61,8 +64,9 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
     protected void onPostExecute(byte[] result) {
         SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
         Long tsLong = System.currentTimeMillis()/1000;
-        sqLiteHandler.addClub(new Club(partner.getName(), partner.getSocket_url(), result, partner.getName(), tsLong.toString()));
+        sqLiteHandler.addClub(new Club(partner.getName(), partner.getPartner_id(), result, partner.getPartner_id(), tsLong));
         sqLiteHandler.close();
+        listener.onTaskCompletedUpdateGridView();
         Toast.makeText(context, "Data Sent!", Toast.LENGTH_LONG).show();
     }
 

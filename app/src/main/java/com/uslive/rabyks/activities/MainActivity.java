@@ -1,6 +1,7 @@
 package com.uslive.rabyks.activities;
 
 import android.app.SearchManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +22,9 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
 import com.uslive.rabyks.AsyncTasks.GetPartners;
+import com.uslive.rabyks.AsyncTasks.OnTaskCompletedUpdateGridView;
 import com.uslive.rabyks.R;
 
 import java.io.ByteArrayOutputStream;
@@ -34,7 +38,7 @@ import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.Club;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnTaskCompletedUpdateGridView{
 
     private SQLiteHandler db;
     private SessionManager session;
@@ -53,8 +57,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new GetPartners(getApplicationContext()).execute("", "", "");
-
         // session manager
         session = new SessionManager(getApplicationContext());
 
@@ -62,7 +64,9 @@ public class MainActivity extends ActionBarActivity {
             logoutUser();
         }
 
-//        GetSetDataForGrid();
+        // test data
+        GetSetDataForGrid();
+
         /**
          * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa
          * proveri da li treba raditi update sqlite-a? (da li ima novih partnera sa novijim timestampom)
@@ -72,17 +76,24 @@ public class MainActivity extends ActionBarActivity {
          * Pa tek onda iscitaj sve podatke iz sqlite i prikazi u main_view
          *
          */
+        db = new SQLiteHandler(getApplicationContext());
+
+        Long timestampForLastPartner = db.getTimestampOfLastPartner();
+        if(timestampForLastPartner == null || timestampForLastPartner == 0){
+            Log.i("Nothing in database", "First insert in sqlite for partners");
+            new GetPartners(getApplicationContext(), this).execute("", "", "");
+        }else{
+            new GetLatestPartners(getApplicationContext(), this).execute(db.getTimestampOfLastPartner().toString());
+        }
 
         // Search and initial Grid View
-        db = new SQLiteHandler(getApplicationContext());
-        List<Club> clubs = db.getAllClubs();
+//        List<Club> clubs = db.getAllClubs();
         gridview = (GridView) findViewById(R.id.gridview);
-        ImageAdapter adapter = new ImageAdapter(this, clubs);
-        gridview.setAdapter(adapter);
+//        ImageAdapter adapter = new ImageAdapter(this, clubs);
+//        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Club club = (Club) gridview.getItemAtPosition(position);
                 Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
                 String club_id = "" + club.get_id();
@@ -180,12 +191,26 @@ public class MainActivity extends ActionBarActivity {
         image5.compress(Bitmap.CompressFormat.JPEG, 100, stream5);
         byte image5InByte[] = stream5.toByteArray();
 
-        db.addClub(new Club("kuce", "url_do_slike", imageInByte, "uuid_slike", "20.05.2015"));
-        db.addClub(new Club("kuce1", "url_do_slike_1", image1InByte, "uuid_slike_1", "21.05.2015"));
-        db.addClub(new Club("kuce2", "url_do_slike_2", image2InByte, "uuid_slike_2", "22.05.2015"));
-        db.addClub(new Club("pace", "url_do_slike_3", image3InByte, "uuid_pace", "23.05.2015"));
-        db.addClub(new Club("mace", "url_do_mace", image4InByte, "uuid_mace", "01.06.2015"));
-        db.addClub(new Club("mace1", "url_do_mace1", image5InByte, "uuid_mace1", "01.06.2015"));
+
+        Long tsLong = System.currentTimeMillis()/10000;
+        Long tsLong1 = System.currentTimeMillis()/100000;
+        Long tsLong2 = System.currentTimeMillis()/100000;
+
+
+
+        db.addClub(new Club("kuce", 576, imageInByte, 1657, tsLong));
+        db.addClub(new Club("kuce1", 4354325, image1InByte, 6782, tsLong));
+        db.addClub(new Club("kuce2", 78657, image2InByte, 56587, tsLong1));
+        db.addClub(new Club("pace", 65876, image3InByte, 66578, tsLong1));
+        db.addClub(new Club("mace", 86578, image4InByte, 54677, tsLong2));
+        db.addClub(new Club("mace1", 678567, image5InByte, 84576, tsLong2));
+
+//        db.updateTimestampClub("kuce");
+//        db.updateTimestampClub("kuce1");
+//        db.updateTimestampClub("kuce2");
+//        db.updateTimestampClub("pace");
+//        db.updateTimestampClub("mace");
+//        db.updateTimestampClub("mace1");
     }
 
     /**
@@ -259,7 +284,6 @@ public class MainActivity extends ActionBarActivity {
         searchView.setOnQueryTextListener(queryTextListener);
 
         item.setTitle(name);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -270,6 +294,13 @@ public class MainActivity extends ActionBarActivity {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 //        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onTaskCompletedUpdateGridView() {
+        db = new SQLiteHandler(getApplicationContext());
+        List<Club> clubs = db.getAllClubs();
+        gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -335,4 +366,5 @@ public class MainActivity extends ActionBarActivity {
 
 //        return super.onOptionsItemSelected(item);
     }
+
 }

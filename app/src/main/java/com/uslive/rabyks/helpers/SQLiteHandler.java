@@ -61,8 +61,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         String CREATE_CLUB_TABLE = "CREATE TABLE " + TABLE_CLUB + "("
                 + KEY_CLUB_ID + " INTEGER PRIMARY KEY," + KEY_CLUB_NAME + " TEXT,"
-                + KEY_CLUB_URL + " TEXT UNIQUE," + KEY_CLUB_IMG + " BLOB,"
-                + KEY_CLUB_UID + " TEXT," + KEY_CLUB_CREATED_AT + " TIMESTAMP" + ")";
+                + KEY_CLUB_URL + " INTEGER UNIQUE," + KEY_CLUB_IMG + " BLOB,"
+                + KEY_CLUB_UID + " INTEGER," + KEY_CLUB_CREATED_AT + " TIMESTAMP" + ")";
         db.execSQL(CREATE_CLUB_TABLE);
 
         Log.d(TAG, "Database tables created");
@@ -121,47 +121,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     }
 
-    // Getting single club
-    public Club getClub(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_CLUB, new String[] { KEY_CLUB_ID,
-                        KEY_NAME, KEY_CLUB_IMG}, KEY_CLUB_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        Club club = new Club(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2),
-                cursor.getBlob(3), cursor.getString(4),
-                cursor.getString(5));
-
-        // return club
-        return club;
-
-    }
-
-    // Getting single club
-    public Club getClubByString(String name) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("Select * FROM club WHERE name LIKE '" + name + "'", null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            Club club = new Club(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1), cursor.getString(2),
-                    cursor.getBlob(3), cursor.getString(4),
-                    cursor.getString(5));
-
-            // return club
-            return club;
-        }else{
-            return null;
-        }
-
-    }
-
     /**
      * Getting user data from database
      * */
@@ -203,10 +162,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 Club club = new Club();
                 club.set_id(Integer.parseInt(cursor.getString(0)));
                 club.set_name(cursor.getString(1));
-                club.set_url(cursor.getString(2));
+                club.set_url(cursor.getInt(2));
                 club.set_image(cursor.getBlob(3));
-                club.set_uid(cursor.getString(4));
-                club.set_created_at(cursor.getString(5));
+                club.set_uid(cursor.getInt(4));
+                club.set_created_at(cursor.getLong(5));
                 // Adding contact to list
                 contactList.add(club);
             } while (cursor.moveToNext());
@@ -230,10 +189,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 Club club = new Club();
                 club.set_id(Integer.parseInt(cursor.getString(0)));
                 club.set_name(cursor.getString(1));
-                club.set_url(cursor.getString(2));
+                club.set_url(cursor.getInt(2));
                 club.set_image(cursor.getBlob(3));
-                club.set_uid(cursor.getString(4));
-                club.set_created_at(cursor.getString(5));
+                club.set_uid(cursor.getInt(4));
+                club.set_created_at(cursor.getLong(5));
                 // Adding contact to list
                 contactList.add(club);
             } while (cursor.moveToNext());
@@ -279,23 +238,32 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      * */
     public Long getTimestampOfLastPartner() {
 
-        String getQuery = "SELECT " + KEY_CLUB_CREATED_AT + " FROM " + TABLE_CLUB + "ORDER BY " + KEY_CLUB_CREATED_AT + " DESC LIMIT 1";
+        String getQuery = "SELECT " + KEY_CLUB_CREATED_AT + " FROM " + TABLE_CLUB + " ORDER BY " + KEY_CLUB_CREATED_AT + " DESC LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(getQuery, null);
         Long timestamp = null;
-        if (cursor != null) {
+        int adsf = cursor.getCount();
+        if (cursor != null && cursor.getCount() != 0 ) {
             cursor.moveToFirst();
-            timestamp = cursor.getLong(3);
-
+            timestamp = cursor.getLong(0);
+            cursor.close();
         }else{
             db.close();
-            return null;
         }
         db.close();
-        cursor.close();
-
-        // return row count
         return timestamp;
+    }
+
+    public void updateTimestampClub(String clubName)
+    {
+        Long tsLong = System.currentTimeMillis()/1000;
+
+        ContentValues cv = new ContentValues();
+        cv.put("created_at", tsLong);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TABLE_CLUB, cv, KEY_CLUB_NAME +"='"+clubName+"'", null);
+        db.close();
     }
 
     /**
