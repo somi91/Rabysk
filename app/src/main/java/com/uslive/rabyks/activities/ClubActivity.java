@@ -47,7 +47,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClubActivity extends ActionBarActivity implements ReservationDialog.EditNameDialogListener, EmployeeReservationDialog.EditDialogListener {
+public class ClubActivity extends ActionBarActivity implements ReservationDialog.FinishDialogListener, EmployeeReservationDialog.EditDialogListener {
 
     int sdk = android.os.Build.VERSION.SDK_INT;
 
@@ -217,6 +217,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
         final int pixelsX = (int) (x * scale + 0.5f);
         final int pixelsY = (int) (y * scale + 0.5f);
+        final JSONObject object = obj;
 
         ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
         biggerCircle.setIntrinsicHeight( 50 );
@@ -242,26 +243,41 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         btn.setBackground(composite1);
         btn.setText("4");
         btn.setTextColor(Color.BLACK);
+        try {
+            btn.setId(obj.getInt("objectId"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         final Button finalBtn = btn;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // do something in ui thread with the data var
                 clubActivityRelativeLayout.addView(finalBtn);
                 finalBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(), "x: " + pixelsX + " y: " + pixelsY, Toast.LENGTH_LONG).show();
-                        showDialog();
+                        showDialog(object);
                     }
                 });
             }
         });
     }
 
-    void showDialog() {
+    void showDialog(JSONObject obj) {
+        Bundle args = new Bundle();
+        try {
+            args.putInt("partnerId", partnerId);
+            args.putInt("objectId", obj.getInt("objectId"));
+            args.putInt("numberOfSeats", obj.getInt("numberOfSeats"));
+            args.putInt("timeOut", obj.getInt("timeOut"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         FragmentManager fm = getSupportFragmentManager();
         ReservationDialog reservationDialog = new ReservationDialog();
+        reservationDialog.setArguments(args);
         reservationDialog.show(fm, "reservation_name");
     }
 
@@ -283,7 +299,10 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     @Override
-    public void onFinishEditDialog(String inputText) {
+    public void onFinishEditDialog(String inputText, int pId, int oId, int numberOfSeats, int timeOut) {
+        if (inputText.equals("OK")) {
+            out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut);
+        }
         Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
     }
 
@@ -396,12 +415,20 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                         data = in.readLine();
                         Log.i(TAG, data);
                         while (!Thread.interrupted() && (data = in.readLine()) != null) {
-                            try {
-                                partnerSetup = new JSONArray(data);
-                                initialPartnerSetup(partnerSetup);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            String[] helper = data.split(":");
+                            if(helper[0].equals("rezervacija")) {
+                                changeObject(false, helper[1]);
+                            }else if(helper[0].equals("oslobodi")){
+                                changeObject(true, helper[1]);
+                            }else{
+                                try {
+                                    partnerSetup = new JSONArray(data);
+                                    initialPartnerSetup(partnerSetup);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
+
                             Log.i(TAG, data);
                             Log.i("JSONARRAY looks like", partnerSetup.toString());
                             runOnUiThread(new Runnable() {
@@ -420,6 +447,35 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         } catch (Exception e) {
             Log.e(TAG, "onResume error! " + e.getMessage());
         }
+    }
+
+    private void changeObject(boolean b, String s) {
+        final int objectId = Integer.parseInt(s);
+        if(b){
+            editColorInObject(objectId, Color.GREEN);
+        }else {
+            editColorInObject(objectId, Color.RED);
+        }
+    }
+
+    private void editColorInObject(final int objectId, final int color){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Button btn = (Button) clubActivityRelativeLayout.findViewById(objectId);
+                for(int i = 0; i < partnerSetup.length(); i++){
+                    try {
+                        JSONObject obj = partnerSetup.getJSONObject(i);
+                        if(obj.getInt("objectId") == objectId){
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), color, obj);
+                            break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void initialPartnerSetup(JSONArray partnerSetup) {

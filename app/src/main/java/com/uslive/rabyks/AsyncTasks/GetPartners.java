@@ -69,8 +69,6 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
 
     protected void onPostExecute(JSONArray results) {
         bar.setVisibility(View.GONE);
-        Toast.makeText(context, result.toString(), Toast.LENGTH_LONG).show();
-        Log.i("SUCCESS or NO SUCCESS","IZVRSIO SE USPESNO ILI NE USPESNO ALI SE IZVRSIO");
         if (results.length() != 0 && results != null) {
             for (int i = 0; i < results.length(); i++) {
                 Partner partner = new Partner();
