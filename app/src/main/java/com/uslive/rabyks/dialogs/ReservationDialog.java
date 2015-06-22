@@ -15,13 +15,20 @@ import android.widget.TextView;
 
 import com.uslive.rabyks.R;
 
+import org.json.JSONObject;
+
 /**
  * Created by milos on 6/4/2015.
  */
 public class ReservationDialog extends DialogFragment implements Button.OnClickListener {
 
-    public interface EditNameDialogListener {
-        void onFinishEditDialog(String inputText);
+    private int partnerId;
+    private int objectId;
+    private int numberOfSeats;
+    private int timeOut;
+
+    public interface FinishDialogListener {
+        void onFinishEditDialog(String inputText, int partnerId, int objectId, int numberOfSeats, int timeOut);
     }
 
 //    private EditText mEditText;
@@ -41,6 +48,12 @@ public class ReservationDialog extends DialogFragment implements Button.OnClickL
         btnOdustani = (Button) view.findViewById(R.id.btnOdustani);
         getDialog().setTitle("NAPRAVI REZERVACIJU");
 
+        Bundle mArgs = getArguments();
+        partnerId = mArgs.getInt("partnerId");
+        objectId = mArgs.getInt("objectId");
+        numberOfSeats = mArgs.getInt("numberOfSeats");
+        timeOut = mArgs.getInt("timeOut");
+
         // Show soft keyboard automatically
 //        mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -55,12 +68,12 @@ public class ReservationDialog extends DialogFragment implements Button.OnClickL
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        EditNameDialogListener activity = (EditNameDialogListener) getActivity();
+        FinishDialogListener activity = (FinishDialogListener) getActivity();
         if(btnPotvrdi.getId() == id){
-            activity.onFinishEditDialog(" !!! OK !!!");
+            activity.onFinishEditDialog("OK", partnerId, objectId, numberOfSeats, timeOut);
             this.dismiss();
         } else{
-            activity.onFinishEditDialog(" !!! CANCLE !!!");
+            activity.onFinishEditDialog("CANCLE", partnerId, objectId, numberOfSeats, timeOut);
             this.dismiss();
         }
 
