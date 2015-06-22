@@ -242,15 +242,21 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         btn.setBackground(composite1);
         btn.setText("4");
         btn.setTextColor(Color.BLACK);
-        clubActivityRelativeLayout.addView(btn);
-        btn.setOnClickListener(new View.OnClickListener() {
+        final Button finalBtn = btn;
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "x: "+ pixelsX +" y: " + pixelsY, Toast.LENGTH_LONG).show();
-                showDialog();
+            public void run() {
+                // do something in ui thread with the data var
+                clubActivityRelativeLayout.addView(finalBtn);
+                finalBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "x: " + pixelsX + " y: " + pixelsY, Toast.LENGTH_LONG).show();
+                        showDialog();
+                    }
+                });
             }
         });
-
     }
 
     void showDialog() {
@@ -418,7 +424,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     private void initialPartnerSetup(JSONArray partnerSetup) {
         Log.i("initial Partner Setup", partnerSetup.toString());
-        for (int i = 0; i <= partnerSetup.length(); i++) {
+        for (int i = 0; i < partnerSetup.length(); i++) {
             Button btn = new Button(getApplicationContext());
             try {
                 JSONObject obj = partnerSetup.getJSONObject(i);
@@ -456,7 +462,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     @Override
     public void onPause() {
         super.onPause();
-        out.println("bye:dragstor");
+        out.println("bye:"+partnerId);
         try {
             if (thrd != null)
                 thrd.interrupt();
@@ -475,7 +481,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     protected void onDestroy() {
         super.onDestroy();
         try {
-            out.println("bye:dragstor");
+            out.println("bye:"+partnerId);
             if (thrd != null)
                 thrd.interrupt();
             if (sock != null) {
