@@ -53,4 +53,6 @@
     <string name="serverIP">http://ec2-52-24-52-67.us-west-2.compute.amazonaws.com:80</string>
     <string name="socketAddress">ec2-52-24-52-67.us-west-2.compute.amazonaws.com</string>
 
+    <string name="timerVal">00:00:00</string>
+
 </resources>

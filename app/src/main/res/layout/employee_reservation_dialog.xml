@@ -17,12 +17,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="SOME HEADER"
-                android:id="@+id/textView" />
+                android:id="@+id/txtState"
+                android:text="Stanje stola" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -34,30 +34,14 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4"
+                android:layout_weight=".3"
                 android:gravity="center_vertical|center_horizontal">
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton"
-                    android:src="@drawable/arrow_up_32" />
-
-                <EditText
-                    android:layout_width="36dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/editText"
-                    android:text="20"
-                    android:numeric="integer"
-                    android:gravity="center_horizontal" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton2"
-                    android:src="@drawable/arrow_down_32" />
+                    android:id="@+id/btnClearReservation"
+                    android:background="@drawable/check_button" />
 
             </LinearLayout>
 
@@ -65,43 +49,13 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4"
+                android:layout_weight="0.3"
                 android:gravity="center_vertical|center_horizontal">
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton3"
-                    android:src="@drawable/arrow_up_32" />
-
-                <EditText
-                    android:layout_width="61dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="time"
-                    android:ems="10"
-                    android:id="@+id/editText2"
-                    android:text="15min"
-                    android:gravity="center_vertical|center_horizontal" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton4"
-                    android:src="@drawable/arrow_down_32" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:gravity="center_vertical|center_horizontal">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton5"
+                    android:id="@+id/btnMakeReservation"
                     android:background="@drawable/error_icon" />
 
             </LinearLayout>
@@ -110,15 +64,14 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4"
+                android:layout_weight="0.3"
                 android:gravity="center_vertical|center_horizontal">
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton6"
-                    android:background="@drawable/check_button" />
-
+                    android:id="@+id/btnDelete"
+                    android:background="@drawable/error_icon" />
             </LinearLayout>
 
         </LinearLayout>
@@ -132,16 +85,15 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4">
+                android:layout_weight=".3">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="BROJ OSOBA"
-                    android:id="@+id/textView3"
+                    android:text="OCISTI STO"
+                    android:id="@+id/textView6"
                     android:textIsSelectable="false"
-                    android:layout_gravity="center_horizontal"
                     android:textSize="18dp"
                     android:gravity="center_vertical|center_horizontal" />
             </LinearLayout>
@@ -150,23 +102,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="VREME DOLASKA"
-                    android:id="@+id/textView4"
-                    android:textSize="18dp"
-                    android:gravity="center_vertical|center_horizontal" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".4">
+                android:layout_weight=".3">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -182,18 +118,18 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight=".4">
+                android:layout_weight=".3">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="OCISTI STO"
-                    android:id="@+id/textView6"
-                    android:textIsSelectable="false"
-                    android:textSize="18dp"
-                    android:gravity="center_vertical|center_horizontal" />
+                    android:text="OBRISI OBJEKAT"
+                    android:id="@+id/textView2"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textSize="18dp" />
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

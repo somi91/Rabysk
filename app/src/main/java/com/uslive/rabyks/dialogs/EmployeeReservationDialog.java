@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.uslive.rabyks.R;
 
@@ -16,12 +18,21 @@ import com.uslive.rabyks.R;
 public class EmployeeReservationDialog extends DialogFragment implements Button.OnClickListener {
 
     public interface EditDialogListener {
-        void onFinishDialog(String inputText);
+        void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete);
     }
 
     //    private EditText mEditText;
     private Button btnPotvrdi;
     private Button btnOdustani;
+    private ImageButton btnClear;
+    private ImageButton btnMake;
+    private ImageButton btnDelete;
+    private TextView txtState;
+    private boolean free;
+    private boolean delete;
+
+    private int partnerId;
+    private int objectId;
 
     public EmployeeReservationDialog() {
         // Empty constructor required for DialogFragment
@@ -34,8 +45,19 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
 
         btnPotvrdi = (Button) view.findViewById(R.id.btnPotvrdi);
         btnOdustani = (Button) view.findViewById(R.id.btnOdustani);
+        btnClear = (ImageButton) view.findViewById(R.id.btnClearReservation);
+        btnMake = (ImageButton) view.findViewById(R.id.btnMakeReservation);
+        btnDelete = (ImageButton) view.findViewById(R.id.btnDelete);
+        txtState = (TextView) view.findViewById(R.id.txtState);
+        delete = false;
         getDialog().setTitle("NAPRAVI REZERVACIJU");
 
+        Bundle mArgs = getArguments();
+        if(mArgs != null){
+            partnerId = mArgs.getInt("partnerId");
+            objectId = mArgs.getInt("objectId");
+            free = mArgs.getBoolean("free");
+        }
         // Show soft keyboard automatically
 //        mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -43,6 +65,8 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
 
         btnPotvrdi.setOnClickListener(this);
         btnOdustani.setOnClickListener(this);
+        btnClear.setOnClickListener(this);
+        btnMake.setOnClickListener(this);
 
         return view;
     }
@@ -52,10 +76,21 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
         int id = v.getId();
         EditDialogListener activity = (EditDialogListener) getActivity();
         if(btnPotvrdi.getId() == id){
-            activity.onFinishDialog(" !!! OK !!!");
+            activity.onFinishDialog(true, partnerId, objectId, free, delete);
             this.dismiss();
+        } else if(btnClear.getId() == id) {
+            free = true;
+            txtState.setText("Potvrdi da bi obelezio slobodan sto");
+
+        } else if(btnMake.getId() == id){
+            free = false;
+            txtState.setText("Potvrdi da bi obelezio zauzet sto");
+
+        } else if(btnDelete.getId() == id){
+            delete = true;
+            txtState.setText("Potvrdi da bi obrisao sto");
         } else{
-            activity.onFinishDialog(" !!! CANCLE !!!");
+            activity.onFinishDialog(false, partnerId, objectId, free, delete);
             this.dismiss();
         }
     }

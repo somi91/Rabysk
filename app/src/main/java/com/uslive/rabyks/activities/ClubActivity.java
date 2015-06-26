@@ -91,6 +91,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         Intent myIntent = getIntent(); // gets the previously created intent
         partnerId = myIntent.getIntExtra("club_url", 0);
         Log.i("PARTNER ID ", partnerId+"");
+        setTitle(myIntent.getStringExtra("club_name"));
 
 //        TextView club_id = (TextView) findViewById(R.id.id);
 //        TextView club_name = (TextView) findViewById(R.id.name);
@@ -102,7 +103,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 //        club_uuid.setText(myIntent.getStringExtra("club_uuid"));
 
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mTitle = mDrawerTitle = getTitle();
+        mTitle = mDrawerTitle = myIntent.getStringExtra("club_name");
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -266,6 +267,12 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     void showDialog(JSONObject obj) {
         Bundle args = new Bundle();
+        boolean free = true;
+        try {
+            free = obj.getBoolean("availability");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         try {
             args.putInt("partnerId", partnerId);
             args.putInt("objectId", obj.getInt("objectId"));
@@ -275,10 +282,21 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        // check if user is employee in this partner's room
+        boolean employee = true;
         FragmentManager fm = getSupportFragmentManager();
-        ReservationDialog reservationDialog = new ReservationDialog();
-        reservationDialog.setArguments(args);
-        reservationDialog.show(fm, "reservation_name");
+        if(employee){
+            args.putBoolean("free", free);
+            EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
+            employeeReservationDialog.setArguments(args);
+            employeeReservationDialog.show(fm, "employeeReservationDialog");
+        } else {
+            args.putBoolean("free", free);
+            ReservationDialog reservationDialog = new ReservationDialog();
+            reservationDialog.setArguments(args);
+            reservationDialog.show(fm, "reservation_name");
+        }
     }
 
     @Override
@@ -388,17 +406,6 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
         return super.onOptionsItemSelected(item);
     }
-
-    private View.OnClickListener stopListener = new View.OnClickListener() {
-        public void onClick(View v){
-        }
-    };
-
-    private View.OnClickListener sendMessage = new View.OnClickListener() {
-        public void onClick(View v){
-            out.println("rezervacija:dragstor:1:1:1");
-        }
-    };
 
     @Override
     public void onResume() {
@@ -552,8 +559,17 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     @Override
-    public void onFinishDialog(String inputText) {
-        Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
+    public void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
+        if (success) {
+            if (!stateReservation) {
+                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40);
+            } else if (stateReservation) {
+                out.println("oslobodi:" + partnerId + ":" + objectId);
+            } else if (delete) {
+               // obrisi sto
+            }
+        }
+        Toast.makeText(getApplicationContext(), "Poruka, " + success, Toast.LENGTH_SHORT).show();
     }
 
 }
