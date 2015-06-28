@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.uslive.rabyks.models.Club;
+import com.uslive.rabyks.models.Reservation;
 
 /**
  * Created by marezina on 19.5.2015.
@@ -47,6 +48,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_CLUB_UID = "uid";
     private static final String KEY_CLUB_CREATED_AT = "created_at";
 
+    // Reservation table
+    private static final String TABLE_RESERVATION = "reservation";
+
+    private static final String RESERVATION_ID = "id";
+    private static final String RESERVATION_CLUB_NAME = "name";
+    private static final String RESERVATION_CREATED_AT = "created_at";
+    private static final String RESERVATION_EXPIRES_AT = "expires_at";
+    private static final String RESERVATION_CURRENT_STATUS = "current_status";
+
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -65,6 +75,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_CLUB_UID + " INTEGER," + KEY_CLUB_CREATED_AT + " TIMESTAMP" + ")";
         db.execSQL(CREATE_CLUB_TABLE);
 
+        String CREATE_TABLE_RESERVATION = "CREATE TABLE " + TABLE_RESERVATION + "("
+                + RESERVATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + RESERVATION_CLUB_NAME + " TEXT,"
+                + RESERVATION_CREATED_AT + " TIMESTAMP," + RESERVATION_EXPIRES_AT + " TIMESTAMP,"
+                + RESERVATION_CURRENT_STATUS + " NUMERIC" + ")";
+        db.execSQL(CREATE_TABLE_RESERVATION);
+
         Log.d(TAG, "Database tables created");
     }
 
@@ -74,6 +90,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLUB);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVATION);
 
         // Create tables again
         onCreate(db);
@@ -288,6 +306,62 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
 
         Log.d(TAG, "Deleted all clubs info from sqlite");
+    }
+
+    public void updateReservationTable()
+    {
+        ContentValues cv = new ContentValues();
+        cv.put(RESERVATION_CURRENT_STATUS, 0);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TABLE_RESERVATION, cv, RESERVATION_CURRENT_STATUS +"=1", null);
+        db.close();
+    }
+
+    public void addReservation(String club_name, Long reservation_duration) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Long tsLong = System.currentTimeMillis()/1000;
+        Long expires_at = tsLong + reservation_duration;
+        ContentValues values = new ContentValues();
+        values.put(RESERVATION_CLUB_NAME, club_name);
+        values.put(RESERVATION_CREATED_AT, tsLong);
+        values.put(RESERVATION_EXPIRES_AT, expires_at);
+        values.put(RESERVATION_CURRENT_STATUS, 1);
+
+        // Inserting Row
+        long id = db.insert(TABLE_RESERVATION, null, values);
+        Log.i(TAG, "New reservation inserted into sqlite: " + id + " created at: " + tsLong);
+        Log.i(TAG, "New reservation expires at:" + expires_at);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public Reservation getReservation() {
+
+        String getQuery = "SELECT * FROM " + TABLE_RESERVATION + " WHERE " + RESERVATION_CURRENT_STATUS +"=1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(getQuery, null);
+        Reservation reservation = null;
+        int adsf = cursor.getCount();
+        if (cursor != null && cursor.getCount() != 0 ) {
+            cursor.moveToFirst();
+
+            reservation = new Reservation();
+
+            reservation.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            reservation.setName(cursor.getString(cursor.getColumnIndex("name")));
+            reservation.setCreatedAt(cursor.getLong(cursor.getColumnIndex("created_at")));
+            reservation.setExpiresAt(cursor.getLong(cursor.getColumnIndex("expires_at")));
+            reservation.setCurrentStatus(cursor.getInt(cursor.getColumnIndex("current_status"))>0);
+
+            cursor.close();
+        }else{
+            db.close();
+        }
+        db.close();
+        return reservation;
     }
 
 }

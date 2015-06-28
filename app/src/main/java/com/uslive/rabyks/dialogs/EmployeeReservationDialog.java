@@ -2,6 +2,7 @@ package com.uslive.rabyks.dialogs;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,10 +82,12 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
         } else if(btnClear.getId() == id) {
             free = true;
             txtState.setText("Potvrdi da bi obelezio slobodan sto");
+            Log.i("Oslobodjen sto broj ", " " + objectId);
 
         } else if(btnMake.getId() == id){
             free = false;
             txtState.setText("Potvrdi da bi obelezio zauzet sto");
+            Log.i("Zayzet sto broj ", " " + objectId);
 
         } else if(btnDelete.getId() == id){
             delete = true;

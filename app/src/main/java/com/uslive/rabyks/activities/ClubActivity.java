@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -36,6 +37,8 @@ import com.uslive.rabyks.fragments.ClubOwnerDetail;
 import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.dialogs.ReservationDialog;
+import com.uslive.rabyks.helpers.SQLiteHandler;
+import com.uslive.rabyks.models.Reservation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +57,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private static final String TAG = "ClubActivity";
 
 //    private TextView club_id;
-//    private TextView club_name;
+    private String club_name;
 //    private TextView club_uuid;
 //    private TextView club_url;
 //    private TextView club_created_at;
@@ -79,12 +82,18 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     JSONArray partnerSetup;
     JSONObject objectTable;
 
+    int layoutWidth;
+    int layoutHeight;
+
+    private SQLiteHandler db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_club);
 
         clubActivityRelativeLayout = (RelativeLayout) findViewById(R.id.clubActivityRelativeLayout);
+
         scale = getApplicationContext().getResources().getDisplayMetrics().density;
 
         // data for partner
@@ -92,6 +101,9 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         partnerId = myIntent.getIntExtra("club_url", 0);
         Log.i("PARTNER ID ", partnerId+"");
         setTitle(myIntent.getStringExtra("club_name"));
+        club_name = myIntent.getStringExtra("club_name");
+
+        db = new SQLiteHandler(getApplicationContext());
 
 //        TextView club_id = (TextView) findViewById(R.id.id);
 //        TextView club_name = (TextView) findViewById(R.id.name);
@@ -286,17 +298,16 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         // check if user is employee in this partner's room
         boolean employee = true;
         FragmentManager fm = getSupportFragmentManager();
-        if(employee){
-            args.putBoolean("free", free);
-            EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
-            employeeReservationDialog.setArguments(args);
-            employeeReservationDialog.show(fm, "employeeReservationDialog");
-        } else {
-            args.putBoolean("free", free);
-            ReservationDialog reservationDialog = new ReservationDialog();
-            reservationDialog.setArguments(args);
-            reservationDialog.show(fm, "reservation_name");
-        }
+//        if(employee){
+//            args.putBoolean("free", free);
+//            EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
+//            employeeReservationDialog.setArguments(args);
+//            employeeReservationDialog.show(fm, "employeeReservationDialog");
+//        }
+        args.putBoolean("free", free);
+        ReservationDialog reservationDialog = new ReservationDialog();
+        reservationDialog.setArguments(args);
+        reservationDialog.show(fm, "reservation_name");
     }
 
     @Override
@@ -317,9 +328,14 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     @Override
-    public void onFinishEditDialog(String inputText, int pId, int oId, int numberOfSeats, int timeOut) {
+    public void onFinishReservationDialog(String inputText, int pId, int oId, int numberOfSeats, int timeOut) {
         if (inputText.equals("OK")) {
-            out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut);
+            out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut + ":" + "korisnik");
+            // TO DO (partner_name, duration of reservation)
+
+            db.addReservation(club_name, (long) timeOut*60);
+            Reservation res = db.getReservation();
+            Log.i("MOJA PROVERA ", res.getName() + " , " + res.getExpiresAt() );
         }
         Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
     }
@@ -364,7 +380,19 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 break;
 
             case 9:
-                transaction.replace(R.id.your_placeholder, new EditPosition());
+                Bundle mArgs = new Bundle();
+                mArgs.putString("partnerSetup", partnerSetup.toString());
+
+                layoutWidth = clubActivityRelativeLayout.getWidth();
+                layoutHeight = clubActivityRelativeLayout.getHeight();
+                mArgs.putInt("layoutHeight", layoutHeight);
+                mArgs.putInt("layoutWidth", layoutWidth);
+                mArgs.putInt("partnerId", partnerId);
+
+                EditPosition editPosition = new EditPosition();
+                editPosition.setArguments(mArgs);
+
+                transaction.replace(R.id.your_placeholder, editPosition);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
@@ -562,7 +590,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     public void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
         if (success) {
             if (!stateReservation) {
-                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40);
+                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
             } else if (stateReservation) {
                 out.println("oslobodi:" + partnerId + ":" + objectId);
             } else if (delete) {

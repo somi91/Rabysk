@@ -28,7 +28,7 @@ public class ReservationDialog extends DialogFragment implements Button.OnClickL
     private int timeOut;
 
     public interface FinishDialogListener {
-        void onFinishEditDialog(String inputText, int partnerId, int objectId, int numberOfSeats, int timeOut);
+        void onFinishReservationDialog(String inputText, int partnerId, int objectId, int numberOfSeats, int timeOut);
     }
 
 //    private EditText mEditText;
@@ -70,10 +70,10 @@ public class ReservationDialog extends DialogFragment implements Button.OnClickL
         int id = v.getId();
         FinishDialogListener activity = (FinishDialogListener) getActivity();
         if(btnPotvrdi.getId() == id){
-            activity.onFinishEditDialog("OK", partnerId, objectId, numberOfSeats, timeOut);
+            activity.onFinishReservationDialog("OK", partnerId, objectId, numberOfSeats, timeOut);
             this.dismiss();
         } else{
-            activity.onFinishEditDialog("CANCLE", partnerId, objectId, numberOfSeats, timeOut);
+            activity.onFinishReservationDialog("CANCLE", partnerId, objectId, numberOfSeats, timeOut);
             this.dismiss();
         }
 
