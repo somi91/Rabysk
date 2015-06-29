@@ -69,7 +69,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
 
     protected void onPostExecute(JSONArray results) {
         bar.setVisibility(View.GONE);
-        if (results.length() != 0 && results != null) {
+        if (results != null && results.length() != 0) {
             for (int i = 0; i < results.length(); i++) {
                 Partner partner = new Partner();
                 try {
@@ -89,15 +89,13 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     }
 
     private JSONArray convertInputStreamToString(InputStream inputStream) throws Exception{
-        InputStream is = null;
-        JSONObject jObj = null;
-        JSONArray jArray = null;
-        String json = "";
+        JSONArray jArray;
+        String json;
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }

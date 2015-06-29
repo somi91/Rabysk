@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -333,9 +334,13 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut + ":" + "korisnik");
             // TO DO (partner_name, duration of reservation)
 
-            db.addReservation(club_name, (long) timeOut*60);
+            db.deleteReservations();
+
+            db.addReservation(club_name, (long) timeOut * 60);
             Reservation res = db.getReservation();
             Log.i("MOJA PROVERA ", res.getName() + " , " + res.getExpiresAt() );
+
+            SetCardView();
         }
         Toast.makeText(getApplicationContext(), "Poruka, " + inputText, Toast.LENGTH_SHORT).show();
     }
@@ -598,6 +603,12 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             }
         }
         Toast.makeText(getApplicationContext(), "Poruka, " + success, Toast.LENGTH_SHORT).show();
+    }
+
+    public void SetCardView() {
+        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(mainIntent);
+        finish();
     }
 
 }

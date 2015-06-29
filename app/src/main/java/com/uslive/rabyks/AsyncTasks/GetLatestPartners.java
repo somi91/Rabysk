@@ -86,15 +86,13 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
     }
 
     private JSONArray convertInputStreamToString(InputStream inputStream) throws Exception{
-        InputStream is = null;
-        JSONObject jObj = null;
-        JSONArray jArray = null;
-        String json = "";
+        JSONArray jArray;
+        String json;
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }

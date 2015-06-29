@@ -1,12 +1,14 @@
 package com.uslive.rabyks.activities;
 
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -34,9 +36,11 @@ import java.util.List;
 
 import com.uslive.rabyks.adapters.ImageAdapter;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
+import com.uslive.rabyks.fragments.ConfirmationFragment;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.Club;
+import com.uslive.rabyks.models.Reservation;
 
 
 public class MainActivity extends ActionBarActivity implements OnTaskCompletedUpdateGridView{
@@ -54,17 +58,29 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     GridView gridview;
 
     private ProgressBar bar;
+    Reservation res = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        boolean networkAccess = isNetworkAvailable();
+        if(!networkAccess){
+            Log.i("INTERNET???", "KONACNO NEMA NETA");
+        }
         // session manager
         session = new SessionManager(getApplicationContext());
 
         if (!session.isLoggedIn()) {
             logoutUser();
+        }
+
+        db = new SQLiteHandler(getApplicationContext());
+
+        res = db.getReservation();
+        if (res != null && res.isCurrentStatus()) {
+            CheckLiveReservations();
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
@@ -80,7 +96,6 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
          * Pa tek onda iscitaj sve podatke iz sqlite i prikazi u main_view
          *
          */
-        db = new SQLiteHandler(getApplicationContext());
 
         Long timestampForLastPartner = db.getTimestampOfLastPartner();
         if(timestampForLastPartner == null || timestampForLastPartner == 0){
@@ -371,4 +386,29 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 //        return super.onOptionsItemSelected(item);
     }
 
+    private void CheckLiveReservations() {
+        Bundle args = new Bundle();
+        args.putString("partnerName", res.getName());
+        args.putLong("createdAt", res.getCreatedAt());
+        args.putLong("expiresAt", res.getExpiresAt());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        ConfirmationFragment confirmationFragment = new ConfirmationFragment();
+        confirmationFragment.setArguments(args);
+        transaction.replace(R.id.mainview, confirmationFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.i("onBackPressed ", "Pritisnuto back dugme!!!!!!!!");
+        // super.onBackPressed(); // Comment this super call to avoid calling finish()
+    }
 }

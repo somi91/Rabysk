@@ -143,7 +143,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      * Getting user data from database
      * */
     public HashMap<String, String> getUserDetails() {
-        HashMap<String, String> user = new HashMap<String, String>();
+        HashMap<String, String> user = new HashMap<>();
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -168,7 +168,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      * Getting clubs data from database
      **/
     public List<Club> getAllClubs() {
-        List<Club> contactList = new ArrayList<Club>();
+        List<Club> contactList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT * FROM "+ TABLE_CLUB +" ORDER BY name";
 
@@ -188,6 +188,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 contactList.add(club);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         // close inserting data from database
         db.close();
         // return contact list
@@ -196,7 +197,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Search for clubs by some value
     public List<Club> getClubsBySpecificParametar(String value) {
-        List<Club> contactList = new ArrayList<Club>();
+        List<Club> contactList = new ArrayList<>();
         // Select All Query
         String selectQuery = "Select * FROM club WHERE name LIKE '"+ value +"%'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -215,6 +216,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 contactList.add(club);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         // close inserting data from database
         db.close();
         // return contact list
@@ -260,8 +262,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(getQuery, null);
         Long timestamp = null;
-        int adsf = cursor.getCount();
-        if (cursor != null && cursor.getCount() != 0 ) {
+        if (cursor.getCount() != 0 ) {
             cursor.moveToFirst();
             timestamp = cursor.getLong(0);
             cursor.close();
@@ -314,7 +315,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         cv.put(RESERVATION_CURRENT_STATUS, 0);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_RESERVATION, cv, RESERVATION_CURRENT_STATUS +"=1", null);
+        db.update(TABLE_RESERVATION, cv, RESERVATION_CURRENT_STATUS + "=1", null);
         db.close();
     }
 
@@ -344,8 +345,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(getQuery, null);
         Reservation reservation = null;
-        int adsf = cursor.getCount();
-        if (cursor != null && cursor.getCount() != 0 ) {
+        if (cursor.getCount() != 0 ) {
             cursor.moveToFirst();
 
             reservation = new Reservation();
@@ -362,6 +362,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         }
         db.close();
         return reservation;
+    }
+
+    public void deleteReservations() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_RESERVATION, null, null);
+        db.close();
+
+        Log.d(TAG, "Deleted all reservations info from sqlite");
     }
 
 }

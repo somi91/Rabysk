@@ -9,31 +9,71 @@
         android:layout_gravity="center_vertical">
 
         <LinearLayout
+            android:id="@+id/cardReservation"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".5"
             android:background="#ff00ff31">
 
-            <EditText
+            <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtPartnerName"
                 android:text="NAME"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="15dp" />
+                android:textSize="25sp"
+                android:layout_marginTop="10dp"
+                android:focusable="false"
+                android:enabled="true"
+                android:editable="false" />
 
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtUsername"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical|center_horizontal"
+                android:textSize="25sp"
                 android:text="USERNAME"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="10dp"
+                android:enabled="true"
+                android:editable="false" />
 
             <TextView
-                android:id="@+id/timerValue"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="DATUM REZERVACIJE :"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:focusable="false"
+                android:enabled="true"
+                android:editable="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtDate"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="25sp"
+                android:enabled="true"
+                android:editable="false" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="VREME VAZENJA REZERVACIJE"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:focusable="false"
+                android:enabled="true"
+                android:editable="false" />
+
+            <TextView
+                android:id="@+id/txtTimerValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -41,8 +81,7 @@
                 android:text="@string/timerVal"
                 android:textColor="#ff000000"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="15dp" />
+                android:layout_gravity="center_vertical" />
 
 
         </LinearLayout>
@@ -51,7 +90,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight=".5"></LinearLayout>
+            android:layout_weight=".5"
+            android:background="#ffffffff"></LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
