@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
+import com.uslive.rabyks.models.User;
 
 /**
  * Created by marezina on 19.5.2015.
@@ -33,11 +34,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String TABLE_PARTNER = "partner";
 
     // Login Table Columns names
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_UID = "uid";
-    private static final String KEY_CREATED_AT = "created_at";
+    private static final String USER_ID = "id";
+    private static final String USER_NUMBER = "number";
+    private static final String USER_EMAIL = "email";
+    private static final String USER_PASSWORD = "password";
 
     // Partner Table Columns names
     private static final String PARTNER_ID = "id";
@@ -67,9 +67,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_EMAIL + " TEXT UNIQUE," + KEY_UID + " TEXT,"
-                + KEY_CREATED_AT + " TEXT" + ")";
+                + USER_ID + " INTEGER PRIMARY KEY," + USER_NUMBER + " TEXT,"
+                + USER_EMAIL + " TEXT UNIQUE," + USER_PASSWORD + " TEXT" + ")";
         db.execSQL(CREATE_USER_TABLE);
 
         String CREATE_PARTNER_TABLE = "CREATE TABLE " + TABLE_PARTNER + "("
@@ -105,21 +104,21 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser(String name, String email, String uid, String created_at) {
+    public void addUser(int id, String number, String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, name); // Name
-        values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_UID, uid); // Email
-        values.put(KEY_CREATED_AT, created_at); // Created At
+        values.put(USER_ID, id);
+        values.put(USER_NUMBER, number);
+        values.put(USER_EMAIL, email);
+        values.put(USER_PASSWORD, password);
+         // Created At
 
         // Inserting Row
-        long id = db.insert(TABLE_USER, null, values);
+        long sqlite_id = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New user inserted into sqlite: " + id);
-        Log.i(TAG, "New user inserted into sqlite: " + id + " date: " + created_at);
+        Log.d(TAG, "New user inserted into sqlite: " + sqlite_id);
     }
 
     /**
@@ -152,19 +151,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Getting user data from database
      * */
-    public HashMap<String, String> getUserDetails() {
-        HashMap<String, String> user = new HashMap<>();
+    public User getUserDetails() {
+        User user = new User();
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
-            user.put("name", cursor.getString(1));
-            user.put("email", cursor.getString(2));
-            user.put("uid", cursor.getString(3));
-            user.put("created_at", cursor.getString(4));
+            user.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            user.setEmail(cursor.getString(cursor.getColumnIndex("email")));
+            user.setNumber(cursor.getString(cursor.getColumnIndex("number")));
+            user.setPassword(cursor.getString(cursor.getColumnIndex("password")));
         }
         cursor.close();
         db.close();

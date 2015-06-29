@@ -125,7 +125,7 @@ public class RegisterActivity extends ActionBarActivity {
 
 
         // Inserting row in users table
-        db.addUser(username, email, password, date);
+//        db.addUser(username, email, password, date);
         hideDialog();
 
         // Get user phone number (requires user permissions in manifest file)

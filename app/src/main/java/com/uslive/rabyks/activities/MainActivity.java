@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
 import com.uslive.rabyks.AsyncTasks.GetPartners;
+import com.uslive.rabyks.AsyncTasks.GetUserRights;
 import com.uslive.rabyks.AsyncTasks.OnTaskCompletedUpdateGridView;
 import com.uslive.rabyks.R;
 
@@ -41,6 +42,7 @@ import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
+import com.uslive.rabyks.models.User;
 
 
 public class MainActivity extends ActionBarActivity implements OnTaskCompletedUpdateGridView{
@@ -59,6 +61,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
     private ProgressBar bar;
     Reservation res = null;
+
+    private GetUserRights getUserRights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,15 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
+
+        // Da li ima usera u lokalnoj bazi?
+        User user  = db.getUserDetails();
+        // Da li postoji user u remote bazi
+        if(user != null && user.getId() != 0) {
+            // Ako postoji da li ima visa prava
+            getUserRights = new GetUserRights(getApplicationContext(), db);
+            getUserRights.execute(user.getId()+"", user.getRole());
+        }
 
         /**
          * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa
@@ -185,10 +198,10 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
         // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
+//        HashMap<String, String> user = db.getUserDetails();
 
-        String name = user.get("name");
-        String email = user.get("email");
+//        String name = user.get("name");
+//        String email = user.get("email");
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -235,7 +248,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         };
         searchView.setOnQueryTextListener(queryTextListener);
 
-        item.setTitle(name);
+//        item.setTitle(name);
         return super.onCreateOptionsMenu(menu);
     }
 
