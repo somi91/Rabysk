@@ -48,7 +48,6 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
     @Override
     protected JSONArray doInBackground(String... params) {
         InputStream inputStream;
-        String broj = params[0];
         try {
             HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP)+"/getLatestPartners/"+ params[0]);
             HttpClient httpclient = new DefaultHttpClient();
@@ -70,11 +69,15 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
             for (int i = 0; i < partners.length(); i++) {
                 Partner partner = new Partner();
                 try {
-                    partner.setPartner_id(partners.getJSONObject(i).getInt("id"));
+                    partner.setId(partners.getJSONObject(i).getInt("id"));
                     partner.setName(partners.getJSONObject(i).getString("name"));
                     partner.setAddress(partners.getJSONObject(i).getString("address"));
-                    partner.setImageUrl(partners.getJSONObject(i).getString("logoUrl"));
+                    partner.setNumber(partners.getJSONObject(i).getString("number"));
+                    partner.setLogo_url(partners.getJSONObject(i).getString("logoUrl"));
+                    partner.setType(partners.getJSONObject(i).getInt("type"));
+                    partner.setWorking_hours(partners.getJSONObject(i).getString("workingHours"));
                     partner.setCreated_at(partners.getJSONObject(i).getLong("createdAt"));
+                    partner.setModified_at(partners.getJSONObject(i).getLong("modifiedAt"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

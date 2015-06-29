@@ -50,10 +50,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
         InputStream inputStream;
 
         try {
-
-
             HttpClient httpclient = new DefaultHttpClient();
-
             HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP)+"/getPartners");
             HttpResponse httpResponse = httpclient.execute(httpGet);
             inputStream = httpResponse.getEntity().getContent();
@@ -73,11 +70,15 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
             for (int i = 0; i < results.length(); i++) {
                 Partner partner = new Partner();
                 try {
-                    partner.setPartner_id(results.getJSONObject(i).getInt("id"));
+                    partner.setId(results.getJSONObject(i).getInt("id"));
                     partner.setName(results.getJSONObject(i).getString("name"));
                     partner.setAddress(results.getJSONObject(i).getString("address"));
-                    partner.setImageUrl(results.getJSONObject(i).getString("logoUrl"));
+                    partner.setNumber(results.getJSONObject(i).getString("number"));
+                    partner.setLogo_url(results.getJSONObject(i).getString("logoUrl"));
+                    partner.setType(results.getJSONObject(i).getInt("type"));
+                    partner.setWorking_hours(results.getJSONObject(i).getString("workingHours"));
                     partner.setCreated_at(results.getJSONObject(i).getLong("createdAt"));
+                    partner.setModified_at(results.getJSONObject(i).getLong("modifiedAt"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

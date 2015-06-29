@@ -99,24 +99,15 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
         // data for partner
         Intent myIntent = getIntent(); // gets the previously created intent
-        partnerId = myIntent.getIntExtra("club_url", 0);
+        partnerId = myIntent.getIntExtra("partner_id", 0);
         Log.i("PARTNER ID ", partnerId+"");
-        setTitle(myIntent.getStringExtra("club_name"));
-        club_name = myIntent.getStringExtra("club_name");
+        setTitle(myIntent.getStringExtra("partner_name"));
+        club_name = myIntent.getStringExtra("partner_name");
 
         db = new SQLiteHandler(getApplicationContext());
 
-//        TextView club_id = (TextView) findViewById(R.id.id);
-//        TextView club_name = (TextView) findViewById(R.id.name);
-//        TextView club_uuid = (TextView) findViewById(R.id.uuid);
-//        TextView club_url = (TextView) findViewById(R.id.url);
-//
-//        club_id.setText(myIntent.getStringExtra("club_id"));
-//        club_name.setText(myIntent.getStringExtra("club_name"));
-//        club_uuid.setText(myIntent.getStringExtra("club_uuid"));
-
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mTitle = mDrawerTitle = myIntent.getStringExtra("club_name");
+        mTitle = mDrawerTitle = myIntent.getStringExtra("partner_name");
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 

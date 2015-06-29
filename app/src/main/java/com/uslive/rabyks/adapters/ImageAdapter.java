@@ -17,7 +17,7 @@ import com.uslive.rabyks.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.uslive.rabyks.models.Club;
+import com.uslive.rabyks.models.Partner;
 
 /**
  * Created by milos on 5/21/2015.
@@ -25,28 +25,28 @@ import com.uslive.rabyks.models.Club;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<Bitmap> images;
-    private List<Club> _clubs;
+    private List<Partner> partners;
     private LayoutInflater mInflater;
 
-    public ImageAdapter(Context c, List<Club> clubs) {
+    public ImageAdapter(Context c, List<Partner> p) {
         mContext = c;
         images = new ArrayList<Bitmap>();
-        _clubs = clubs;
+        partners = p;
         mInflater = LayoutInflater.from(mContext);
         byte[] img;
-        for (Club club : clubs) {
-            img = club.get_image();
+        for (Partner partner : partners) {
+            img = partner.getLogo_url_bytes();
             images.add(BitmapFactory.decodeByteArray(img, 0, img.length));
         }
     }
 
     public int getCount() {
-        return _clubs.size();
+        return partners.size();
 //        return mThumbIds.length;
     }
 
     public Object getItem(int position) {
-        return _clubs.get(position);
+        return partners.get(position);
     }
 
     public long getItemId(int position) {
@@ -68,7 +68,7 @@ public class ImageAdapter extends BaseAdapter {
         name = (TextView) v.getTag(R.id.text);
 
         imageView.setImageBitmap(images.get(position));
-        name.setText(_clubs.get(position).get_name());
+        name.setText(partners.get(position).getName());
 
         return v;
     }

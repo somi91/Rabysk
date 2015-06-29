@@ -39,7 +39,7 @@ import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.fragments.ConfirmationFragment;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
-import com.uslive.rabyks.models.Club;
+import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
 
 
@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         boolean networkAccess = isNetworkAvailable();
         if(!networkAccess){
+
             Log.i("INTERNET???", "KONACNO NEMA NETA");
         }
         // session manager
@@ -84,8 +85,6 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
-        // test data
-//        GetSetDataForGrid();
 
         /**
          * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa
@@ -106,21 +105,18 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         // Search and initial Grid View
-//        List<Club> clubs = db.getAllClubs();
         gridview = (GridView) findViewById(R.id.gridview);
 //        ImageAdapter adapter = new ImageAdapter(this, clubs);
 //        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Club club = (Club) gridview.getItemAtPosition(position);
+                Partner partner = (Partner) gridview.getItemAtPosition(position);
                 Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
-                String club_id = "" + club.get_id();
-                clubIntent.putExtra("club_id", club_id);
-                clubIntent.putExtra("club_name", club.get_name());
-                clubIntent.putExtra("club_uid", club.get_uid());
-                clubIntent.putExtra("club_url", club.get_url());
-                clubIntent.putExtra("club_created_at", club.get_created_at());
+//                String partner_id = "" + partner.getId();
+                clubIntent.putExtra("partner_id", partner.getId());
+                clubIntent.putExtra("partner_name", partner.getName());
+                clubIntent.putExtra("partner_created_at", partner.getCreated_at());
                 startActivity(clubIntent);
                 finish();
 
@@ -169,69 +165,6 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public void GetSetDataForGrid(){
-        db = new SQLiteHandler(getApplicationContext());
-        //Part for inserting pictures in SQLite
-        Bitmap image = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_0);
-        Bitmap image1 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_1);
-        Bitmap image2 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_2);
-        Bitmap image3 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_3);
-        Bitmap image4 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_4);
-        Bitmap image5 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.sample_5);
-
-        // convert bitmap to byte
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte imageInByte[] = stream.toByteArray();
-
-        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-        image1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
-        byte image1InByte[] = stream1.toByteArray();
-
-        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-        image2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
-        byte image2InByte[] = stream2.toByteArray();
-
-        ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
-        image3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
-        byte image3InByte[] = stream3.toByteArray();
-
-        ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
-        image4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
-        byte image4InByte[] = stream4.toByteArray();
-
-        ByteArrayOutputStream stream5 = new ByteArrayOutputStream();
-        image5.compress(Bitmap.CompressFormat.JPEG, 100, stream5);
-        byte image5InByte[] = stream5.toByteArray();
-
-
-        Long tsLong = System.currentTimeMillis()/10000;
-        Long tsLong1 = System.currentTimeMillis()/100000;
-        Long tsLong2 = System.currentTimeMillis()/100000;
-
-
-
-        db.addClub(new Club("kuce", 576, imageInByte, 1657, tsLong));
-        db.addClub(new Club("kuce1", 4354325, image1InByte, 6782, tsLong));
-        db.addClub(new Club("kuce2", 78657, image2InByte, 56587, tsLong1));
-        db.addClub(new Club("pace", 65876, image3InByte, 66578, tsLong1));
-        db.addClub(new Club("mace", 86578, image4InByte, 54677, tsLong2));
-        db.addClub(new Club("mace1", 678567, image5InByte, 84576, tsLong2));
-
-//        db.updateTimestampClub("kuce");
-//        db.updateTimestampClub("kuce1");
-//        db.updateTimestampClub("kuce2");
-//        db.updateTimestampClub("pace");
-//        db.updateTimestampClub("mace");
-//        db.updateTimestampClub("mace1");
-    }
-
     /**
      * Logging out the user. Will set isLoggedIn flag to false in shared
      * preferences Clears the user data from sqlite users table
@@ -274,25 +207,25 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
-                List<Club> clubs = db.getClubsBySpecificParametar(query);
-                for (Club club : clubs) {
+                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                for (Partner partner : partners) {
 
                 }
-                gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
+                gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
                 return true;
             }
 
             public boolean onQueryTextSubmit(String query) {
-                Club searchResult = null;
-                List<Club> clubs = db.getClubsBySpecificParametar(query);
-                for (Club club : clubs) {
-                    if(club.get_name().equals(query)){
-                        searchResult = club;
+                Partner searchResult = null;
+                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                for (Partner partner : partners) {
+                    if(partner.getName().equals(query)){
+                        searchResult = partner;
                     }
 
                 }
                 if(searchResult != null){
-                    gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
+                    gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
                 }else {
                     Toast.makeText(getBaseContext(), "No results on that query!!!", Toast.LENGTH_SHORT).show();
                 }
@@ -318,8 +251,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     @Override
     public void onTaskCompletedUpdateGridView() {
         db = new SQLiteHandler(getApplicationContext());
-        List<Club> clubs = db.getAllClubs();
-        gridview.setAdapter(new ImageAdapter(getApplicationContext(), clubs));
+        List<Partner> partners = db.getAllPartners();
+        gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

@@ -4,33 +4,40 @@ package com.uslive.rabyks.models;
  * Created by milos on 5/31/2015.
  */
 public class Partner {
-    private int partner_id;
+    private int id;
     private String name;
-    private String socket_url;
-    private String number;
     private String address;
-    private String imageUrl;
+    private String number;
+    private String logo_url;
+    private byte[] logo_url_bytes;
+    private int type;
+    private String working_hours;
     private Long created_at;
+    private Long modified_at;
 
     public Partner() {
 
     }
 
-    public Partner(int partner_id, String name, String socket_url, String number, String address, String imageUrl) {
-        this.partner_id = partner_id;
+    public Partner(int id, String name, String address, String number, String logo_url, byte[] logo_url_bytes, int type, String working_hours, Long created_at, Long modified_at) {
+        this.id = id;
         this.name = name;
-        this.socket_url = socket_url;
-        this.number = number;
         this.address = address;
-        this.imageUrl = imageUrl;
+        this.number = number;
+        this.logo_url = logo_url;
+        this.logo_url_bytes = logo_url_bytes;
+        this.type = type;
+        this.working_hours = working_hours;
+        this.created_at = created_at;
+        this.modified_at = modified_at;
     }
 
-    public int getPartner_id() {
-        return partner_id;
+    public int getId() {
+        return id;
     }
 
-    public void setPartner_id(int partner_id) {
-        this.partner_id = partner_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -41,12 +48,12 @@ public class Partner {
         this.name = name;
     }
 
-    public String getSocket_url() {
-        return socket_url;
+    public String getAddress() {
+        return address;
     }
 
-    public void setSocket_url(String socket_url) {
-        this.socket_url = socket_url;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getNumber() {
@@ -57,20 +64,36 @@ public class Partner {
         this.number = number;
     }
 
-    public String getAddress() {
-        return address;
+    public String getLogo_url() {
+        return logo_url;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLogo_url(String logo_url) {
+        this.logo_url = logo_url;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public byte[] getLogo_url_bytes() {
+        return logo_url_bytes;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setLogo_url_bytes(byte[] logo_url_bytes) {
+        this.logo_url_bytes = logo_url_bytes;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getWorking_hours() {
+        return working_hours;
+    }
+
+    public void setWorking_hours(String working_hours) {
+        this.working_hours = working_hours;
     }
 
     public Long getCreated_at() {
@@ -79,5 +102,13 @@ public class Partner {
 
     public void setCreated_at(Long created_at) {
         this.created_at = created_at;
+    }
+
+    public Long getModified_at() {
+        return modified_at;
+    }
+
+    public void setModified_at(Long modified_at) {
+        this.modified_at = modified_at;
     }
 }

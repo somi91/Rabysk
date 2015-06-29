@@ -8,25 +8,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.uslive.rabyks.activities.MainActivity;
 import com.uslive.rabyks.helpers.SQLiteHandler;
-import com.uslive.rabyks.models.Club;
 import com.uslive.rabyks.models.Partner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-
 /**
  * Created by marezina on 19.6.2015.
  */
@@ -55,7 +47,7 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
         byte[] data = null;
         try {
             DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(partner.getImageUrl());
+            HttpGet request = new HttpGet(partner.getLogo_url());
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
@@ -75,7 +67,7 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
         bar.setVisibility(View.GONE);
         SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
         Long tsLong = System.currentTimeMillis()/1000;
-        sqLiteHandler.addClub(new Club(partner.getName(), partner.getPartner_id(), result, partner.getPartner_id(), tsLong));
+        sqLiteHandler.addPartner(new Partner(partner.getId(), partner.getName(), partner.getAddress(), partner.getNumber(), partner.getLogo_url(), result, partner.getType(), partner.getWorking_hours(), partner.getCreated_at(), partner.getModified_at()));
         sqLiteHandler.close();
         listener.onTaskCompletedUpdateGridView();
         Toast.makeText(context, "Data Sent!", Toast.LENGTH_LONG).show();

@@ -7,12 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.uslive.rabyks.models.Club;
+import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
 
 /**
@@ -30,8 +29,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Login table name
     private static final String TABLE_USER = "user";
-    // Club table name
-    private static final String TABLE_CLUB = "club";
+    // Partner table name
+    private static final String TABLE_PARTNER = "partner";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -40,13 +39,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_UID = "uid";
     private static final String KEY_CREATED_AT = "created_at";
 
-    // Club Table Columns names
-    private static final String KEY_CLUB_ID = "id";
-    private static final String KEY_CLUB_NAME = "name";
-    private static final String KEY_CLUB_URL = "url";
-    private static final String KEY_CLUB_IMG = "image";
-    private static final String KEY_CLUB_UID = "uid";
-    private static final String KEY_CLUB_CREATED_AT = "created_at";
+    // Partner Table Columns names
+    private static final String PARTNER_ID = "id";
+    private static final String PARTNER_NAME = "name";
+    private static final String PARTNER_ADDRESS = "address";
+    private static final String PARTNER_NUMBER = "number";
+    private static final String PARTNER_LOGO_URL = "logo_url";
+    private static final String PARTNER_LOGO_URL_BYTES = "logo_url_bytes";
+    private static final String PARTNER_TYPE = "type";
+    private static final String PARTNER_WORKING_HOURS = "working_hours";
+    private static final String PARTNER_CREATED_AT = "created_at";
+    private static final String PARTNER_MODIFIED_AT = "modified_at";
 
     // Reservation table
     private static final String TABLE_RESERVATION = "reservation";
@@ -69,15 +72,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + KEY_CREATED_AT + " TEXT" + ")";
         db.execSQL(CREATE_USER_TABLE);
 
-        String CREATE_CLUB_TABLE = "CREATE TABLE " + TABLE_CLUB + "("
-                + KEY_CLUB_ID + " INTEGER PRIMARY KEY," + KEY_CLUB_NAME + " TEXT,"
-                + KEY_CLUB_URL + " INTEGER UNIQUE," + KEY_CLUB_IMG + " BLOB,"
-                + KEY_CLUB_UID + " INTEGER," + KEY_CLUB_CREATED_AT + " TIMESTAMP" + ")";
-        db.execSQL(CREATE_CLUB_TABLE);
+        String CREATE_PARTNER_TABLE = "CREATE TABLE " + TABLE_PARTNER + "("
+                + PARTNER_ID + " INTEGER PRIMARY KEY," + PARTNER_NAME + " TEXT,"
+                + PARTNER_ADDRESS + " TEXT," + PARTNER_NUMBER + " TEXT,"
+                + PARTNER_LOGO_URL + " TEXT," + PARTNER_LOGO_URL_BYTES + " BLOB,"
+                + PARTNER_TYPE + " INTEGER," + PARTNER_WORKING_HOURS + " TEXT,"
+                + PARTNER_CREATED_AT + " INTEGER," + PARTNER_MODIFIED_AT + " INTEGER" + ")";
+        db.execSQL(CREATE_PARTNER_TABLE);
 
         String CREATE_TABLE_RESERVATION = "CREATE TABLE " + TABLE_RESERVATION + "("
                 + RESERVATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + RESERVATION_CLUB_NAME + " TEXT,"
-                + RESERVATION_CREATED_AT + " TIMESTAMP," + RESERVATION_EXPIRES_AT + " TIMESTAMP,"
+                + RESERVATION_CREATED_AT + " TIMESTAMP," + RESERVATION_EXPIRES_AT + " INTEGER,"
                 + RESERVATION_CURRENT_STATUS + " NUMERIC" + ")";
         db.execSQL(CREATE_TABLE_RESERVATION);
 
@@ -89,7 +94,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLUB);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTNER);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVATION);
 
@@ -120,20 +125,25 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing club details in database
      * */
-    public void addClub(Club club) {
+    public void addPartner(Partner partner) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_CLUB_NAME, club.get_name()); // Name
-        values.put(KEY_CLUB_URL, club.get_url()); // Email
-        values.put(KEY_CLUB_IMG, club.get_image()); // Image
-        values.put(KEY_CLUB_UID, club.get_uid()); // Email
-        values.put(KEY_CLUB_CREATED_AT, club.get_created_at()); // Created At
+        values.put(PARTNER_ID, partner.getId());
+        values.put(PARTNER_NAME, partner.getName());
+        values.put(PARTNER_ADDRESS, partner.getAddress());
+        values.put(PARTNER_NUMBER, partner.getNumber());
+        values.put(PARTNER_LOGO_URL, partner.getLogo_url());
+        values.put(PARTNER_LOGO_URL_BYTES, partner.getLogo_url_bytes());
+        values.put(PARTNER_TYPE, partner.getType());
+        values.put(PARTNER_WORKING_HOURS, partner.getWorking_hours());
+        values.put(PARTNER_CREATED_AT, partner.getCreated_at());
+        values.put(PARTNER_MODIFIED_AT, partner.getModified_at());
 
         // Inserting Row
-        long id = db.insert(TABLE_CLUB, null, values);
-        Log.d(TAG, "New club inserted into sqlite: " + id);
-        Log.i(TAG, "New club inserted into sqlite: " + id + " date: " + club.get_created_at());
+        long id = db.insert(TABLE_PARTNER, null, values);
+        Log.d(TAG, "New partner inserted into sqlite: " + id);
+        Log.i(TAG, "New partner inserted into sqlite: " + id + " date: " + partner.getCreated_at());
 
         db.close(); // Closing database connection
 
@@ -165,27 +175,30 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Getting clubs data from database
+     * Getting partners data from database
      **/
-    public List<Club> getAllClubs() {
-        List<Club> contactList = new ArrayList<>();
+    public List<Partner> getAllPartners() {
+        List<Partner> contactList = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT * FROM "+ TABLE_CLUB +" ORDER BY name";
+        String selectQuery = "SELECT * FROM "+ TABLE_PARTNER +" ORDER BY name";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Club club = new Club();
-                club.set_id(Integer.parseInt(cursor.getString(0)));
-                club.set_name(cursor.getString(1));
-                club.set_url(cursor.getInt(2));
-                club.set_image(cursor.getBlob(3));
-                club.set_uid(cursor.getInt(4));
-                club.set_created_at(cursor.getLong(5));
-                // Adding contact to list
-                contactList.add(club);
+                Partner partner = new Partner();
+                partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                partner.setName(cursor.getString(cursor.getColumnIndex("name")));
+                partner.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+                partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
+                partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
+                partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
+                partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
+                partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
+                contactList.add(partner);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -195,25 +208,29 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return contactList;
     }
 
-    // Search for clubs by some value
-    public List<Club> getClubsBySpecificParametar(String value) {
-        List<Club> contactList = new ArrayList<>();
+    // Search for partners by some value
+    public List<Partner> getPartnersBySpecificParametar(String value) {
+        List<Partner> contactList = new ArrayList<>();
         // Select All Query
-        String selectQuery = "Select * FROM club WHERE name LIKE '"+ value +"%'";
+        String selectQuery = "Select * FROM partner WHERE name LIKE '"+ value +"%'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Club club = new Club();
-                club.set_id(Integer.parseInt(cursor.getString(0)));
-                club.set_name(cursor.getString(1));
-                club.set_url(cursor.getInt(2));
-                club.set_image(cursor.getBlob(3));
-                club.set_uid(cursor.getInt(4));
-                club.set_created_at(cursor.getLong(5));
+                Partner partner = new Partner();
+                partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                partner.setName(cursor.getString(cursor.getColumnIndex("name")));
+                partner.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+                partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
+                partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
+                partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
+                partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
+                partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
                 // Adding contact to list
-                contactList.add(club);
+                contactList.add(partner);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -239,26 +256,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Getting club status return true if rows are there in table
-     * */
-    public int getClubRowCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_CLUB;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        int rowCount = cursor.getCount();
-        db.close();
-        cursor.close();
-
-        // return row count
-        return rowCount;
-    }
-
-    /**
      * Getting timestamp of last added partner
      * */
     public Long getTimestampOfLastPartner() {
 
-        String getQuery = "SELECT " + KEY_CLUB_CREATED_AT + " FROM " + TABLE_CLUB + " ORDER BY " + KEY_CLUB_CREATED_AT + " DESC LIMIT 1";
+        String getQuery = "SELECT " + PARTNER_CREATED_AT + " FROM " + TABLE_PARTNER + " ORDER BY " + PARTNER_CREATED_AT + " DESC LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(getQuery, null);
         Long timestamp = null;
@@ -273,7 +275,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return timestamp;
     }
 
-    public void updateTimestampClub(String clubName)
+    public void updateTimestampPartner(String partnerName)
     {
         Long tsLong = System.currentTimeMillis()/1000;
 
@@ -281,7 +283,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         cv.put("created_at", tsLong);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_CLUB, cv, KEY_CLUB_NAME +"='"+clubName+"'", null);
+        db.update(TABLE_PARTNER, cv, PARTNER_NAME +"='"+partnerName+"'", null);
         db.close();
     }
 
@@ -300,10 +302,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Re crate database Delete all tables and create them again
      * */
-    public void deleteClubs() {
+    public void deletePartners() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_CLUB, null, null);
+        db.delete(TABLE_PARTNER, null, null);
         db.close();
 
         Log.d(TAG, "Deleted all clubs info from sqlite");
