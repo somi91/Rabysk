@@ -78,7 +78,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         session = new SessionManager(getApplicationContext());
 
         if (!session.isLoggedIn()) {
-            logoutUser();
+//            logoutUser();
         }
 
         db = new SQLiteHandler(getApplicationContext());
@@ -185,7 +185,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     private void logoutUser() {
         session.setLogin(false);
 
-        db.deleteUsers();
+//        db.deleteUsers();
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);

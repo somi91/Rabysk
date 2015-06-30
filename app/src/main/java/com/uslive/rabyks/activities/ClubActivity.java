@@ -1,5 +1,6 @@
 package com.uslive.rabyks.activities;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -38,6 +39,7 @@ import com.uslive.rabyks.fragments.ClubOwnerDetail;
 import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.fragments.EditPosition;
 import com.uslive.rabyks.dialogs.ReservationDialog;
+import com.uslive.rabyks.helpers.JsonManager;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.models.Reservation;
 
@@ -144,7 +146,6 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-
         Button stop = (Button)findViewById(R.id.cancelButton);
 //        stop.setOnClickListener(stopListener);
         stop.setOnClickListener(new View.OnClickListener() {
@@ -181,18 +182,6 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 }
             }
         });
-
-//        Button btn1 = new Button(getApplicationContext());
-//        setButton(btn1, 50, 100, Color.GREEN);
-//
-//        Button btn2 = new Button(getApplicationContext());
-//        setButton(btn2, 100, 200, Color.RED);
-//
-//        Button btn3 = new Button(getApplicationContext());
-//        setButton(btn3, 200, 120, Color.GREEN);
-//
-//        Button btn4 = new Button(getApplicationContext());
-//        setButton(btn4, 200, 220, Color.RED);
 
         setBackGroundImage();
 //
@@ -585,14 +574,26 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     @Override
     public void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
         if (success) {
-            if (!stateReservation) {
-                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
-            } else if (stateReservation) {
-                out.println("oslobodi:" + partnerId + ":" + objectId);
-            } else if (delete) {
-               // obrisi sto
+//            if (!stateReservation) {
+//                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
+//            } else if (stateReservation) {
+//                out.println("oslobodi:" + partnerId + ":" + objectId);
+//            } else if (delete) {
+//               // obrisi sto
+//            }
+            if(delete) {
+                Log.i("delete ", "true");
+            }else {
+                if(!stateReservation) {
+                    // rezervisi (setuje zauzeto)
+                    out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
+                } else {
+                    out.println("oslobodi:" + partnerId + ":" + objectId);
+                }
             }
         }
+
+
         Toast.makeText(getApplicationContext(), "Poruka, " + success, Toast.LENGTH_SHORT).show();
     }
 

@@ -49,7 +49,7 @@ public class ConfirmationFragment extends Fragment {
         Long createdAt = args.getLong("createdAt");
         Long expiresAt = args.getLong("expiresAt");
         Log.i("Razlika moja racunica", ""+ (expiresAt - createdAt));
-        timerCount = new MyCount((expiresAt - createdAt) * 1000, 1000);
+        timerCount = new MyCount(5 * 1000, 1000);
         timerCount.start();
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

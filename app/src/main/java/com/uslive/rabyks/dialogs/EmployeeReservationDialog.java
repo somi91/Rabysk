@@ -22,6 +22,10 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
         void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete);
     }
 
+    public interface ChangeObject {
+        void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete);
+    }
+
     //    private EditText mEditText;
     private Button btnPotvrdi;
     private Button btnOdustani;
@@ -76,8 +80,10 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
     public void onClick(View v) {
         int id = v.getId();
         EditDialogListener activity = (EditDialogListener) getActivity();
+        ChangeObject changeObject = (ChangeObject) getTargetFragment();
         if(btnPotvrdi.getId() == id){
             activity.onFinishDialog(true, partnerId, objectId, free, delete);
+            changeObject.onFinishChangeObject(true, partnerId, objectId, free, delete);
             this.dismiss();
         } else if(btnClear.getId() == id) {
             free = true;

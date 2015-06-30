@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
+import com.uslive.rabyks.helpers.JsonManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ import java.util.Random;
 /**
  * Created by milos on 6/5/2015.
  */
-public class EditPosition extends Fragment {
+public class EditPosition extends Fragment implements EmployeeReservationDialog.ChangeObject{
     int sdk = android.os.Build.VERSION.SDK_INT;
     RelativeLayout edit_content;
     float scale;
@@ -71,21 +72,12 @@ public class EditPosition extends Fragment {
             edit_content.setMinimumHeight(height);
             Log.i("EDIT POSITION FRAGMENT ", partnerSetupString);
             try {
-                JSONArray jsonArray = new JSONArray(partnerSetupString);
-                initialPartnerSetup(jsonArray);
+                partnerSetup = new JSONArray(partnerSetupString);
+                initialPartnerSetup(partnerSetup);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
-//        Button btn1 = new Button(getActivity().getApplicationContext());
-//        setButton(btn1, 50, 100, Color.GREEN);
-//        Button btn2 = new Button(getActivity().getApplicationContext());
-//        setButton(btn2, 100, 200, Color.RED);
-//        Button btn3 = new Button(getActivity().getApplicationContext());
-//        setButton(btn3, 200, 120, Color.GREEN);
-//        Button btn4 = new Button(getActivity().getApplicationContext());
-//        setButton(btn4, 200, 220, Color.RED);
 
         view.findViewById(R.id.sto).setOnTouchListener(new MyTouchListener());
         view.findViewById(R.id.separe).setOnTouchListener(new MyTouchListener());
@@ -93,8 +85,6 @@ public class EditPosition extends Fragment {
 
         view.findViewById(R.id.placeHolder).setOnDragListener(new MyDragListener());
 
-        // Setup handles to view objects here
-        // etFoo = (EditText) view.findViewById(R.id.etFoo);
         return view;
     }
 
@@ -111,14 +101,14 @@ public class EditPosition extends Fragment {
         final int pixelsX = (int) (x * scale + 0.5f);
         final int pixelY = (int) (y * scale + 0.5f);
         ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
-        biggerCircle.setIntrinsicHeight( 50 );
-        biggerCircle.setIntrinsicWidth( 50);
+        biggerCircle.setIntrinsicHeight(50);
+        biggerCircle.setIntrinsicWidth(50);
         biggerCircle.setBounds(new Rect(0, 0, 50, 50));
         biggerCircle.getPaint().setColor(Color.WHITE);
 
         ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
-        smallerCircle.setIntrinsicHeight( 10 );
-        smallerCircle.setIntrinsicWidth( 10);
+        smallerCircle.setIntrinsicHeight(10);
+        smallerCircle.setIntrinsicWidth(10);
         smallerCircle.setBounds(new Rect(0, 0, 10, 10));
         smallerCircle.getPaint().setColor(color);
         smallerCircle.setPadding(40,40,40,40);
@@ -296,6 +286,7 @@ public class EditPosition extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         args.putBoolean("free", free);
         EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
+        employeeReservationDialog.setTargetFragment(this, 0);
         employeeReservationDialog.setArguments(args);
         employeeReservationDialog.show(fm, "employeeReservationDialog");
     }
@@ -333,6 +324,34 @@ public class EditPosition extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
+        Button btn = (Button) edit_content.findViewById(objectId);
+        if (success) {
+            if(delete) {
+                Log.i("delete ", "true");
+            }else {
+                JsonManager jsonManager = new JsonManager(partnerSetup);
+                if(!stateReservation) {
+                    // rezervisi (setuje zauzeto)
+                    try {
+                        JSONObject obj = jsonManager.FindObjectById(objectId);
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject obj = jsonManager.FindObjectById(objectId);
+                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
