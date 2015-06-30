@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-import com.uslive.rabyks.AsyncTasks.RegisterAsyncTask;
+import com.uslive.rabyks.AsyncTasks.Register;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 
@@ -142,7 +142,7 @@ public class RegisterActivity extends ActionBarActivity {
             String userJson = jsonUser.toString();
 
             // Register user on server
-            RegisterAsyncTask rast = new RegisterAsyncTask(getApplicationContext());
+            Register rast = new Register(getApplicationContext());
             rast.execute(getString(R.string.register_url), userJson);
             // Launch login activity
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

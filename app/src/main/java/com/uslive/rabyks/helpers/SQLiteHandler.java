@@ -21,25 +21,23 @@ import com.uslive.rabyks.models.User;
 public class SQLiteHandler extends SQLiteOpenHelper {
 
     private static final String TAG = SQLiteHandler.class.getSimpleName();
-    // All Static variables
-    // Database Version
+
     private static final int DATABASE_VERSION = 1;
 
-    // Database Name
     private static final String DATABASE_NAME = "rabyks";
 
-    // Login table name
     private static final String TABLE_USER = "user";
-    // Partner table name
+
     private static final String TABLE_PARTNER = "partner";
 
-    // Login Table Columns names
+    private static final String TABLE_RESERVATION = "reservation";
+
     private static final String USER_ID = "id";
     private static final String USER_NUMBER = "number";
     private static final String USER_EMAIL = "email";
     private static final String USER_PASSWORD = "password";
+    private static final String USER_ROLE = "role";
 
-    // Partner Table Columns names
     private static final String PARTNER_ID = "id";
     private static final String PARTNER_NAME = "name";
     private static final String PARTNER_ADDRESS = "address";
@@ -50,9 +48,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String PARTNER_WORKING_HOURS = "working_hours";
     private static final String PARTNER_CREATED_AT = "created_at";
     private static final String PARTNER_MODIFIED_AT = "modified_at";
-
-    // Reservation table
-    private static final String TABLE_RESERVATION = "reservation";
 
     private static final String RESERVATION_ID = "id";
     private static final String RESERVATION_CLUB_NAME = "name";
@@ -68,7 +63,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
                 + USER_ID + " INTEGER PRIMARY KEY," + USER_NUMBER + " TEXT,"
-                + USER_EMAIL + " TEXT UNIQUE," + USER_PASSWORD + " TEXT" + ")";
+                + USER_EMAIL + " TEXT UNIQUE," + USER_PASSWORD + " TEXT,"
+                + USER_ROLE + " TEXT" + ")";
         db.execSQL(CREATE_USER_TABLE);
 
         String CREATE_PARTNER_TABLE = "CREATE TABLE " + TABLE_PARTNER + "("
@@ -101,10 +97,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /**
-     * Storing user details in database
-     * */
-    public void addUser(int id, String number, String email, String password) {
+    public long addUser(int id, String number, String email, String password, String role) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -112,18 +105,14 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(USER_NUMBER, number);
         values.put(USER_EMAIL, email);
         values.put(USER_PASSWORD, password);
-         // Created At
+        values.put(USER_ROLE, role);
 
-        // Inserting Row
-        long sqlite_id = db.insert(TABLE_USER, null, values);
-        db.close(); // Closing database connection
-
-        Log.d(TAG, "New user inserted into sqlite: " + sqlite_id);
+        long rowId = db.insert(TABLE_USER, null, values);
+        db.close();
+        Log.d(TAG, "New user inserted with row id: " + rowId);
+        return rowId;
     }
 
-    /**
-     * Storing club details in database
-     * */
     public void addPartner(Partner partner) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -139,47 +128,36 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(PARTNER_CREATED_AT, partner.getCreated_at());
         values.put(PARTNER_MODIFIED_AT, partner.getModified_at());
 
-        // Inserting Row
         long id = db.insert(TABLE_PARTNER, null, values);
-        Log.d(TAG, "New partner inserted into sqlite: " + id);
         Log.i(TAG, "New partner inserted into sqlite: " + id + " date: " + partner.getCreated_at());
-
-        db.close(); // Closing database connection
-
+        db.close();
     }
 
-    /**
-     * Getting user data from database
-     * */
     public User getUserDetails() {
-        User user = new User();
-        String selectQuery = "SELECT  * FROM " + TABLE_USER;
 
+        User user = new User();
+        String selectQuery = "SELECT * FROM " + TABLE_USER;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
-            user.setId(cursor.getInt(cursor.getColumnIndex("id")));
-            user.setEmail(cursor.getString(cursor.getColumnIndex("email")));
-            user.setNumber(cursor.getString(cursor.getColumnIndex("number")));
-            user.setPassword(cursor.getString(cursor.getColumnIndex("password")));
+            user.setId(cursor.getInt(cursor.getColumnIndex(USER_ID)));
+            user.setEmail(cursor.getString(cursor.getColumnIndex(USER_EMAIL)));
+            user.setNumber(cursor.getString(cursor.getColumnIndex(USER_NUMBER)));
+            user.setPassword(cursor.getString(cursor.getColumnIndex(USER_PASSWORD)));
+            user.setRole(cursor.getString(cursor.getColumnIndex(USER_ROLE)));
         }
+
         cursor.close();
         db.close();
-        // return user
         Log.d(TAG, "Fetching user from Sqlite: " + user.toString());
-
         return user;
     }
 
-    /**
-     * Getting partners data from database
-     **/
     public List<Partner> getAllPartners() {
-        List<Partner> contactList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT * FROM "+ TABLE_PARTNER +" ORDER BY name";
 
+        List<Partner> contactList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM "+ TABLE_PARTNER +" ORDER BY name";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
@@ -200,16 +178,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        // close inserting data from database
         db.close();
-        // return contact list
+
         return contactList;
     }
 
     // Search for partners by some value
     public List<Partner> getPartnersBySpecificParametar(String value) {
+
         List<Partner> contactList = new ArrayList<>();
-        // Select All Query
         String selectQuery = "Select * FROM partner WHERE name LIKE '"+ value +"%'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -232,9 +209,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        // close inserting data from database
         db.close();
-        // return contact list
         return contactList;
     }
 
@@ -248,8 +223,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         int rowCount = cursor.getCount();
         db.close();
         cursor.close();
-
-        // return row count
         return rowCount;
     }
 
@@ -266,7 +239,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             timestamp = cursor.getLong(0);
             cursor.close();
-        }else{
+        } else {
             db.close();
         }
         db.close();
@@ -276,44 +249,30 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void updateTimestampPartner(String partnerName)
     {
         Long tsLong = System.currentTimeMillis()/1000;
-
         ContentValues cv = new ContentValues();
         cv.put("created_at", tsLong);
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_PARTNER, cv, PARTNER_NAME +"='"+partnerName+"'", null);
         db.close();
     }
 
-    /**
-     * Re crate database Delete all tables and create them again
-     * */
     public void deleteUsers() {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
         db.delete(TABLE_USER, null, null);
         db.close();
-
         Log.d(TAG, "Deleted all user info from sqlite");
     }
 
-    /**
-     * Re crate database Delete all tables and create them again
-     * */
     public void deletePartners() {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
         db.delete(TABLE_PARTNER, null, null);
         db.close();
-
         Log.d(TAG, "Deleted all clubs info from sqlite");
     }
 
-    public void updateReservationTable()
-    {
+    public void updateReservationTable() {
         ContentValues cv = new ContentValues();
         cv.put(RESERVATION_CURRENT_STATUS, 0);
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_RESERVATION, cv, RESERVATION_CURRENT_STATUS + "=1", null);
         db.close();
@@ -321,7 +280,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     public void addReservation(String club_name, Long reservation_duration) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         Long tsLong = System.currentTimeMillis()/1000;
         Long expires_at = tsLong + reservation_duration;
         ContentValues values = new ContentValues();
@@ -330,13 +288,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(RESERVATION_EXPIRES_AT, expires_at);
         values.put(RESERVATION_CURRENT_STATUS, 1);
 
-        // Inserting Row
         long id = db.insert(TABLE_RESERVATION, null, values);
         Log.i(TAG, "New reservation inserted into sqlite: " + id + " created at: " + tsLong);
         Log.i(TAG, "New reservation expires at:" + expires_at);
-
-        db.close(); // Closing database connection
-
+        db.close();
     }
 
     public Reservation getReservation() {
@@ -345,19 +300,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(getQuery, null);
         Reservation reservation = null;
+
         if (cursor.getCount() != 0 ) {
             cursor.moveToFirst();
-
             reservation = new Reservation();
-
             reservation.setId(cursor.getInt(cursor.getColumnIndex("id")));
             reservation.setName(cursor.getString(cursor.getColumnIndex("name")));
             reservation.setCreatedAt(cursor.getLong(cursor.getColumnIndex("created_at")));
             reservation.setExpiresAt(cursor.getLong(cursor.getColumnIndex("expires_at")));
             reservation.setCurrentStatus(cursor.getInt(cursor.getColumnIndex("current_status"))>0);
-
             cursor.close();
-        }else{
+        } else {
             db.close();
         }
         db.close();
@@ -366,11 +319,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     public void deleteReservations() {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
         db.delete(TABLE_RESERVATION, null, null);
         db.close();
-
         Log.d(TAG, "Deleted all reservations info from sqlite");
     }
-
 }

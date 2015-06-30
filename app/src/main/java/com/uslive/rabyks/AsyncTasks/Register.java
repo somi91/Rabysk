@@ -19,11 +19,11 @@ import java.io.InputStreamReader;
 /**
  * Created by ustankovic on 27-05-15.
  */
-public class RegisterAsyncTask extends AsyncTask<String, Void, String> {
+public class Register extends AsyncTask<String, Void, String> {
 
     private Context registerContext;
 
-    public RegisterAsyncTask (Context context){
+    public Register(Context context){
         registerContext = context;
     }
 
