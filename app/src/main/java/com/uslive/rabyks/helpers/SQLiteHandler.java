@@ -7,13 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
 import com.uslive.rabyks.models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marezina on 19.5.2015.
@@ -113,6 +112,23 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return rowId;
     }
 
+    public int updateUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USER_ID, user.getId());
+        values.put(USER_NUMBER, user.getNumber());
+        values.put(USER_EMAIL, user.getEmail());
+        values.put(USER_PASSWORD, user.getPassword());
+        values.put(USER_ROLE, user.getRole());
+
+        // zbog null svi redovi ce se update-ovati ali jer ima jedan nema veze
+        int numberOfUpdatedUsers = db.update(TABLE_USER, values, USER_ID + "=" + user.getId() , null);
+        db.close();
+        Log.d(TAG, "Number of updated users: " + numberOfUpdatedUsers);
+        return numberOfUpdatedUsers;
+    }
+
     public void addPartner(Partner partner) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -133,14 +149,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public User getUserDetails() {
+    public User getUser() {
 
-        User user = new User();
+        User user = null;
         String selectQuery = "SELECT * FROM " + TABLE_USER;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
+            user = new User();
             user.setId(cursor.getInt(cursor.getColumnIndex(USER_ID)));
             user.setEmail(cursor.getString(cursor.getColumnIndex(USER_EMAIL)));
             user.setNumber(cursor.getString(cursor.getColumnIndex(USER_NUMBER)));

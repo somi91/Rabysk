@@ -12,7 +12,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -20,6 +19,8 @@ import java.io.InputStreamReader;
  * Created by ustankovic on 27-05-15.
  */
 public class Register extends AsyncTask<String, Void, String> {
+
+    private static final String TAG = Register.class.getSimpleName();
 
     private Context registerContext;
 
@@ -32,8 +33,6 @@ public class Register extends AsyncTask<String, Void, String> {
         InputStream inputStream;
         String result = "";
         try {
-
-
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(urls[0]);
 
@@ -44,13 +43,14 @@ public class Register extends AsyncTask<String, Void, String> {
 
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
             if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
+                result = bufferedReader.readLine();
             else
                 result = "Did not work!";
         } catch (Exception ex) {
-            Log.d("HTTP POST ERROR", ex.getMessage());
+            Log.e(TAG, ex.getMessage());
         }
         return result;
     }
@@ -59,18 +59,5 @@ public class Register extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(registerContext, "Data Sent!", Toast.LENGTH_LONG).show();
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
     }
 }

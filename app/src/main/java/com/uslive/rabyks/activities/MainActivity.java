@@ -91,12 +91,12 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
 
         // Da li ima usera u lokalnoj bazi?
-        User user  = db.getUserDetails();
+        User user  = db.getUser();
         // Da li postoji user u remote bazi
-        if(user != null && user.getId() != 0) {
+        if(user != null) {
             // Ako postoji da li ima visa prava
-            getUserRights = new GetUserRights(getApplicationContext(), db);
-            getUserRights.execute(user.getId()+"", user.getRole());
+            getUserRights = new GetUserRights(getApplicationContext(), db, user);
+            getUserRights.execute();
         }
 
         /**
