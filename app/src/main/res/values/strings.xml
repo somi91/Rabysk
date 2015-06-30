@@ -50,12 +50,12 @@
     <string name="cancel">Otkazi</string>
     <string name="confirme">Potvrdi</string>
 
-    <string name="serverIP">http://ec2-52-25-43-102.us-west-2.compute.amazonaws.com:80</string>
-    <string name="socketAddress">ec2-52-25-43-102.us-west-2.compute.amazonaws.com</string>
+    <string name="serverIP">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80</string>
+    <string name="socketAddress">ec2-52-27-128-217.us-west-2.compute.amazonaws.com</string>
 
     <string name="timerVal">00:00:00</string>
 
 
-    <string name="savePositionURL">http://ec2-52-25-43-102.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>
+    <string name="savePositionURL">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>
 
 </resources>
