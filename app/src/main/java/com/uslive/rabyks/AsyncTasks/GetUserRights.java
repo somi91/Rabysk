@@ -67,7 +67,7 @@ public class GetUserRights extends AsyncTask <String, Void, String> {
                 }
             }
         } catch (Exception e) {
-            Log.e("HTTP GET ERROR", e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
         return null;
     }
