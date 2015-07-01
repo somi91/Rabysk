@@ -3,6 +3,8 @@ package com.uslive.rabyks.activities;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -25,12 +27,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.GetLayoutImage;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.Services.GPSTracker;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
@@ -51,11 +56,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 
 public class ClubActivity extends ActionBarActivity implements ReservationDialog.FinishDialogListener, EmployeeReservationDialog.EditDialogListener {
 
-    int sdk = android.os.Build.VERSION.SDK_INT;
+    private int sdk = android.os.Build.VERSION.SDK_INT;
 
     private static final String TAG = "ClubActivity";
 
@@ -73,20 +80,22 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     private CharSequence mTitle;
 
     private RelativeLayout clubActivityRelativeLayout;
-    float scale;
+    private float scale;
 
-    GPSTracker gps;
+    private GPSTracker gps;
 
     private Socket sock;
     private PrintWriter out;
     private BufferedReader in;
     private Thread thrd;
-    int partnerId;
-    JSONArray partnerSetup;
-    JSONObject objectTable;
+    private int partnerId;
+    private String layoutImgUrl;
+    private ImageView partnerLayoutImg;
+    private JSONArray partnerSetup;
+    private JSONObject objectTable;
 
-    int layoutWidth;
-    int layoutHeight;
+    private int layoutWidth;
+    private int layoutHeight;
 
     private SQLiteHandler db;
 
@@ -104,7 +113,8 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         partnerId = myIntent.getIntExtra("partner_id", 0);
         Log.i("PARTNER ID ", partnerId+"");
         setTitle(myIntent.getStringExtra("partner_name"));
-        club_name = myIntent.getStringExtra("partner_name");
+        layoutImgUrl = myIntent.getStringExtra("partner_layout_img_url");
+        partnerLayoutImg = (ImageView) findViewById(R.id.partnerLayoutImg);
 
         db = new SQLiteHandler(getApplicationContext());
 
@@ -200,11 +210,8 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     public void setBackGroundImage(){
 
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            clubActivityRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.sample_0, null) );
-        } else {
-            clubActivityRelativeLayout.setBackground(getResources().getDrawable(R.drawable.sample_0, null));
-        }
+        GetLayoutImage getLayoutImage = new GetLayoutImage(getApplicationContext(), partnerLayoutImg);
+        getLayoutImage.execute(layoutImgUrl);
     }
 
     public void setButton(Button btn, final int x, final int y, int color, JSONObject obj){

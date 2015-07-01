@@ -43,6 +43,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String PARTNER_NUMBER = "number";
     private static final String PARTNER_LOGO_URL = "logo_url";
     private static final String PARTNER_LOGO_URL_BYTES = "logo_url_bytes";
+    private static final String PARTNER_LAYOUT_IMG_URL = "layout_img_url";
     private static final String PARTNER_TYPE = "type";
     private static final String PARTNER_WORKING_HOURS = "working_hours";
     private static final String PARTNER_CREATED_AT = "created_at";
@@ -69,7 +70,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         String CREATE_PARTNER_TABLE = "CREATE TABLE " + TABLE_PARTNER + "("
                 + PARTNER_ID + " INTEGER PRIMARY KEY," + PARTNER_NAME + " TEXT,"
                 + PARTNER_ADDRESS + " TEXT," + PARTNER_NUMBER + " TEXT,"
-                + PARTNER_LOGO_URL + " TEXT," + PARTNER_LOGO_URL_BYTES + " BLOB,"
+                + PARTNER_LOGO_URL + " TEXT," + PARTNER_LOGO_URL_BYTES + " BLOB," + PARTNER_LAYOUT_IMG_URL + " TEXT,"
                 + PARTNER_TYPE + " INTEGER," + PARTNER_WORKING_HOURS + " TEXT,"
                 + PARTNER_CREATED_AT + " INTEGER," + PARTNER_MODIFIED_AT + " INTEGER" + ")";
         db.execSQL(CREATE_PARTNER_TABLE);
@@ -139,6 +140,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(PARTNER_NUMBER, partner.getNumber());
         values.put(PARTNER_LOGO_URL, partner.getLogo_url());
         values.put(PARTNER_LOGO_URL_BYTES, partner.getLogo_url_bytes());
+        values.put(PARTNER_LAYOUT_IMG_URL, partner.getLayout_img_url());
         values.put(PARTNER_TYPE, partner.getType());
         values.put(PARTNER_WORKING_HOURS, partner.getWorking_hours());
         values.put(PARTNER_CREATED_AT, partner.getCreated_at());
@@ -186,6 +188,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
                 partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
                 partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
                 partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
                 partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
                 partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
@@ -216,6 +219,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
                 partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
                 partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
                 partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
                 partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
                 partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));

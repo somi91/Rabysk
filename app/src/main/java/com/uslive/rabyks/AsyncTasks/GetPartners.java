@@ -75,6 +75,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
                     partner.setAddress(results.getJSONObject(i).getString("address"));
                     partner.setNumber(results.getJSONObject(i).getString("number"));
                     partner.setLogo_url(results.getJSONObject(i).getString("logoUrl"));
+                    partner.setLayout_img_url(results.getJSONObject(i).getString("layoutImgUrl"));
                     partner.setType(results.getJSONObject(i).getInt("type"));
                     partner.setWorking_hours(results.getJSONObject(i).getString("workingHours"));
                     partner.setCreated_at(results.getJSONObject(i).getLong("createdAt"));

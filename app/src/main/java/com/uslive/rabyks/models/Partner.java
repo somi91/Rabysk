@@ -10,6 +10,7 @@ public class Partner {
     private String number;
     private String logo_url;
     private byte[] logo_url_bytes;
+    private String layout_img_url;
     private int type;
     private String working_hours;
     private Long created_at;
@@ -19,13 +20,14 @@ public class Partner {
 
     }
 
-    public Partner(int id, String name, String address, String number, String logo_url, byte[] logo_url_bytes, int type, String working_hours, Long created_at, Long modified_at) {
+    public Partner(int id, String name, String address, String number, String logo_url, byte[] logo_url_bytes, String layout_img_url, int type, String working_hours, Long created_at, Long modified_at) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.number = number;
         this.logo_url = logo_url;
         this.logo_url_bytes = logo_url_bytes;
+        this.layout_img_url = layout_img_url;
         this.type = type;
         this.working_hours = working_hours;
         this.created_at = created_at;
@@ -74,6 +76,14 @@ public class Partner {
 
     public byte[] getLogo_url_bytes() {
         return logo_url_bytes;
+    }
+
+    public String getLayout_img_url() {
+        return layout_img_url;
+    }
+
+    public void setLayout_img_url(String layout_img_url) {
+        this.layout_img_url = layout_img_url;
     }
 
     public void setLogo_url_bytes(byte[] logo_url_bytes) {

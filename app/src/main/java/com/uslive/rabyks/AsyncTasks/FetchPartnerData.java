@@ -67,7 +67,7 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
         bar.setVisibility(View.GONE);
         SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
         Long tsLong = System.currentTimeMillis()/1000;
-        sqLiteHandler.addPartner(new Partner(partner.getId(), partner.getName(), partner.getAddress(), partner.getNumber(), partner.getLogo_url(), result, partner.getType(), partner.getWorking_hours(), partner.getCreated_at(), partner.getModified_at()));
+        sqLiteHandler.addPartner(new Partner(partner.getId(), partner.getName(), partner.getAddress(), partner.getNumber(), partner.getLogo_url(), result, partner.getLayout_img_url(), partner.getType(), partner.getWorking_hours(), partner.getCreated_at(), partner.getModified_at()));
         sqLiteHandler.close();
         listener.onTaskCompletedUpdateGridView();
         Toast.makeText(context, "Data Sent!", Toast.LENGTH_LONG).show();

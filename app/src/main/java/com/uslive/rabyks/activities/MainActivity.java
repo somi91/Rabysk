@@ -130,6 +130,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
                 clubIntent.putExtra("partner_id", partner.getId());
                 clubIntent.putExtra("partner_name", partner.getName());
                 clubIntent.putExtra("partner_created_at", partner.getCreated_at());
+                clubIntent.putExtra("partner_layout_img_url", partner.getLayout_img_url());
                 startActivity(clubIntent);
                 finish();
 
