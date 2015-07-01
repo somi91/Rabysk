@@ -8,5 +8,5 @@
         android:icon="@drawable/action_search" android:orderInCategory="200" app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <item android:id="@+id/logout" android:title="@string/action_logout" android:orderInCategory="100" app:showAsAction="ifRoom" />
+    <item android:id="@+id/login" android:title="@string/action_login" android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>
