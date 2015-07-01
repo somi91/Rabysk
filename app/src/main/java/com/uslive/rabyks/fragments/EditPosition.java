@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.SavePartnerPosition;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.helpers.JsonManager;
@@ -37,9 +38,10 @@ import java.util.Random;
  * Created by milos on 6/5/2015.
  */
 public class EditPosition extends Fragment implements EmployeeReservationDialog.ChangeObject{
-    int sdk = android.os.Build.VERSION.SDK_INT;
-    RelativeLayout edit_content;
-    float scale;
+    private int sdk = android.os.Build.VERSION.SDK_INT;
+    private RelativeLayout edit_content;
+    private Button save;
+    private float scale;
 
     private JSONArray partnerSetup;
 
@@ -54,6 +56,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
         // Defines the xml file for the fragment
         View view = inflater.inflate(R.layout.edit_position_layout, container, false);
         edit_content = (RelativeLayout) view.findViewById(R.id.placeHolder);
+        save = (Button) view.findViewById(R.id.btnSave);
         setBackGroundImage();
         scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
 
@@ -84,7 +87,12 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
         view.findViewById(R.id.stajanje).setOnTouchListener(new MyTouchListener());
 
         view.findViewById(R.id.placeHolder).setOnDragListener(new MyDragListener());
-
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Save();
+            }
+        });
         return view;
     }
 
@@ -208,16 +216,23 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
                     view.setX(real_coordinate_x);
                     view.setY(real_coordinate_y);
                     final JSONObject jsonObject = new JSONObject();
-                    Random r = new Random();
+
+                    JsonManager jsonManager = new JsonManager(partnerSetup);
+                    int r = jsonManager.FindFreeObjectId();
                     try {
                         jsonObject.put("objectId", r);
                         jsonObject.put("numberOfSeats", r);
                         jsonObject.put("timeOut", r);
+                        jsonObject.put("type", "sto");
                         jsonObject.put("availability", true);
+                        jsonObject.put("price", 1);
+                        jsonObject.put("coordinateX", real_coordinate_x);
+                        jsonObject.put("coordinateY", real_coordinate_y);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    partnerSetup.put(jsonObject);
 
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -356,7 +371,9 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
         }
     }
 
-    private void Save(){
+    private void Save() {
+        SavePartnerPosition spp = new SavePartnerPosition(getActivity().getApplicationContext());
+        spp.execute(partnerSetup.toString());
         /*
         primer kako treba da izgleda objekat koji saljem na server
         <string name="savePositionURL">http://ec2-52-25-43-102.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>

@@ -9,7 +9,6 @@ import org.json.JSONObject;
  */
 public class JsonManager {
     private JSONArray jsonArray;
-    private JSONObject jsonObject;
 
     public JsonManager(JSONArray array){
         jsonArray = array;
@@ -27,5 +26,21 @@ public class JsonManager {
             }
         }
         return null;
+    }
+
+    public int FindFreeObjectId() {
+        int id = 1;
+        for(int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject json = jsonArray.getJSONObject(i);
+                int objectId = json.getInt("objectId");
+                if(objectId >= id) {
+                    id = objectId + 1;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return id;
     }
 }

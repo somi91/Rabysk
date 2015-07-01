@@ -134,7 +134,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="SAVE"
-                    android:id="@+id/button"
+                    android:id="@+id/btnSave"
                     android:layout_weight="1"
                     android:layout_alignParentBottom="true" />
 
