@@ -167,7 +167,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(TAG, "Fetching user from Sqlite: " + user.toString());
         return user;
     }
 

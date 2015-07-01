@@ -74,12 +74,12 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
             Log.i("INTERNET???", "KONACNO NEMA NETA");
         }
-        // session manager
-        session = new SessionManager(getApplicationContext());
-
-        if (!session.isLoggedIn()) {
+//        TODO sta da radim sa session managementom
+//        session = new SessionManager(getApplicationContext());
+//
+//        if (!session.isLoggedIn()) {
 //            logoutUser();
-        }
+//        }
 
         db = new SQLiteHandler(getApplicationContext());
 
@@ -185,7 +185,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     private void logoutUser() {
         session.setLogin(false);
 
-//        db.deleteUsers();
+        db.deleteUsers();
 
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -322,8 +322,11 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         // Handle your other action bar items...
         // Handle presses on the action bar items
         switch (id) {
-            case R.id.logout:
-                logoutUser();
+            case R.id.login:
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                finish();
+                // TODO da li se ovde gasi aktiviti ili ide do return? posledice?
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

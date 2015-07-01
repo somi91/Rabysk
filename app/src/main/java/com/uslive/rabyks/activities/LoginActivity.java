@@ -10,20 +10,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.Login;
+import com.uslive.rabyks.AsyncTasks.OnLoginComplete;
 import com.uslive.rabyks.R;
 
+import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity implements OnLoginComplete {
 
-    // LogCat tag
-    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private Button btnLogin;
     private Button btnLinkToRegister;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
+    private SQLiteHandler db;
+    private Login loginAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +43,20 @@ public class LoginActivity extends ActionBarActivity {
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
-        // Session manager
-        session = new SessionManager(getApplicationContext());
+        db = new SQLiteHandler(getApplicationContext());
 
-        // Check if user is already logged in or not
-        if (session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+
+
+//        TODO Session manager
+//        session = new SessionManager(getApplicationContext());
+//
+//        // Check if user is already logged in or not
+//        if (session.isLoggedIn()) {
+//            // User is already logged in. Take him to main activity
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +77,7 @@ public class LoginActivity extends ActionBarActivity {
                 // Check for empty data in the form
                 if (email.trim().length() > 0 && password.trim().length() > 0) {
                     // login user
-                    checkLogin(email, password);
+                    login(email, password);
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
@@ -81,18 +89,16 @@ public class LoginActivity extends ActionBarActivity {
 
     }
 
-    /**
-     * function to verify login details in mysql db
-     * */
-    private void checkLogin(final String email, final String password) {
-        // user successfully logged in
-        // Create login session
-        session.setLogin(true);
+    private void login(final String email, final String password) {
+//        TODO
+//        session.setLogin(true);
+        loginAsync = new Login(getApplicationContext(), db, this);
+        loginAsync.execute(email, password);
 
-        // Launch main activity
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+//        TODO
+//        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 
     @Override
@@ -102,4 +108,10 @@ public class LoginActivity extends ActionBarActivity {
         return true;
     }
 
+    @Override
+    public void onLoginComplete() {
+        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
 }
