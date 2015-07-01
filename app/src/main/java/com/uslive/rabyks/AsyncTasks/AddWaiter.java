@@ -2,7 +2,6 @@ package com.uslive.rabyks.AsyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
@@ -18,19 +17,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by marezina on 30.6.2015.
+ * Created by marezina on 1.7.2015.
  */
-public class SavePartnerPosition extends AsyncTask<String, Void, String> {
+public class AddWaiter extends AsyncTask<String, Void, String> {
     private Context context;
+    private OnAddWaiterCompleted listener;
 
-    public SavePartnerPosition(Context c){
+    public AddWaiter(Context c, OnAddWaiterCompleted l){
         context = c;
+        listener = l;
     }
 
     @Override
     protected String doInBackground(String... params) {
-        String waiterName = params[0];
-        String address = context.getString(R.string.serverIP) + "/addWaiter";
+        String jsonArray = params[0];
+        String address = context.getString(R.string.serverIP) + "/postPartnerObjectSetup";
         // Jos treba menjati na dole...
         InputStream inputStream;
         String result = "";
@@ -38,7 +39,7 @@ public class SavePartnerPosition extends AsyncTask<String, Void, String> {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(address);
 
-            StringEntity se = new StringEntity(waiterName);
+            StringEntity se = new StringEntity(jsonArray);
             httpPost.setEntity(se);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
@@ -60,5 +61,6 @@ public class SavePartnerPosition extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, "Data Sent!", Toast.LENGTH_LONG).show();
+        listener.OnAddWaiterCompleted();
     }
 }

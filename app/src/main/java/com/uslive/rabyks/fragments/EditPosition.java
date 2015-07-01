@@ -216,7 +216,9 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
                     view.setX(real_coordinate_x);
                     view.setY(real_coordinate_y);
                     final JSONObject jsonObject = new JSONObject();
-                    Random r = new Random();
+
+                    JsonManager jsonManager = new JsonManager(partnerSetup);
+                    int r = jsonManager.FindFreeObjectId();
                     try {
                         jsonObject.put("objectId", r);
                         jsonObject.put("numberOfSeats", r);
