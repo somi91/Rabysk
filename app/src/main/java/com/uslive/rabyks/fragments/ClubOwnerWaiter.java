@@ -12,9 +12,14 @@ import android.widget.TextView;
 
 import com.uslive.rabyks.AsyncTasks.AddWaiter;
 import com.uslive.rabyks.AsyncTasks.OnAddWaiterCompleted;
+import com.uslive.rabyks.AsyncTasks.OnRemoveWaiterCompleted;
+import com.uslive.rabyks.AsyncTasks.RemoveWaiter;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.adapters.WaiterRemoveAdapter;
 import com.uslive.rabyks.models.RowWaiterRemove;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +27,9 @@ import java.util.List;
 /**
  * Created by milos on 6/16/2015.
  */
-public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted{
+public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted, OnRemoveWaiterCompleted{
     EditText waiterName;
+    EditText password;
     ImageButton btnAddWaiter;
 
     public static final String[] titles = new String[] { "Strawberry",
@@ -34,6 +40,7 @@ public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted{
     ListView listView;
     List<RowWaiterRemove> rowItems;
     AddWaiter addWaiter;
+    RemoveWaiter removeWaiter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,11 +48,12 @@ public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted{
         View view = inflater.inflate(R.layout.club_owner_waiter, container, false);
 
         waiterName = (EditText) view.findViewById(R.id.txtName);
+        password = (EditText) view.findViewById(R.id.password);
         btnAddWaiter = (ImageButton) view.findViewById(R.id.btnAddWaiter);
         btnAddWaiter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddWaiter(waiterName.getText().toString());
+                AddWaiter(waiterName.getText().toString(), password.getText().toString());
             }
         });
 
@@ -58,25 +66,60 @@ public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted{
         }
 
         listView = (ListView) view.findViewById(R.id.list);
-        WaiterRemoveAdapter adapter = new WaiterRemoveAdapter(getActivity().getApplicationContext(), rowItems);
+        WaiterRemoveAdapter adapter = new WaiterRemoveAdapter(getActivity().getApplicationContext(), rowItems, ClubOwnerWaiter.this);
         listView.setAdapter(adapter);
 //        listView.setOnItemClickListener(this);
 
         addWaiter = new AddWaiter(getActivity().getApplicationContext(), this);
+        removeWaiter = new RemoveWaiter(getActivity().getApplicationContext(), this);
 
         return view;
     }
 
-    private void AddWaiter(String s) {
+    private void AddWaiter(String n, String p) {
 
-        addWaiter.execute(s);
+        removeWaiter.execute(n, p);
+    }
+
+    public void RemoveWaiter(String n) {
+
+        removeWaiter.execute(n);
     }
 
     @Override
-    public void OnAddWaiterCompleted() {
+    public void OnAddWaiterCompleted(String array) {
         // update rowItems list
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(array);
+            RowWaiterRemove item;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                item = new RowWaiterRemove(R.drawable.ic_action_remove, jsonArray.getJSONObject(i).getString("name"));
+                rowItems.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        WaiterRemoveAdapter adapter = new WaiterRemoveAdapter(getActivity().getApplicationContext(), rowItems);
+        WaiterRemoveAdapter adapter = new WaiterRemoveAdapter(getActivity().getApplicationContext(), rowItems, ClubOwnerWaiter.this);
+        listView.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnRemoveWaiterCompleted(String array) {
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(array);
+            RowWaiterRemove item;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                item = new RowWaiterRemove(R.drawable.ic_action_remove, jsonArray.getJSONObject(i).getString("name"));
+                rowItems.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        WaiterRemoveAdapter adapter = new WaiterRemoveAdapter(getActivity().getApplicationContext(), rowItems, ClubOwnerWaiter.this);
         listView.setAdapter(adapter);
     }
 }

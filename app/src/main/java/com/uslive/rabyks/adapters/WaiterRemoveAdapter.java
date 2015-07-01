@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
+import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.models.RowWaiterRemove;
 
 import java.util.List;
@@ -21,10 +22,12 @@ import java.util.List;
 public class WaiterRemoveAdapter extends BaseAdapter {
     Context context;
     List<RowWaiterRemove> rowItems;
+    ClubOwnerWaiter clubOwnerWaiter;
 
-    public WaiterRemoveAdapter(Context context, List<RowWaiterRemove> items) {
+    public WaiterRemoveAdapter(Context context, List<RowWaiterRemove> items, ClubOwnerWaiter clubOwnerWaiter) {
         this.context = context;
         this.rowItems = items;
+        this.clubOwnerWaiter = clubOwnerWaiter;
     }
 
     private class ViewHolder {
@@ -63,9 +66,8 @@ public class WaiterRemoveAdapter extends BaseAdapter {
             holder.imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(),
-                            "Waiter name: " + waiterName + " : " + rowItems.get(pos),
-                            Toast.LENGTH_SHORT).show();
+                    clubOwnerWaiter.RemoveWaiter(waiterName);
+                    Toast.makeText(v.getContext(), "Waiter name: " + waiterName + " : " + rowItems.get(pos), Toast.LENGTH_SHORT).show();
                 }
             });
             convertView.setTag(holder);

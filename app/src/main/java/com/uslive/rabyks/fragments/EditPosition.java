@@ -373,7 +373,20 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
 
     private void Save() {
         SavePartnerPosition spp = new SavePartnerPosition(getActivity().getApplicationContext());
-        spp.execute(partnerSetup.toString());
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("partnerId", partnerId);
+            jsonObject.put("defaultTableSeatCount", 4);
+            jsonObject.put("defaultSepareSeatCount", 8);
+            jsonObject.put("defaultBarseatSeatCount", 2);
+            jsonObject.put("defaultStandSeatCount", 1);
+            jsonObject.putOpt("objects", partnerSetup);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        spp.execute(jsonObject.toString());
         /*
         primer kako treba da izgleda objekat koji saljem na server
         <string name="savePositionURL">http://ec2-52-25-43-102.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>
