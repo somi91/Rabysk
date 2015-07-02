@@ -380,6 +380,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 mArgs.putInt("layoutHeight", layoutHeight);
                 mArgs.putInt("layoutWidth", layoutWidth);
                 mArgs.putInt("partnerId", partnerId);
+                mArgs.putString("layoutImgUrl", layoutImgUrl);
 
                 EditPosition editPosition = new EditPosition();
                 editPosition.setArguments(mArgs);

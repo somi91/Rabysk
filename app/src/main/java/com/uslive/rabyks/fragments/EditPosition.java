@@ -19,10 +19,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.uslive.rabyks.AsyncTasks.GetLayoutImage;
 import com.uslive.rabyks.AsyncTasks.SavePartnerPosition;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
@@ -50,12 +52,15 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
 
     private int partnerId;
     private int objectId;
+    private ImageView imgLayoutEditPosition;
+    private String layoutImgUrl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         View view = inflater.inflate(R.layout.edit_position_layout, container, false);
         edit_content = (RelativeLayout) view.findViewById(R.id.placeHolder);
+        imgLayoutEditPosition = (ImageView) view.findViewById(R.id.imgLayoutEditPosition);
         save = (Button) view.findViewById(R.id.btnSave);
         setBackGroundImage();
         scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
@@ -68,6 +73,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
             String partnerSetupString = mArgs.getString("partnerSetup");
             partnerId = mArgs.getInt("partnerId");
 
+            layoutImgUrl = mArgs.getString("layoutImgUrl");
             width = mArgs.getInt("layoutWidth");
             height = mArgs.getInt("layoutHeight");
             Log.d("width and height ", " "+width+"dp  "+height+"dp " );
@@ -98,11 +104,8 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
 
     public void setBackGroundImage(){
 
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            edit_content.setBackgroundDrawable(getResources().getDrawable(R.drawable.sample_0, null) );
-        } else {
-            edit_content.setBackground(getResources().getDrawable(R.drawable.sample_0, null));
-        }
+        GetLayoutImage getLayoutImage = new GetLayoutImage(getActivity().getApplicationContext(), imgLayoutEditPosition);
+        getLayoutImage.execute(layoutImgUrl);
     }
 
     public void setButton(Button btn, final int x, final int y, int color, final JSONObject obj){
