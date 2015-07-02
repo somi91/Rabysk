@@ -91,13 +91,13 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
 
         // Da li ima usera u lokalnoj bazi?
-//        User user  = db.getUser();
+        User user  = db.getUser();
         // Da li postoji user u remote bazi
-//        if(user != null) {
-//            // Ako postoji da li ima visa prava
-//            getUserRights = new GetUserRights(getApplicationContext(), db, user);
-//            getUserRights.execute();
-//        }
+        if(user != null) {
+            // Ako postoji da li ima visa prava
+            getUserRights = new GetUserRights(getApplicationContext(), db, user);
+            getUserRights.execute();
+        }
 
         /**
          * Dovuci iz sqlite-a najnoviji datum partnera i posalji na server pa

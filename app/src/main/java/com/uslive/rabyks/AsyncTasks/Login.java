@@ -75,7 +75,11 @@ public class Login extends AsyncTask<String, Void, JSONObject> {
 
     protected void onPostExecute(JSONObject result) {
         try {
-            db.addUser((Integer) result.get("id"), (String) result.get("number"), (String) result.get("email"), (String) result.get("password"), (String) result.get("role"));
+            db.addUser((Integer) result.get("id"), ((String) result.get("number")).equals("null") ? null : (String) result.get("number"), (String) result.get("email"), (String) result.get("password"), (String) result.get("role"));
+            JSONArray partners = result.getJSONArray("partners");
+            for (int i = 0; i < partners.length(); ++i) {
+                db.addUserPartner((Integer)result.get("id"), partners.optInt(i));
+            }
             olc.onLoginComplete();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());

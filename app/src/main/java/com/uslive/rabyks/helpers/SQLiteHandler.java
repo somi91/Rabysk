@@ -10,6 +10,7 @@ import android.util.Log;
 import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
 import com.uslive.rabyks.models.User;
+import com.uslive.rabyks.models.UserPartner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String TABLE_PARTNER = "partner";
 
     private static final String TABLE_RESERVATION = "reservation";
+
+    private static final String TABLE_USER_PARTNER = "userPartner";
 
     private static final String USER_ID = "id";
     private static final String USER_NUMBER = "number";
@@ -54,6 +57,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String RESERVATION_CREATED_AT = "created_at";
     private static final String RESERVATION_EXPIRES_AT = "expires_at";
     private static final String RESERVATION_CURRENT_STATUS = "current_status";
+
+    private static final String USER_PARTNER_USER_ID = "userId";
+    private static final String USER_PARTNER_PARTNER_ID = "partnerId";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -81,6 +87,10 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + RESERVATION_CURRENT_STATUS + " NUMERIC" + ")";
         db.execSQL(CREATE_TABLE_RESERVATION);
 
+        String CREATE_USER_PARTNER_TABLE = "CREATE TABLE " + TABLE_USER_PARTNER + "("
+                + USER_PARTNER_USER_ID + " INTEGER," + USER_PARTNER_PARTNER_ID + " INTEGER, PRIMARY KEY ("
+                + USER_PARTNER_USER_ID + ", " + USER_PARTNER_PARTNER_ID + "))";
+        db.execSQL(CREATE_USER_PARTNER_TABLE);
         Log.d(TAG, "Database tables created");
     }
 
@@ -93,6 +103,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVATION);
 
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_PARTNER);
         // Create tables again
         onCreate(db);
     }
@@ -124,7 +135,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         values.put(USER_ROLE, user.getRole());
 
         // zbog null svi redovi ce se update-ovati ali jer ima jedan nema veze
-        int numberOfUpdatedUsers = db.update(TABLE_USER, values, USER_ID + "=" + user.getId() , null);
+        int numberOfUpdatedUsers = db.update(TABLE_USER, values, USER_ID + "=" + user.getId(), null);
         db.close();
         Log.d(TAG, "Number of updated users: " + numberOfUpdatedUsers);
         return numberOfUpdatedUsers;
@@ -343,4 +354,43 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted all reservations info from sqlite");
     }
+
+    public long addUserPartner(int userId, int partnerId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USER_PARTNER_USER_ID, userId);
+        values.put(USER_PARTNER_PARTNER_ID, partnerId);
+
+        long rowId = db.insert(TABLE_USER_PARTNER, null, values);
+        db.close();
+        Log.d(TAG, "New user partner inserted with row id: " + rowId);
+        return rowId;
+    }
+
+    public List<UserPartner> getUserPartnerByUserId(int userId) {
+        List<UserPartner> userPartnerList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_USER_PARTNER + " WHERE " + USER_PARTNER_USER_ID + " = " + userId;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                UserPartner userPartner = new UserPartner();
+                userPartner.setUserId(cursor.getInt(cursor.getColumnIndex(USER_PARTNER_USER_ID)));
+                userPartner.setPartnerId(cursor.getInt(cursor.getColumnIndex(USER_PARTNER_PARTNER_ID)));
+                userPartnerList.add(userPartner);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return userPartnerList;
+    }
+
+    public void removeUserPartnerByUserId(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_USER_PARTNER, USER_PARTNER_USER_ID + "=" + userId, null);
+        db.close();
+    }
+
 }
