@@ -46,8 +46,8 @@ public class AddWaiter extends AsyncTask<String, Void, String> {
 
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList<NameValuePair>();
-            postParameters.add(new BasicNameValuePair("waiterName", waiterName));
-            postParameters.add(new BasicNameValuePair("waiterPassword", waiterPassword));
+            postParameters.add(new BasicNameValuePair("email", waiterName));
+            postParameters.add(new BasicNameValuePair("password", waiterPassword));
 
             httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 

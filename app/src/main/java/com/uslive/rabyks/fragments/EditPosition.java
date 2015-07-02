@@ -62,7 +62,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
         edit_content = (RelativeLayout) view.findViewById(R.id.placeHolder);
         imgLayoutEditPosition = (ImageView) view.findViewById(R.id.imgLayoutEditPosition);
         save = (Button) view.findViewById(R.id.btnSave);
-        setBackGroundImage();
+
         scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
 
         int width;
@@ -74,6 +74,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
             partnerId = mArgs.getInt("partnerId");
 
             layoutImgUrl = mArgs.getString("layoutImgUrl");
+            Log.i("EDIT POSITION ", layoutImgUrl);
             width = mArgs.getInt("layoutWidth");
             height = mArgs.getInt("layoutHeight");
             Log.d("width and height ", " "+width+"dp  "+height+"dp " );
@@ -88,6 +89,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
             }
         }
 
+        setBackGroundImage();
         view.findViewById(R.id.sto).setOnTouchListener(new MyTouchListener());
         view.findViewById(R.id.separe).setOnTouchListener(new MyTouchListener());
         view.findViewById(R.id.stajanje).setOnTouchListener(new MyTouchListener());
@@ -105,7 +107,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
     public void setBackGroundImage(){
 
         GetLayoutImage getLayoutImage = new GetLayoutImage(getActivity().getApplicationContext(), imgLayoutEditPosition);
-        getLayoutImage.execute(layoutImgUrl);
+        getLayoutImage.execute(layoutImgUrl.toString());
     }
 
     public void setButton(Button btn, final int x, final int y, int color, final JSONObject obj){
@@ -213,8 +215,8 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
                     final float real_coordinate_x = x - width;
                     final float real_coordinate_y = y - height;
 
-//                    final int pixelsX = (int) (real_coordinate_x * scale + 0.5f);
-//                    final int pixelY = (int) (real_coordinate_y * scale + 0.5f);
+                    final int pixelsX = (int) (real_coordinate_x / scale + 0.5f);
+                    final int pixelY = (int) (real_coordinate_y / scale + 0.5f);
 
                     view.setX(real_coordinate_x);
                     view.setY(real_coordinate_y);
@@ -229,8 +231,8 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
                         jsonObject.put("type", "sto");
                         jsonObject.put("availability", true);
                         jsonObject.put("price", 1);
-                        jsonObject.put("coordinateX", real_coordinate_x);
-                        jsonObject.put("coordinateY", real_coordinate_y);
+                        jsonObject.put("coordinateX", pixelsX);
+                        jsonObject.put("coordinateY", pixelY);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -241,6 +243,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
                         @Override
                         public void onClick(View v) {
                             Toast.makeText(getActivity().getApplicationContext(), "x: " + real_coordinate_x + " y: " + real_coordinate_y, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "pixelsX: " + pixelsX + " pixelY: " + pixelY, Toast.LENGTH_LONG).show();
                             showDialog(jsonObject);
                         }
                     });

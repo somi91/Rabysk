@@ -44,7 +44,7 @@ public class RemoveWaiter extends AsyncTask<String, Void, String> {
 
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList<NameValuePair>();
-            postParameters.add(new BasicNameValuePair("waiterName", waiterName));
+            postParameters.add(new BasicNameValuePair("email", waiterName));
             httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 
             HttpResponse httpResponse = httpclient.execute(httpPost);

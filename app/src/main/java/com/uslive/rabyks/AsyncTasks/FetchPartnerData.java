@@ -19,6 +19,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by marezina on 19.6.2015.
  */
@@ -46,15 +50,29 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
         partner = params[0];
         byte[] data = null;
         try {
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(partner.getLogo_url());
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent();
-            data = read(is);
-            if (data != null) {
-                Bitmap downloadedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            }
+
+            URL url = new URL(partner.getLogo_url());
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            data = read(input);
+
+//            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+//
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//            data = stream.toByteArray();
+
+//            DefaultHttpClient client = new DefaultHttpClient();
+//            HttpGet request = new HttpGet(partner.getLogo_url());
+//            HttpResponse response = client.execute(request);
+//            HttpEntity entity = response.getEntity();
+//            InputStream is = entity.getContent();
+//            data = read(is);
+//            if (data != null) {
+//                Bitmap downloadedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//            }
         } catch (IOException e) {
             Log.i("Error in Fetch Data", partner.getName());
             e.printStackTrace();

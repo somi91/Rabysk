@@ -366,7 +366,12 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                 break;
 
             case 7:
-                transaction.replace(R.id.your_placeholder, new ClubOwnerWaiter());
+                Bundle waiterArgs = new Bundle();
+                waiterArgs.putInt("partnerId", partnerId);
+                ClubOwnerWaiter clubOwnerWaiter = new ClubOwnerWaiter();
+                clubOwnerWaiter.setArguments(waiterArgs);
+
+                transaction.replace(R.id.your_placeholder, clubOwnerWaiter);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
