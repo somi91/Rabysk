@@ -91,7 +91,7 @@ public class ClubOwnerWaiter extends Fragment implements OnAddWaiterCompleted, O
 
     private void AddWaiter(String n, String p) {
 
-        addWaiter.execute(n, p);
+        addWaiter.execute(n, p, partnerId+"");
     }
 
     public void RemoveWaiter(String n) {

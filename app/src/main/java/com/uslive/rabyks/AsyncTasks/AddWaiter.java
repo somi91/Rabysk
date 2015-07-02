@@ -36,6 +36,7 @@ public class AddWaiter extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String waiterName = params[0];
         String waiterPassword = params[1];
+        String waiterPartnerId = params[2];
         String address = context.getString(R.string.serverIP) + "/addWaiter";
         // Jos treba menjati na dole...
         InputStream inputStream;
@@ -48,6 +49,7 @@ public class AddWaiter extends AsyncTask<String, Void, String> {
             postParameters = new ArrayList<NameValuePair>();
             postParameters.add(new BasicNameValuePair("email", waiterName));
             postParameters.add(new BasicNameValuePair("password", waiterPassword));
+            postParameters.add(new BasicNameValuePair("partnerId", waiterPartnerId));
 
             httpPost.setEntity(new UrlEncodedFormEntity(postParameters));
 

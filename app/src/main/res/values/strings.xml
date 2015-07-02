@@ -46,7 +46,7 @@
 
     <string name="login_url">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/login</string>
     <string name="register_url">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/register</string>
-
+    <string name="getWaiters">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/getWaiters</string>
     <string name="dialog_reservation">Rezervacija</string>
     <string name="cancel">Otkazi</string>
     <string name="confirme">Potvrdi</string>

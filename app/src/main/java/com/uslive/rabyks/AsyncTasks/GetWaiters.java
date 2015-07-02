@@ -38,7 +38,7 @@ public class GetWaiters extends AsyncTask<String, String, JSONArray> {
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP)+"/getWaiters/"+urls[0]);
+            HttpGet httpGet = new HttpGet(context.getString(R.string.getWaiters) +"/" + urls[0]);
             HttpResponse httpResponse = httpclient.execute(httpGet);
             inputStream = httpResponse.getEntity().getContent();
             if (inputStream != null) {
@@ -46,7 +46,7 @@ public class GetWaiters extends AsyncTask<String, String, JSONArray> {
             }else
                 result = new JSONArray();
         } catch (Exception ex) {
-            Log.d("HTTP GET ERROR", ex.getMessage());
+            Log.e("HTTP GET ERROR", ex.getMessage());
         }
         return result;
     }
