@@ -1,5 +1,7 @@
 package com.uslive.rabyks.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +35,7 @@ public class ConfirmationFragment extends Fragment {
     private TextView txtPartnerName;
     private TextView txtUsername;
     private TextView txtDate;
+    private ImageView imgConfirmationLogo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,15 +45,19 @@ public class ConfirmationFragment extends Fragment {
         txtPartnerName = (TextView) view.findViewById(R.id.txtPartnerName);
         txtUsername = (TextView) view.findViewById(R.id.txtUsername);
         txtDate = (TextView) view.findViewById(R.id.txtDate);
+        imgConfirmationLogo = (ImageView) view.findViewById(R.id.imgConfirmationLogo);
 
         Bundle args = getArguments();
         txtPartnerName.setText(args.getString("partnerName"));
+        byte[] img = args.getByteArray("logoImg");
+        Bitmap image = BitmapFactory.decodeByteArray(img, 0, img.length);
+        imgConfirmationLogo.setImageBitmap(image);
         Date date = new Date();
         txtDate.setText(""+date);
         Long createdAt = args.getLong("createdAt");
         Long expiresAt = args.getLong("expiresAt");
         Log.i("Razlika moja racunica", ""+ (expiresAt - createdAt));
-        timerCount = new MyCount(5 * 1000, 1000);
+        timerCount = new MyCount(40 * 1000, 1000);
         timerCount.start();
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

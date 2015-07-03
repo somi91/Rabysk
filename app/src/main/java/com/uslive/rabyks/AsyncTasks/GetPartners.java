@@ -59,7 +59,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
             }else
                 result = new JSONArray();
         } catch (Exception ex) {
-            Log.d("HTTP POST ERROR", ex.getMessage());
+            Log.d("ERROR GET PARTNERS", ex.getMessage());
         }
         return result;
     }

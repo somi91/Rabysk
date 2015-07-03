@@ -85,7 +85,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         res = db.getReservation();
         if (res != null && res.isCurrentStatus()) {
-            CheckLiveReservations();
+            List<Partner> partners = db.getPartnersBySpecificParametar(res.getName());
+            Partner partnerForReservation = partners.get(0);
+            CheckLiveReservations(partnerForReservation.getLogo_url_bytes());
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
@@ -336,11 +338,12 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 //        return super.onOptionsItemSelected(item);
     }
 
-    private void CheckLiveReservations() {
+    private void CheckLiveReservations(byte[] logo) {
         Bundle args = new Bundle();
         args.putString("partnerName", res.getName());
         args.putLong("createdAt", res.getCreatedAt());
         args.putLong("expiresAt", res.getExpiresAt());
+        args.putByteArray("logoImg", logo);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         ConfirmationFragment confirmationFragment = new ConfirmationFragment();
         confirmationFragment.setArguments(args);

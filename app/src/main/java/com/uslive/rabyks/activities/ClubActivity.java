@@ -113,6 +113,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         partnerId = myIntent.getIntExtra("partner_id", 0);
         Log.i("PARTNER ID ", partnerId+"");
         setTitle(myIntent.getStringExtra("partner_name"));
+        club_name = myIntent.getStringExtra("partner_name");
         layoutImgUrl = myIntent.getStringExtra("partner_layout_img_url");
         partnerLayoutImg = (ImageView) findViewById(R.id.partnerLayoutImg);
 
@@ -221,17 +222,17 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         final JSONObject object = obj;
 
         ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
-        biggerCircle.setIntrinsicHeight( 50 );
-        biggerCircle.setIntrinsicWidth( 50);
-        biggerCircle.setBounds(new Rect(0, 0, 50, 50));
+        biggerCircle.setIntrinsicHeight( 35 );
+        biggerCircle.setIntrinsicWidth( 35 );
+        biggerCircle.setBounds(new Rect(0, 0, 35, 35));
         biggerCircle.getPaint().setColor(Color.WHITE);
 
         ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
-        smallerCircle.setIntrinsicHeight( 10 );
-        smallerCircle.setIntrinsicWidth( 10);
-        smallerCircle.setBounds(new Rect(0, 0, 10, 10));
+        smallerCircle.setIntrinsicHeight( 5 );
+        smallerCircle.setIntrinsicWidth( 5 );
+        smallerCircle.setBounds(new Rect(0, 0, 5, 5));
         smallerCircle.getPaint().setColor(color);
-        smallerCircle.setPadding(40,40,40,40);
+        smallerCircle.setPadding(18,18,18,18);
         Drawable[] d = {smallerCircle,biggerCircle};
 
         LayerDrawable composite1 = new LayerDrawable(d);
@@ -239,7 +240,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
         btn = new Button(getApplicationContext());
         btn.setX(pixelsX);
         btn.setY(pixelsY);
-        btn.setLayoutParams(new LinearLayout.LayoutParams(140, 140));
+        btn.setLayoutParams(new LinearLayout.LayoutParams(90, 90));
         btn.setBackgroundDrawable(composite1);
         btn.setBackground(composite1);
         btn.setText("4");

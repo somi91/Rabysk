@@ -58,7 +58,7 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
             }else
                 result = new JSONArray();
         } catch (Exception ex) {
-            Log.d("HTTP GET ERROR", ex.getMessage());
+            Log.d("HTTP GET ERROR UPDATE", ex.getMessage());
         }
         return result;
     }
