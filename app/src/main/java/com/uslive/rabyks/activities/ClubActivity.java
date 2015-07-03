@@ -284,19 +284,22 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             e.printStackTrace();
         }
 
-        // check if user is employee in this partner's room
-        boolean employee = true;
-        FragmentManager fm = getSupportFragmentManager();
-//        if(employee){
-//            args.putBoolean("free", free);
-//            EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
-//            employeeReservationDialog.setArguments(args);
-//            employeeReservationDialog.show(fm, "employeeReservationDialog");
-//        }
-        args.putBoolean("free", free);
-        ReservationDialog reservationDialog = new ReservationDialog();
-        reservationDialog.setArguments(args);
-        reservationDialog.show(fm, "reservation_name");
+        if(free){
+            // check if user is employee in this partner's room
+            boolean employee = true;
+            FragmentManager fm = getSupportFragmentManager();
+    //        if(employee){
+    //            args.putBoolean("free", free);
+    //            EmployeeReservationDialog employeeReservationDialog = new EmployeeReservationDialog();
+    //            employeeReservationDialog.setArguments(args);
+    //            employeeReservationDialog.show(fm, "employeeReservationDialog");
+    //        }
+            args.putBoolean("free", free);
+            ReservationDialog reservationDialog = new ReservationDialog();
+            reservationDialog.setArguments(args);
+            reservationDialog.show(fm, "reservation_name");
+        } else
+            Log.i("CLICK ON TABLE", "ALREADY RESERVED");
     }
 
     @Override
