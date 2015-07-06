@@ -61,25 +61,21 @@ public class WaiterRemoveAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.txtName = (TextView) convertView.findViewById(R.id.txtName);
             holder.imageButton = (ImageButton) convertView.findViewById(R.id.btnImageRemove);
-            final String waiterName = holder.txtName.getText().toString();
-            final int pos = position;
-            holder.imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clubOwnerWaiter.RemoveWaiter(waiterName);
-                    Toast.makeText(v.getContext(), "Waiter name: " + waiterName + " : " + rowItems.get(pos), Toast.LENGTH_SHORT).show();
-                }
-            });
             convertView.setTag(holder);
         }
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-
         RowWaiterRemove rowItem = (RowWaiterRemove) getItem(position);
-
         holder.txtName.setText(rowItem.getName());
         holder.imageButton.setImageResource(rowItem.getImageId());
+        final String waiterName = holder.txtName.getText().toString();
+        holder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clubOwnerWaiter.RemoveWaiter(waiterName);
+            }
+        });
 
         return convertView;
     }

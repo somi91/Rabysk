@@ -34,7 +34,7 @@ public class RemoveWaiter extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         String waiterName = params[0];
-        String address = context.getString(R.string.serverIP) + "/removeWaiter";
+        String address = context.getString(R.string.removeWaiter);
         // Jos treba menjati na dole...
         InputStream inputStream;
         String result = "";

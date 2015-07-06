@@ -44,19 +44,21 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_club">ClubActivity</string>
 
-    <string name="login_url">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/login</string>
-    <string name="register_url">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/register</string>
-    <string name="getWaiters">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/getWaiters</string>
+    <string name="login_url">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/login</string>
+    <string name="register_url">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/register</string>
+    <string name="getWaiters">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/getWaiters</string>
+    <string name="addWaiter">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/addWaiter</string>
+    <string name="removeWaiter">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/removeWaiter</string>
     <string name="dialog_reservation">Rezervacija</string>
     <string name="cancel">Otkazi</string>
     <string name="confirme">Potvrdi</string>
 
-    <string name="serverIP">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80</string>
-    <string name="socketAddress">ec2-52-27-128-217.us-west-2.compute.amazonaws.com</string>
+    <string name="serverIP">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80</string>
+    <string name="socketAddress">ec2-52-25-178-163.us-west-2.compute.amazonaws.com</string>
 
     <string name="timerVal">00:00:00</string>
 
 
-    <string name="savePositionURL">http://ec2-52-27-128-217.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>
+    <string name="savePositionURL">http://ec2-52-25-178-163.us-west-2.compute.amazonaws.com:80/postPartnerObjectSetup</string>
 
 </resources>
