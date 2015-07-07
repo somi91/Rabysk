@@ -50,25 +50,31 @@ public class GetUserRights extends AsyncTask <String, Void, String> {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
                 String result = bufferedReader.readLine();
 
-                // Ako je druga rola upisi u bazu
-                if(!user.getRole().equals(result)) {
-                    db.updateUser(user);
-                }
-
-                if (result.equals("admin")) {
-                    // TODO OTKRIJ STVARI U MENIJU
-
-                } else if (result.equals("konobar")) {
-                    // TODO OTKRIJ STVARI U MENIJU
-
-                } else {
-                    // OBRISI IZ BAZE USERA JER VISE NIJE KONOBAR ILI ADMIN
-                    db.deleteUsers();
-                }
+                return result;
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
         return null;
     }
+
+    @Override
+    protected void onPostExecute(String result) {
+        // Ako je druga rola upisi u bazu
+        if(!user.getRole().equals(result)) {
+            db.updateUser(user);
+        }
+
+        if (result.equals("admin")) {
+            // TODO OTKRIJ STVARI U MENIJU
+
+        } else if (result.equals("konobar")) {
+            // TODO OTKRIJ STVARI U MENIJU
+
+        } else {
+            // OBRISI IZ BAZE USERA JER VISE NIJE KONOBAR ILI ADMIN
+            db.deleteUsers();
+        }
+    }
+
 }

@@ -1,8 +1,12 @@
 package com.uslive.rabyks.fragments;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -17,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.uslive.rabyks.R;
+import com.uslive.rabyks.Services.ProximityReciever;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 
 import java.util.Date;
@@ -36,6 +41,18 @@ public class ConfirmationFragment extends Fragment {
     private TextView txtUsername;
     private TextView txtDate;
     private ImageView imgConfirmationLogo;
+
+    LocationManager lm;
+
+    //Defining Latitude & Longitude (NBG)
+    double lat=44.816218 ,long1=20.413793;
+    //Defining Radius
+    float radius=300;
+
+    ProximityReciever proximityReciever;
+
+    //Intent Action
+    String ACTION_FILTER = "com.uslive.rabyks.MAIN";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,10 +74,28 @@ public class ConfirmationFragment extends Fragment {
         Long createdAt = args.getLong("createdAt");
         Long expiresAt = args.getLong("expiresAt");
         Log.i("Razlika moja racunica", ""+ (expiresAt - createdAt));
-        timerCount = new MyCount(40 * 1000, 1000);
+        timerCount = new MyCount(15 * 1000, 1000);
         timerCount.start();
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        //i'm registering my Receiver First
+        proximityReciever = new ProximityReciever();
+        getActivity().registerReceiver(proximityReciever, new IntentFilter(ACTION_FILTER));
+
+        //i'm calling ther service Location Manager
+        lm=(LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+
+        //for debugging...
+//        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+
+        //Setting up My Broadcast Intent
+        Intent i= new Intent(ACTION_FILTER);
+        PendingIntent pi = PendingIntent.getBroadcast(getActivity().getApplicationContext(), -1, i, 0);
+
+        //setting up proximituMethod
+        lm.addProximityAlert(lat, long1, radius, 5 * 60 * 1000, pi);
+
         return view;
     }
 
@@ -86,5 +121,11 @@ public class ConfirmationFragment extends Fragment {
             //some script heres
             txtTimeValue.setText("00:00:" + (millisUntilFinished / 1000));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(proximityReciever);
     }
 }

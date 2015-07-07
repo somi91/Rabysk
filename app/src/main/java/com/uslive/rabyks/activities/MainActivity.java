@@ -1,13 +1,18 @@
 package com.uslive.rabyks.activities;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -35,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
+import com.uslive.rabyks.Services.ProximityReciever;
 import com.uslive.rabyks.adapters.ImageAdapter;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.fragments.ConfirmationFragment;
@@ -64,16 +70,37 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
     private GetUserRights getUserRights;
 
+    // flag for GPS status
+    boolean isGPSEnabled = false;
+    // flag for network status
+    boolean isNetworkEnabled = false;
+    // flag for GPS status
+    boolean canGetLocation = false;
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
+
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = MainActivity.this;
 
         boolean networkAccess = isNetworkAvailable();
         if(!networkAccess){
-
+//          TODO handle situation when network is disabled
             Log.i("INTERNET???", "KONACNO NEMA NETA");
         }
+
+        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+
+        // getting GPS status
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
 //        TODO sta da radim sa session managementom
 //        session = new SessionManager(getApplicationContext());
 //
@@ -179,6 +206,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         };
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
     }
 
     /**
@@ -196,6 +224,16 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            // no network provider is enabled
+            showSettingsAlert();
+        } else {
+            this.canGetLocation = true;
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // SqLite database handler
@@ -359,9 +397,36 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Log.i("onBackPressed ", "Pritisnuto back dugme!!!!!!!!");
         // super.onBackPressed(); // Comment this super call to avoid calling finish()
+    }
+
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS is settings");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                mContext.startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 }
