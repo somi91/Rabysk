@@ -124,7 +124,7 @@ public class MainDrawerAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 String name = finalHolder.txtName.getText().toString();
-                if(name.equals("pocetna")){
+                if(name.equals("Pocetna")){
 
                 } else{
                     SQLiteHandler db = new SQLiteHandler(mContext);

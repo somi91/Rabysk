@@ -1,6 +1,7 @@
 package com.uslive.rabyks.activities;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -34,26 +36,36 @@ import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
 import com.uslive.rabyks.AsyncTasks.GetPartners;
 import com.uslive.rabyks.AsyncTasks.GetTypes;
 import com.uslive.rabyks.AsyncTasks.GetUserRights;
+import com.uslive.rabyks.AsyncTasks.OnGetFilterTypesCompleted;
 import com.uslive.rabyks.AsyncTasks.OnTaskCompletedUpdateGridView;
 import com.uslive.rabyks.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.uslive.rabyks.Services.ProximityReciever;
 import com.uslive.rabyks.adapters.ImageAdapter;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
+import com.uslive.rabyks.fragments.ClubOwnerWaiter;
 import com.uslive.rabyks.fragments.ConfirmationFragment;
+import com.uslive.rabyks.fragments.FilterFragment;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
 import com.uslive.rabyks.models.DrawerRow;
 import com.uslive.rabyks.models.Partner;
+import com.uslive.rabyks.models.PartnerType;
 import com.uslive.rabyks.models.Reservation;
 import com.uslive.rabyks.models.User;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity implements OnTaskCompletedUpdateGridView{
+
+public class MainActivity extends ActionBarActivity implements OnTaskCompletedUpdateGridView, FilterFragment.FinishFilterFragment, OnGetFilterTypesCompleted{
 
     private SQLiteHandler db;
     private SessionManager session;
@@ -84,6 +96,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     protected LocationManager locationManager;
 
     private Context mContext;
+    private Button filter;
+    private ArrayList<PartnerType> partnerTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +137,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
 
-        getTypes = new GetTypes(getApplicationContext());
+        getTypes = new GetTypes(getApplicationContext(), this);
         getTypes.execute();
 
         // Da li ima usera u lokalnoj bazi?
@@ -213,6 +227,29 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         };
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        filter = (Button) findViewById(R.id.btnFilter);
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterFragment();
+            }
+        });
+    }
+
+    private void openFilterFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Bundle filterArgs = new Bundle();
+
+        FilterFragment fragment = FilterFragment.newInstance(partnerTypes);
+//        FilterFragment filterFragment = new FilterFragment();
+
+//        filterArgs.putString("partnerId", "sd");
+//        filterArgs.putSerializable("describable_key", (Serializable) partnerTypes);
+//        filterFragment.setArguments(filterArgs);
+
+        transaction.replace(R.id.mainview, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
     }
 
@@ -269,9 +306,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
                 List<Partner> partners = db.getPartnersBySpecificParameter(query);
-                for (Partner partner : partners) {
-
-                }
+//                for (Partner partner : partners) {
+//
+//                }
                 gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
                 return true;
             }
@@ -314,6 +351,33 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         db = new SQLiteHandler(getApplicationContext());
         List<Partner> partners = db.getAllPartners();
         gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
+    }
+
+    @Override
+    public void onFinishFilterFragment(boolean kafana, boolean klub, boolean kafic, boolean restoran) {
+
+        String query = null;
+        List<Partner> partners = db.getPartnersBySpecificParameter(query);
+//                for (Partner partner : partners) {
+//
+//                }
+        gridview.setAdapter(new ImageAdapter(getApplicationContext(), partners));
+    }
+
+    @Override
+    public void OnGetFilterTypesCompleted(String array) {
+        partnerTypes = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(array);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                PartnerType pt = new PartnerType();
+                pt.setId(obj.getInt("id"));
+                pt.setName(obj.getString("type"));
+                partnerTypes.add(pt);
+            }
+        } catch (JSONException e) {
+        }
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

@@ -20,7 +20,8 @@
             android:horizontalSpacing="0dp"
             android:stretchMode="columnWidth"
             android:gravity="center"
-            android:numColumns="2" />
+            android:numColumns="2"
+            android:layout_above="@+id/filter" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -32,6 +33,22 @@
             android:visibility="gone"
             android:indeterminateDrawable="@drawable/progress" >
         </ProgressBar>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:id="@+id/filter"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FILTER"
+                android:id="@+id/btnFilter"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

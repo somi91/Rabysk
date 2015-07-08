@@ -280,6 +280,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             args.putInt("objectId", obj.getInt("objectId"));
             args.putInt("numberOfSeats", obj.getInt("numberOfSeats"));
             args.putInt("timeOut", obj.getInt("timeOut"));
+            args.getString("type", obj.getString("type"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -321,9 +322,9 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     @Override
-    public void onFinishReservationDialog(String inputText, int pId, int oId, int numberOfSeats, int timeOut) {
+    public void onFinishReservationDialog(String inputText, int pId, int oId, int numberOfSeats, int timeOut, String type) {
         if (inputText.equals("OK")) {
-            out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut + ":" + "korisnik");
+            out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut + ":" + type + ":" + "korisnik");
             // TO DO (partner_name, duration of reservation)
 
 //            db.deleteReservations();

@@ -24,13 +24,16 @@ public class GetTypes extends AsyncTask<String, Void, String> {
     private static final String TAG = GetTypes.class.getSimpleName();
 
     private Context context;
+    private OnGetFilterTypesCompleted listener;
 
-    public GetTypes(Context context) {
+    public GetTypes(Context context, OnGetFilterTypesCompleted l) {
         this.context = context;
+        listener = l;
     }
 
     @Override
     protected String doInBackground(String... params) {
+        String result = null;
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(context.getString(R.string.serverIP) + "/getTypes");
@@ -40,13 +43,16 @@ public class GetTypes extends AsyncTask<String, Void, String> {
 
             if (is != null) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-                String result = bufferedReader.readLine();
-
-
+                result = bufferedReader.readLine();
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
-        return null;
+        return result;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        listener.OnGetFilterTypesCompleted(result);
     }
 }
