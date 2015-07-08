@@ -46,6 +46,7 @@ import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.fragments.ConfirmationFragment;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 import com.uslive.rabyks.helpers.SessionManager;
+import com.uslive.rabyks.models.DrawerRow;
 import com.uslive.rabyks.models.Partner;
 import com.uslive.rabyks.models.Reservation;
 import com.uslive.rabyks.models.User;
@@ -168,7 +169,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             }
         });
 
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+        mPlanetTitles = getResources().getStringArray(R.array.favorites_array);
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -312,12 +313,14 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
+            DrawerRow row = (DrawerRow) parent.getItemAtPosition(position);
+            selectItem(position, row.getName());
         }
     }
 
     /** Swaps fragments in the main content view */
-    private void selectItem(int position) {
+    private void selectItem(int position, String name) {
+
         int counter = 0;
         if ( position >= 1 && position <= 4) {
             counter = 1;
@@ -325,6 +328,28 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             counter = 2;
         } else if (position >= 8 ) {
             counter = 3;
+        }
+
+        switch (position) {
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            default:
+                List<Partner> partners = db.getPartnersBySpecificParametar(name);
+                Partner partner = partners.get(0);
+                Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
+//                String partner_id = "" + partner.getId();
+                clubIntent.putExtra("partner_id", partner.getId());
+                clubIntent.putExtra("partner_name", partner.getName());
+                clubIntent.putExtra("partner_created_at", partner.getCreated_at());
+                clubIntent.putExtra("partner_layout_img_url", partner.getLayout_img_url());
+                startActivity(clubIntent);
+                finish();
+                break;
+
         }
 
         // Highlight the selected item, update the title, and close the drawer

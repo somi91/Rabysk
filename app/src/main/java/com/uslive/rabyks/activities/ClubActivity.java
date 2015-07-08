@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.uslive.rabyks.AsyncTasks.GetLayoutImage;
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.Services.GPSTracker;
+import com.uslive.rabyks.adapters.ClubDrawerAdapter;
 import com.uslive.rabyks.adapters.MainDrawerAdapter;
 import com.uslive.rabyks.dialogs.EmployeeReservationDialog;
 import com.uslive.rabyks.fragments.ClubOwnerDetail;
@@ -129,7 +130,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
         // Set the adapter for the list view
 //        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, mPlanetTitles));
-        mDrawerList.setAdapter(new MainDrawerAdapter(this, mPlanetTitles));
+        mDrawerList.setAdapter(new ClubDrawerAdapter(this, mPlanetTitles));
 
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -325,7 +326,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             out.println("rezervacija:" + pId + ":" + oId + ":" + numberOfSeats + ":" + timeOut + ":" + "korisnik");
             // TO DO (partner_name, duration of reservation)
 
-            db.deleteReservations();
+//            db.deleteReservations();
 
             db.addReservation(club_name, (long) timeOut * 60);
             Reservation res = db.getReservation();

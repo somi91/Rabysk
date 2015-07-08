@@ -277,8 +277,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return timestamp;
     }
 
-    public void updateTimestampPartner(String partnerName)
-    {
+    public void updateTimestampPartner(String partnerName) {
         Long tsLong = System.currentTimeMillis()/1000;
         ContentValues cv = new ContentValues();
         cv.put("created_at", tsLong);
@@ -346,6 +345,29 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         }
         db.close();
         return reservation;
+    }
+
+    public List<String> getReservations() {
+        List<String> reservations = new ArrayList<>();
+        String getQuery = "SELECT name, count(DISTINCT " + RESERVATION_CREATED_AT + ") as number FROM " + TABLE_RESERVATION + " GROUP BY name ORDER BY number DESC LIMIT 3";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(getQuery, null);
+        int test;
+        if (cursor.getCount() != 0 ) {
+            if (cursor.moveToFirst()) {
+                do {
+                    reservations.add(cursor.getString(cursor.getColumnIndex("name")));
+                    test = cursor.getInt(cursor.getColumnIndex("number"));
+                    Log.i("BROJ REZERVACIJA ", test + "");
+                }
+                while (cursor.moveToNext());
+            }
+            cursor.close();
+        } else {
+            db.close();
+        }
+        db.close();
+        return reservations;
     }
 
     public void deleteReservations() {
