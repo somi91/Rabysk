@@ -13,6 +13,7 @@ import com.uslive.rabyks.models.User;
 import com.uslive.rabyks.models.UserPartner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -260,9 +261,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return contactList;
     }
 
-    public List<Partner> getPartnerByType(int type) {
-        List<Partner> pl = new ArrayList<Partner>();
+    public List<Partner> getPartnerByType(int[] types) {
 
+        List<Partner> pl = new ArrayList<Partner>();
         String selectQuery = "SELECT * FROM partner";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -270,9 +271,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String allTypes = cursor.getString(cursor.getColumnIndex("type"));
-                String[] types = allTypes.split(",");
-                for (String t : types) {
-                    if (t == type+"") {
+                String[] typesS = allTypes.split(",");
+                for (String t : typesS) {
+                    if (Arrays.asList(types).contains(Integer.parseInt(t))) {
                         Partner partner = new Partner();
                         partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
                         partner.setName(cursor.getString(cursor.getColumnIndex("name")));
