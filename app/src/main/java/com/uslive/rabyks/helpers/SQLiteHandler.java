@@ -77,7 +77,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 + PARTNER_ID + " INTEGER PRIMARY KEY," + PARTNER_NAME + " TEXT,"
                 + PARTNER_ADDRESS + " TEXT," + PARTNER_NUMBER + " TEXT,"
                 + PARTNER_LOGO_URL + " TEXT," + PARTNER_LOGO_URL_BYTES + " BLOB," + PARTNER_LAYOUT_IMG_URL + " TEXT,"
-                + PARTNER_TYPE + " INTEGER," + PARTNER_WORKING_HOURS + " TEXT,"
+                + PARTNER_TYPE + " TEXT," + PARTNER_WORKING_HOURS + " TEXT,"
                 + PARTNER_CREATED_AT + " INTEGER," + PARTNER_MODIFIED_AT + " INTEGER" + ")";
         db.execSQL(CREATE_PARTNER_TABLE);
 
@@ -106,6 +106,27 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_PARTNER);
         // Create tables again
         onCreate(db);
+    }
+
+    public User getUser() {
+
+        User user = null;
+        String selectQuery = "SELECT * FROM " + TABLE_USER;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            user = new User();
+            user.setId(cursor.getInt(cursor.getColumnIndex(USER_ID)));
+            user.setEmail(cursor.getString(cursor.getColumnIndex(USER_EMAIL)));
+            user.setNumber(cursor.getString(cursor.getColumnIndex(USER_NUMBER)));
+            user.setPassword(cursor.getString(cursor.getColumnIndex(USER_PASSWORD)));
+            user.setRole(cursor.getString(cursor.getColumnIndex(USER_ROLE)));
+        }
+
+        cursor.close();
+        db.close();
+        return user;
     }
 
     public long addUser(int id, String number, String email, String password, String role) {
@@ -141,6 +162,23 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return numberOfUpdatedUsers;
     }
 
+    public void deleteUsers() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_USER, null, null);
+        db.close();
+        Log.d(TAG, "Deleted all user info from sqlite");
+    }
+
+    public int getUserRowCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_USER;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int rowCount = cursor.getCount();
+        db.close();
+        cursor.close();
+        return rowCount;
+    }
+
     public void addPartner(Partner partner) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -162,27 +200,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public User getUser() {
-
-        User user = null;
-        String selectQuery = "SELECT * FROM " + TABLE_USER;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            user = new User();
-            user.setId(cursor.getInt(cursor.getColumnIndex(USER_ID)));
-            user.setEmail(cursor.getString(cursor.getColumnIndex(USER_EMAIL)));
-            user.setNumber(cursor.getString(cursor.getColumnIndex(USER_NUMBER)));
-            user.setPassword(cursor.getString(cursor.getColumnIndex(USER_PASSWORD)));
-            user.setRole(cursor.getString(cursor.getColumnIndex(USER_ROLE)));
-        }
-
-        cursor.close();
-        db.close();
-        return user;
-    }
-
     public List<Partner> getAllPartners() {
 
         List<Partner> contactList = new ArrayList<>();
@@ -200,7 +217,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
                 partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
                 partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
-                partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                partner.setType(cursor.getString(cursor.getColumnIndex("type")));
                 partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
                 partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
                 partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
@@ -213,8 +230,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return contactList;
     }
 
-    // Search for partners by some value
-    public List<Partner> getPartnersBySpecificParametar(String value) {
+    public List<Partner> getPartnersBySpecificParameter(String value) {
 
         List<Partner> contactList = new ArrayList<>();
         String selectQuery = "Select * FROM partner WHERE name LIKE '"+ value +"%'";
@@ -231,7 +247,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
                 partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
                 partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
-                partner.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                partner.setType(cursor.getString(cursor.getColumnIndex("type")));
                 partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
                 partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
                 partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
@@ -244,22 +260,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return contactList;
     }
 
-    /**
-     * Getting user login status return true if rows are there in table
-     * */
-    public int getRowCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_USER;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        int rowCount = cursor.getCount();
-        db.close();
-        cursor.close();
-        return rowCount;
-    }
-
-    /**
-     * Getting timestamp of last added partner
-     * */
     public Long getTimestampOfLastPartner() {
 
         String getQuery = "SELECT " + PARTNER_CREATED_AT + " FROM " + TABLE_PARTNER + " ORDER BY " + PARTNER_CREATED_AT + " DESC LIMIT 1";
@@ -282,15 +282,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("created_at", tsLong);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_PARTNER, cv, PARTNER_NAME +"='"+partnerName+"'", null);
+        db.update(TABLE_PARTNER, cv, PARTNER_NAME + "='" + partnerName + "'", null);
         db.close();
-    }
-
-    public void deleteUsers() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_USER, null, null);
-        db.close();
-        Log.d(TAG, "Deleted all user info from sqlite");
     }
 
     public void deletePartners() {

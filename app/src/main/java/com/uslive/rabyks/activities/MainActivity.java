@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
 import com.uslive.rabyks.AsyncTasks.GetPartners;
+import com.uslive.rabyks.AsyncTasks.GetTypes;
 import com.uslive.rabyks.AsyncTasks.GetUserRights;
 import com.uslive.rabyks.AsyncTasks.OnTaskCompletedUpdateGridView;
 import com.uslive.rabyks.R;
@@ -68,6 +69,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
     private ProgressBar bar;
     Reservation res = null;
+
+    private GetTypes getTypes;
 
     private GetUserRights getUserRights;
 
@@ -113,12 +116,15 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         res = db.getReservation();
         if (res != null && res.isCurrentStatus()) {
-            List<Partner> partners = db.getPartnersBySpecificParametar(res.getName());
+            List<Partner> partners = db.getPartnersBySpecificParameter(res.getName());
             Partner partnerForReservation = partners.get(0);
             CheckLiveReservations(partnerForReservation.getLogo_url_bytes());
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
+
+        getTypes = new GetTypes(getApplicationContext());
+        getTypes.execute();
 
         // Da li ima usera u lokalnoj bazi?
         User user  = db.getUser();
@@ -262,7 +268,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
-                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                List<Partner> partners = db.getPartnersBySpecificParameter(query);
                 for (Partner partner : partners) {
 
                 }
@@ -272,7 +278,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
             public boolean onQueryTextSubmit(String query) {
                 Partner searchResult = null;
-                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                List<Partner> partners = db.getPartnersBySpecificParameter(query);
                 for (Partner partner : partners) {
                     if(partner.getName().equals(query)){
                         searchResult = partner;
