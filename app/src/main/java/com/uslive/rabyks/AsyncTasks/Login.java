@@ -55,7 +55,7 @@ public class Login extends AsyncTask<String, Void, JSONObject> {
         InputStream inputStream;
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(context.getString(R.string.login_url));
+            HttpPost httpPost = new HttpPost(context.getString(R.string.serverIP) + "/login");
             ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
             postParameters.add(new BasicNameValuePair("email", params[0]));
             postParameters.add(new BasicNameValuePair("password", params[1]));

@@ -11,7 +11,7 @@ public class Partner {
     private String logo_url;
     private byte[] logo_url_bytes;
     private String layout_img_url;
-    private int type;
+    private String type;
     private String working_hours;
     private Long created_at;
     private Long modified_at;
@@ -20,7 +20,7 @@ public class Partner {
 
     }
 
-    public Partner(int id, String name, String address, String number, String logo_url, byte[] logo_url_bytes, String layout_img_url, int type, String working_hours, Long created_at, Long modified_at) {
+    public Partner(int id, String name, String address, String number, String logo_url, byte[] logo_url_bytes, String layout_img_url, String type, String working_hours, Long created_at, Long modified_at) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -90,11 +90,11 @@ public class Partner {
         this.logo_url_bytes = logo_url_bytes;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 

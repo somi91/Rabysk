@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.uslive.rabyks.AsyncTasks.GetLatestPartners;
 import com.uslive.rabyks.AsyncTasks.GetPartners;
+import com.uslive.rabyks.AsyncTasks.GetTypes;
 import com.uslive.rabyks.AsyncTasks.GetUserRights;
 import com.uslive.rabyks.AsyncTasks.OnTaskCompletedUpdateGridView;
 import com.uslive.rabyks.R;
@@ -62,6 +63,8 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     private ProgressBar bar;
     Reservation res = null;
 
+    private GetTypes getTypes;
+
     private GetUserRights getUserRights;
 
     @Override
@@ -91,6 +94,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
+
+        getTypes = new GetTypes(getApplicationContext());
+        getTypes.execute();
 
         // Da li ima usera u lokalnoj bazi?
         User user  = db.getUser();

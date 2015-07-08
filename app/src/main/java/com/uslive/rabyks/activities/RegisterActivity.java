@@ -143,7 +143,7 @@ public class RegisterActivity extends ActionBarActivity {
 
             // Register user on server
             Register rast = new Register(getApplicationContext());
-            rast.execute(getString(R.string.register_url), userJson);
+            rast.execute(getString(R.string.serverIP) + "/register", userJson);
             // Launch login activity
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
