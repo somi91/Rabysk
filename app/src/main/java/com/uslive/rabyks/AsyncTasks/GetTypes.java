@@ -42,7 +42,6 @@ public class GetTypes extends AsyncTask<String, Void, String> {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
                 String result = bufferedReader.readLine();
 
-
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());

@@ -260,6 +260,43 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return contactList;
     }
 
+    public List<Partner> getPartnerByType(int type) {
+        List<Partner> pl = new ArrayList<Partner>();
+
+        String selectQuery = "SELECT * FROM partner";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                String allTypes = cursor.getString(cursor.getColumnIndex("type"));
+                String[] types = allTypes.split(",");
+                for (String t : types) {
+                    if (t == type+"") {
+                        Partner partner = new Partner();
+                        partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                        partner.setName(cursor.getString(cursor.getColumnIndex("name")));
+                        partner.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+                        partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
+                        partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
+                        partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                        partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
+                        partner.setType(cursor.getString(cursor.getColumnIndex("type")));
+                        partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
+                        partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
+                        partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
+                        // Adding contact to list
+                        pl.add(partner);
+                    }
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return pl;
+    }
+
     public Long getTimestampOfLastPartner() {
 
         String getQuery = "SELECT " + PARTNER_CREATED_AT + " FROM " + TABLE_PARTNER + " ORDER BY " + PARTNER_CREATED_AT + " DESC LIMIT 1";

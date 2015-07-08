@@ -375,7 +375,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             case R.id.login:
                 Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(loginIntent);
-                finish();
+                
                 // TODO da li se ovde gasi aktiviti ili ide do return? posledice?
                 return true;
             default:

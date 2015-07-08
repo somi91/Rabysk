@@ -5,8 +5,8 @@
     <string name="action_search">Search</string>
     <string name="action_login">Login</string>
 
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_login"></string>
+    <string name="title_activity_register">Register</string>
 
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -43,7 +43,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_club">ClubActivity</string>
-
+    ing>
     <string name="dialog_reservation">Rezervacija</string>
     <string name="cancel">Otkazi</string>
     <string name="confirme">Potvrdi</string>

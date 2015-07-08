@@ -15,7 +15,6 @@ import com.uslive.rabyks.AsyncTasks.OnLoginComplete;
 import com.uslive.rabyks.R;
 
 import com.uslive.rabyks.helpers.SQLiteHandler;
-import com.uslive.rabyks.helpers.SessionManager;
 
 public class LoginActivity extends ActionBarActivity implements OnLoginComplete {
 
@@ -25,7 +24,6 @@ public class LoginActivity extends ActionBarActivity implements OnLoginComplete 
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
-    private SessionManager session;
     private SQLiteHandler db;
     private Login loginAsync;
 
@@ -39,24 +37,10 @@ public class LoginActivity extends ActionBarActivity implements OnLoginComplete 
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
 
-        // Progress dialog
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
         db = new SQLiteHandler(getApplicationContext());
-
-
-
-//        TODO Session manager
-//        session = new SessionManager(getApplicationContext());
-//
-//        // Check if user is already logged in or not
-//        if (session.isLoggedIn()) {
-//            // User is already logged in. Take him to main activity
-//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
 
         btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +58,7 @@ public class LoginActivity extends ActionBarActivity implements OnLoginComplete 
                 String email = inputEmail.getText().toString();
                 String password = inputPassword.getText().toString();
 
-                // Check for empty data in the form
                 if (email.trim().length() > 0 && password.trim().length() > 0) {
-                    // login user
                     login(email, password);
                 } else {
                     // Prompt user to enter credentials
@@ -86,19 +68,11 @@ public class LoginActivity extends ActionBarActivity implements OnLoginComplete 
                 }
             }
         });
-
     }
 
     private void login(final String email, final String password) {
-//        TODO
-//        session.setLogin(true);
         loginAsync = new Login(getApplicationContext(), db, this);
         loginAsync.execute(email, password);
-
-//        TODO
-//        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//        startActivity(intent);
-//        finish();
     }
 
     @Override
