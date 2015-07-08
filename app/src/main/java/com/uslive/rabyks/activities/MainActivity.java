@@ -88,7 +88,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         res = db.getReservation();
         if (res != null && res.isCurrentStatus()) {
-            List<Partner> partners = db.getPartnersBySpecificParametar(res.getName());
+            List<Partner> partners = db.getPartnersBySpecificParameter(res.getName());
             Partner partnerForReservation = partners.get(0);
             CheckLiveReservations(partnerForReservation.getLogo_url_bytes());
         }
@@ -229,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
-                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                List<Partner> partners = db.getPartnersBySpecificParameter(query);
                 for (Partner partner : partners) {
 
                 }
@@ -239,7 +239,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
             public boolean onQueryTextSubmit(String query) {
                 Partner searchResult = null;
-                List<Partner> partners = db.getPartnersBySpecificParametar(query);
+                List<Partner> partners = db.getPartnersBySpecificParameter(query);
                 for (Partner partner : partners) {
                     if(partner.getName().equals(query)){
                         searchResult = partner;
