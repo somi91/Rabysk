@@ -25,7 +25,6 @@ import java.util.TreeSet;
  */
 public class MainDrawerAdapter extends BaseAdapter {
     private Context mContext;
-    private String[] drawerItems;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
     private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
@@ -36,7 +35,7 @@ public class MainDrawerAdapter extends BaseAdapter {
     private TreeSet<Integer> mSeparatorsSet = new TreeSet<Integer>();
     ArrayList<String> mainList = new ArrayList<>();
 
-    public MainDrawerAdapter(Context context, String[] array) {
+    public MainDrawerAdapter(Context context) {
 //      TODO pokupiti podatke iz baze i odgovarajucim podacima popuniti adapter
         SQLiteHandler db = new SQLiteHandler(context);
         mainList.add("Pocetna");
@@ -44,7 +43,6 @@ public class MainDrawerAdapter extends BaseAdapter {
         List<String> favorites = db.getReservations();
         mainList.addAll(favorites);
 
-        drawerItems = array;
         mContext = context;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         IteratorThrowData(mainList);
@@ -126,17 +124,21 @@ public class MainDrawerAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 String name = finalHolder.txtName.getText().toString();
-                SQLiteHandler db = new SQLiteHandler(mContext);
-                List<Partner> partners = db.getPartnersBySpecificParametar(name);
-                Partner partner = partners.get(0);
-                Intent clubIntent = new Intent(mContext, ClubActivity.class);
-//                String partner_id = "" + partner.getId();
-                clubIntent.putExtra("partner_id", partner.getId());
-                clubIntent.putExtra("partner_name", partner.getName());
-                clubIntent.putExtra("partner_created_at", partner.getCreated_at());
-                clubIntent.putExtra("partner_layout_img_url", partner.getLayout_img_url());
-                mContext.startActivity(clubIntent);
-                ((Activity) mContext).finish();
+                if(name.equals("pocetna")){
+
+                } else{
+                    SQLiteHandler db = new SQLiteHandler(mContext);
+                    List<Partner> partners = db.getPartnersBySpecificParameter(name);
+                    Partner partner = partners.get(0);
+                    Intent clubIntent = new Intent(mContext, ClubActivity.class);
+    //                String partner_id = "" + partner.getId();
+                    clubIntent.putExtra("partner_id", partner.getId());
+                    clubIntent.putExtra("partner_name", partner.getName());
+                    clubIntent.putExtra("partner_created_at", partner.getCreated_at());
+                    clubIntent.putExtra("partner_layout_img_url", partner.getLayout_img_url());
+                    mContext.startActivity(clubIntent);
+                    ((Activity) mContext).finish();
+                }
             }
         });
 

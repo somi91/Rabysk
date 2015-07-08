@@ -175,7 +175,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             }
         });
 
-        mPlanetTitles = getResources().getStringArray(R.array.favorites_array);
+//        mPlanetTitles = getResources().getStringArray(R.array.favorites_array);
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -186,7 +186,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         // Set the adapter for the list view
 //        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_list_item, mPlanetTitles));
 
-        mDrawerList.setAdapter(new MainDrawerAdapter(this, mPlanetTitles));
+        mDrawerList.setAdapter(new MainDrawerAdapter(this));
 
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -334,28 +334,6 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
             counter = 2;
         } else if (position >= 8 ) {
             counter = 3;
-        }
-
-        switch (position) {
-            case 0:
-
-                break;
-            case 1:
-
-                break;
-            default:
-                List<Partner> partners = db.getPartnersBySpecificParametar(name);
-                Partner partner = partners.get(0);
-                Intent clubIntent = new Intent(getApplicationContext(), ClubActivity.class);
-//                String partner_id = "" + partner.getId();
-                clubIntent.putExtra("partner_id", partner.getId());
-                clubIntent.putExtra("partner_name", partner.getName());
-                clubIntent.putExtra("partner_created_at", partner.getCreated_at());
-                clubIntent.putExtra("partner_layout_img_url", partner.getLayout_img_url());
-                startActivity(clubIntent);
-                finish();
-                break;
-
         }
 
         // Highlight the selected item, update the title, and close the drawer
