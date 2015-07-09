@@ -19,11 +19,11 @@ import com.uslive.rabyks.R;
 public class EmployeeReservationDialog extends DialogFragment implements Button.OnClickListener {
 
     public interface EditDialogListener {
-        void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete);
+        void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete, String type);
     }
 
     public interface ChangeObject {
-        void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete);
+        void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete, String type);
     }
 
     //    private EditText mEditText;
@@ -35,6 +35,7 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
     private TextView txtState;
     private boolean free;
     private boolean delete;
+    private String type;
 
     private int partnerId;
     private int objectId;
@@ -62,6 +63,7 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
             partnerId = mArgs.getInt("partnerId");
             objectId = mArgs.getInt("objectId");
             free = mArgs.getBoolean("free");
+            type = mArgs.getString("type");
         }
         // Show soft keyboard automatically
 //        mEditText.requestFocus();
@@ -82,8 +84,8 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
         EditDialogListener activity = (EditDialogListener) getActivity();
         ChangeObject changeObject = (ChangeObject) getTargetFragment();
         if(btnPotvrdi.getId() == id){
-            activity.onFinishDialog(true, partnerId, objectId, free, delete);
-            changeObject.onFinishChangeObject(true, partnerId, objectId, free, delete);
+            activity.onFinishDialog(true, partnerId, objectId, free, delete, type);
+            changeObject.onFinishChangeObject(true, partnerId, objectId, free, delete, type);
             this.dismiss();
         } else if(btnClear.getId() == id) {
             free = true;
@@ -99,7 +101,7 @@ public class EmployeeReservationDialog extends DialogFragment implements Button.
             delete = true;
             txtState.setText("Potvrdi da bi obrisao sto");
         } else{
-            activity.onFinishDialog(false, partnerId, objectId, free, delete);
+            activity.onFinishDialog(false, partnerId, objectId, free, delete, type);
             this.dismiss();
         }
     }

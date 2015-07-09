@@ -304,6 +304,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
             args.putInt("objectId", obj.getInt("objectId"));
             args.putInt("numberOfSeats", obj.getInt("numberOfSeats"));
             args.putInt("timeOut", obj.getInt("timeOut"));
+            args.putString("type", obj.getString("type"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -355,7 +356,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
     }
 
     @Override
-    public void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
+    public void onFinishChangeObject(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete, String type) {
         Button btn = (Button) edit_content.findViewById(objectId);
         if (success) {
             if(delete) {

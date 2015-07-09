@@ -596,7 +596,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
     }
 
     @Override
-    public void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete) {
+    public void onFinishDialog(boolean success, int partnerId, int objectId, boolean stateReservation, boolean delete, String type) {
         if (success) {
 //            if (!stateReservation) {
 //                out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
@@ -610,7 +610,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
             }else {
                 if(!stateReservation) {
                     // rezervisi (setuje zauzeto)
-                    out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + "konobar");
+                    out.println("rezervacija:" + partnerId + ":" + objectId + ":" + 4 + ":" + 40 + ":" + type + ":" + "konobar");
                 } else {
                     out.println("oslobodi:" + partnerId + ":" + objectId);
                 }
