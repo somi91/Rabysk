@@ -459,7 +459,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
                                 changeObject(false, helper[1]);
                             }else if(helper[0].equals("oslobodi")){
                                 changeObject(true, helper[1]);
-                            }else if(helper[1].equals("partnerObjectSetup")){
+                            }else if(helper[0].equals("partnerObjectSetup")){
                                 Log.i("Poruka ", " Sigla je poruka za novi partner objekat");
                             }else{
                                 try {
