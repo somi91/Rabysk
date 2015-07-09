@@ -14,6 +14,7 @@ import com.uslive.rabyks.R;
 import com.uslive.rabyks.models.PartnerType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marezina on 8.7.2015.
@@ -28,9 +29,12 @@ public class FilterFragment extends Fragment {
 
     private static final String DESCRIBABLE_KEY = "describable_key";
     private ArrayList array;
+    private ArrayList<CheckBox> listOfCheckBoxex;
+
+    private int[] searchQuery;
 
     public interface FinishFilterFragment{
-        void onFinishFilterFragment(boolean kafana, boolean klub, boolean kafic, boolean restoran);
+        void onFinishFilterFragment(int[] searchQuery);
     }
 
     public static FilterFragment newInstance(ArrayList describable) {
@@ -56,16 +60,7 @@ public class FilterFragment extends Fragment {
                 Filtriraj();
             }
         });
-
-//        kafana = (CheckBox) view.findViewById(R.id.cbKafana);
-//        klub = (CheckBox) view.findViewById(R.id.cbKlub);
-//        restoran = (CheckBox) view.findViewById(R.id.cbRestoran);
-//        kafic = (CheckBox) view.findViewById(R.id.cbKafic);
-//        kafana.setChecked(false);
-//        klub.setChecked(false);
-//        restoran.setChecked(false);
-//        kafic.setChecked(false);
-
+        listOfCheckBoxex = new ArrayList<>();
         array = (ArrayList) getArguments().getSerializable(DESCRIBABLE_KEY);
         for (int i = 0; i < array.size(); i++){
             PartnerType partnerType = (PartnerType) array.get(i);
@@ -73,17 +68,34 @@ public class FilterFragment extends Fragment {
             cb.setText(partnerType.getName());
             cb.setId(partnerType.getId());
             cb.setTextColor(Color.BLACK);
+            listOfCheckBoxex.add(cb);
             linearLayout.addView(cb);
         }
-        String nestp = "asdad";
-
-
         return view;
     }
 
     private void Filtriraj() {
+        searchQuery = new int[4];
+        int br = 0;
         FinishFilterFragment activity = (FinishFilterFragment) getActivity();
-//        activity.onFinishFilterFragment(kafana.isChecked(), klub.isChecked(), kafic.isChecked(), restoran.isChecked());
+        for(int i = 0; i < listOfCheckBoxex.size(); i++){
+            CheckBox cb = listOfCheckBoxex.get(i);
+            if(cb.isChecked()){
+                for(int j = 0; j < listOfCheckBoxex.size(); j++){
+                    if(searchQuery[j] == 0){
+                        searchQuery[j] = cb.getId();
+                        break;
+                    }
+                }
+            }else
+                br++;
+        }
+        if(br == 4) {
+            getFragmentManager().popBackStackImmediate();
+        } else {
+            activity.onFinishFilterFragment(searchQuery);
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
 

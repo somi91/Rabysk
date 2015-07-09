@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.uslive.rabyks.helpers.SQLiteHandler;
@@ -32,17 +33,19 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
     Partner partner;
     OnTaskCompletedUpdateGridView listener;
     ProgressBar bar;
+    LinearLayout filterLayout;
 
-
-    public FetchPartnerData(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b){
+    public FetchPartnerData(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b, LinearLayout f){
         context = c;
         listener = l;
         bar = b;
+        filterLayout = f;
     }
 
     @Override
     protected void onPreExecute(){
         bar.setVisibility(View.VISIBLE);
+        filterLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -83,6 +86,7 @@ public class FetchPartnerData extends AsyncTask<Partner, Void, byte[]> {
 
     protected void onPostExecute(byte[] result) {
         bar.setVisibility(View.GONE);
+        filterLayout.setVisibility(View.VISIBLE);
         SQLiteHandler sqLiteHandler = new SQLiteHandler(context);
         Long tsLong = System.currentTimeMillis()/1000;
         sqLiteHandler.addPartner(new Partner(partner.getId(), partner.getName(), partner.getAddress(), partner.getNumber(), partner.getLogo_url(), result, partner.getLayout_img_url(), partner.getType(), partner.getWorking_hours(), partner.getCreated_at(), partner.getModified_at()));

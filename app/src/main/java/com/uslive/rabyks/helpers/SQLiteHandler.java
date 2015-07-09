@@ -273,21 +273,23 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 String allTypes = cursor.getString(cursor.getColumnIndex("type"));
                 String[] typesS = allTypes.split(",");
                 for (String t : typesS) {
-                    if (Arrays.asList(types).contains(Integer.parseInt(t))) {
-                        Partner partner = new Partner();
-                        partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                        partner.setName(cursor.getString(cursor.getColumnIndex("name")));
-                        partner.setAddress(cursor.getString(cursor.getColumnIndex("address")));
-                        partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
-                        partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
-                        partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
-                        partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
-                        partner.setType(cursor.getString(cursor.getColumnIndex("type")));
-                        partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
-                        partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
-                        partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
-                        // Adding contact to list
-                        pl.add(partner);
+                    for(int i = 0; i < types.length; i++){
+                        if (types[i] == Integer.parseInt(t)) {
+                            Partner partner = new Partner();
+                            partner.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                            partner.setName(cursor.getString(cursor.getColumnIndex("name")));
+                            partner.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+                            partner.setNumber(cursor.getString(cursor.getColumnIndex("number")));
+                            partner.setLogo_url(cursor.getString(cursor.getColumnIndex("logo_url")));
+                            partner.setLogo_url_bytes(cursor.getBlob(cursor.getColumnIndex("logo_url_bytes")));
+                            partner.setLayout_img_url(cursor.getString(cursor.getColumnIndex("layout_img_url")));
+                            partner.setType(cursor.getString(cursor.getColumnIndex("type")));
+                            partner.setWorking_hours(cursor.getString(cursor.getColumnIndex("working_hours")));
+                            partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
+                            partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
+                            // Adding contact to list
+                            pl.add(partner);
+                        }
                     }
                 }
             } while (cursor.moveToNext());

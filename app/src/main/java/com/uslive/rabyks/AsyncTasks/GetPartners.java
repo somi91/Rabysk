@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,11 +31,13 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     Context context;
     OnTaskCompletedUpdateGridView listener;
     ProgressBar bar;
+    LinearLayout filterLayout;
 
-    public GetPartners(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b){
+    public GetPartners(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b, LinearLayout f){
         context = c;
         listener = l;
         bar = b;
+        filterLayout = f;
     }
 //    JSONParser jsonParser = new JSONParser();
 
@@ -43,6 +46,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
     protected void onPreExecute() {
         super.onPreExecute();
         bar.setVisibility(View.VISIBLE);
+        filterLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -66,6 +70,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
 
     protected void onPostExecute(JSONArray results) {
         bar.setVisibility(View.GONE);
+        filterLayout.setVisibility(View.VISIBLE);
         if (results != null && results.length() != 0) {
             for (int i = 0; i < results.length(); i++) {
                 Partner partner = new Partner();
@@ -93,7 +98,7 @@ public class GetPartners extends AsyncTask<String, String, JSONArray> {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                new FetchPartnerData(context, listener, bar).execute(partner);
+                new FetchPartnerData(context, listener, bar, filterLayout).execute(partner);
             }
         } else {
             listener.onTaskCompletedUpdateGridView();

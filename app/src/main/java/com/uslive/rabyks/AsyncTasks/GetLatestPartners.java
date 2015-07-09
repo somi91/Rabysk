@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.uslive.rabyks.R;
@@ -30,11 +31,13 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
     Context context;
     OnTaskCompletedUpdateGridView listener;
     ProgressBar bar;
+    LinearLayout filterLayout;
 
-    public GetLatestPartners(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b){
+    public GetLatestPartners(Context c, OnTaskCompletedUpdateGridView l, ProgressBar b, LinearLayout f){
         context = c;
         listener = l;
         bar = b;
+        filterLayout = f;
     }
 //    JSONParser jsonParser = new JSONParser();
 
@@ -43,6 +46,7 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
     protected void onPreExecute() {
         super.onPreExecute();
         bar.setVisibility(View.VISIBLE);
+        filterLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -65,6 +69,7 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
 
     protected void onPostExecute(JSONArray partners) {
         bar.setVisibility(View.GONE);
+        filterLayout.setVisibility(View.VISIBLE);
         if (partners != null && partners.length() != 0) {
             for (int i = 0; i < partners.length(); i++) {
                 Partner partner = new Partner();
@@ -92,7 +97,7 @@ public class GetLatestPartners extends AsyncTask<String, String, JSONArray> {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                new FetchPartnerData(context, listener, bar).execute(partner);
+                new FetchPartnerData(context, listener, bar, filterLayout).execute(partner);
             }
         } else {
             listener.onTaskCompletedUpdateGridView();

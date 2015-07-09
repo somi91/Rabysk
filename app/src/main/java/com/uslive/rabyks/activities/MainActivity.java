@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -96,6 +97,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     protected LocationManager locationManager;
 
     private Context mContext;
+    private LinearLayout filterLayout;
     private Button filter;
     private ArrayList<PartnerType> partnerTypes;
 
@@ -136,6 +138,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         }
 
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
+        filterLayout = (LinearLayout) findViewById(R.id.filter);
 
         getTypes = new GetTypes(getApplicationContext(), this);
         getTypes.execute();
@@ -162,9 +165,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         Long timestampForLastPartner = db.getTimestampOfLastPartner();
         if(timestampForLastPartner == null || timestampForLastPartner == 0){
             Log.i("Nothing in database", "First insert in sqlite for partners");
-            new GetPartners(getApplicationContext(), this, bar).execute("", "", "");
+            new GetPartners(getApplicationContext(), this, bar, filterLayout).execute("", "", "");
         }else{
-            new GetLatestPartners(getApplicationContext(), this, bar).execute(db.getTimestampOfLastPartner().toString());
+            new GetLatestPartners(getApplicationContext(), this, bar, filterLayout).execute(db.getTimestampOfLastPartner().toString());
         }
 
         // Search and initial Grid View
@@ -354,10 +357,10 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     }
 
     @Override
-    public void onFinishFilterFragment(boolean kafana, boolean klub, boolean kafic, boolean restoran) {
+    public void onFinishFilterFragment(int[] searchQuery) {
 
-        String query = null;
-        List<Partner> partners = db.getPartnersBySpecificParameter(query);
+        int[] query = searchQuery;
+        List<Partner> partners = db.getPartnerByType(searchQuery);
 //                for (Partner partner : partners) {
 //
 //                }
