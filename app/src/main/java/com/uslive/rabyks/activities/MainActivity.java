@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -17,6 +20,7 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -108,6 +112,13 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
         mContext = MainActivity.this;
 
         boolean networkAccess = isNetworkAvailable();
+
+//        DESIGN actionbar
+        ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#830E93")));
+
+
         if(!networkAccess){
 //          TODO handle situation when network is disabled
             Log.i("INTERNET???", "KONACNO NEMA NETA");
