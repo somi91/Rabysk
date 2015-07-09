@@ -70,22 +70,27 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
 
         Bundle mArgs = getArguments();
         if(mArgs != null){
-            String partnerSetupString = mArgs.getString("partnerSetup");
             partnerId = mArgs.getInt("partnerId");
-
             layoutImgUrl = mArgs.getString("layoutImgUrl");
             Log.i("EDIT POSITION ", layoutImgUrl);
             width = mArgs.getInt("layoutWidth");
             height = mArgs.getInt("layoutHeight");
-            Log.d("width and height ", " "+width+"dp  "+height+"dp " );
+            Log.d("width and height ", " " + width + "dp  " + height + "dp ");
             edit_content.setMinimumWidth(width);
             edit_content.setMinimumHeight(height);
-            Log.i("EDIT POSITION FRAGMENT ", partnerSetupString);
-            try {
-                partnerSetup = new JSONArray(partnerSetupString);
-                initialPartnerSetup(partnerSetup);
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            String partnerSetupString = null;
+            if(mArgs.containsKey("partnerSetup")) {
+                partnerSetupString = mArgs.getString("partnerSetup");
+                try {
+                    partnerSetup = new JSONArray(partnerSetupString);
+                    Log.i("EDIT POSITION FRAGMENT ", partnerSetupString);
+                    initialPartnerSetup(partnerSetup);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                partnerSetup = new JSONArray();
             }
         }
 

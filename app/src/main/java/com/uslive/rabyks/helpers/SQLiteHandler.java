@@ -263,7 +263,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     public List<Partner> getPartnerByType(int[] types) {
 
-        List<Partner> pl = new ArrayList<Partner>();
+        List<Partner> pl = new ArrayList<>();
         String selectQuery = "SELECT * FROM partner";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -288,7 +288,20 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                             partner.setCreated_at(cursor.getLong(cursor.getColumnIndex("created_at")));
                             partner.setModified_at(cursor.getLong(cursor.getColumnIndex("modified_at")));
                             // Adding contact to list
-                            pl.add(partner);
+                            if(pl.isEmpty()){
+                                pl.add(partner);
+                                break;
+                            }
+                            boolean br = false;
+                            for(Partner p : pl){
+                                if(p.getId() == partner.getId()){
+                                    br = true;
+                                }
+                            }
+                            if(!br){
+                                pl.add(partner);
+                                break;
+                            }
                         }
                     }
                 }

@@ -30,6 +30,9 @@ public class JsonManager {
 
     public int FindFreeObjectId() {
         int id = 1;
+        if(jsonArray.length() == 0){
+            return 1;
+        }
         for(int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject json = jsonArray.getJSONObject(i);

@@ -372,6 +372,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
 
         int[] query = searchQuery;
         List<Partner> partners = db.getPartnerByType(searchQuery);
+        if(partners.size() == 0){
+            partners = db.getAllPartners();
+        }
 //                for (Partner partner : partners) {
 //
 //                }

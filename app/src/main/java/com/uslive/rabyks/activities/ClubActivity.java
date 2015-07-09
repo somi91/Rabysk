@@ -384,8 +384,9 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
             case 9:
                 Bundle mArgs = new Bundle();
-                mArgs.putString("partnerSetup", partnerSetup.toString());
-
+                if(partnerSetup != null) {
+                    mArgs.putString("partnerSetup", partnerSetup.toString());
+                }
                 layoutWidth = clubActivityRelativeLayout.getWidth();
                 layoutHeight = clubActivityRelativeLayout.getHeight();
                 mArgs.putInt("layoutHeight", layoutHeight);
@@ -521,37 +522,39 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
     private void initialPartnerSetup(JSONArray partnerSetup) {
         Log.i("initial Partner Setup", partnerSetup.toString());
-        for (int i = 0; i < partnerSetup.length(); i++) {
-            Button btn = new Button(getApplicationContext());
-            try {
-                JSONObject obj = partnerSetup.getJSONObject(i);
-                if(obj.getString("type").equals("sto")){
-                    Log.i("Type sto", obj.getString("type"));
-                    if (obj.getBoolean("availability")) {
-                        Log.i("availability", obj.getBoolean("availability")+"");
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+        if(partnerSetup.length() != 0){
+            for (int i = 0; i < partnerSetup.length(); i++) {
+                Button btn = new Button(getApplicationContext());
+                try {
+                    JSONObject obj = partnerSetup.getJSONObject(i);
+                    if(obj.getString("type").equals("sto")){
+                        Log.i("Type sto", obj.getString("type"));
+                        if (obj.getBoolean("availability")) {
+                            Log.i("availability", obj.getBoolean("availability")+"");
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                        } else {
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                        }
+                    } else if (obj.getString("type").equals("separe")) {
+                        Log.i("Type separe", obj.getString("type"));
+                        if (obj.getBoolean("availability")) {
+                            Log.i("availability", obj.getBoolean("availability")+"");
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                        } else {
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                        }
                     } else {
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                        Log.i("Type stajanje", obj.getString("type"));
+                        if (obj.getBoolean("availability")) {
+                            Log.i("availability", obj.getBoolean("availability")+"");
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
+                        } else {
+                            setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
+                        }
                     }
-                } else if (obj.getString("type").equals("separe")) {
-                    Log.i("Type separe", obj.getString("type"));
-                    if (obj.getBoolean("availability")) {
-                        Log.i("availability", obj.getBoolean("availability")+"");
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
-                    } else {
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
-                    }
-                } else {
-                    Log.i("Type stajanje", obj.getString("type"));
-                    if (obj.getBoolean("availability")) {
-                        Log.i("availability", obj.getBoolean("availability")+"");
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.GREEN, obj);
-                    } else {
-                        setButton(btn, obj.getInt("coordinateX"), obj.getInt("coordinateY"), Color.RED, obj);
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
     }
