@@ -118,28 +118,36 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
     public void setButton(Button btn, final int x, final int y, int color, final JSONObject obj){
         final int pixelsX = (int) (x * scale + 0.5f);
         final int pixelY = (int) (y * scale + 0.5f);
-        ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
-        biggerCircle.setIntrinsicHeight( 35 );
-        biggerCircle.setIntrinsicWidth( 35 );
-        biggerCircle.setBounds(new Rect(0, 0, 35, 35));
-        biggerCircle.getPaint().setColor(Color.WHITE);
 
-        ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
-        smallerCircle.setIntrinsicHeight( 5 );
-        smallerCircle.setIntrinsicWidth( 5 );
-        smallerCircle.setBounds(new Rect(0, 0, 5, 5));
-        smallerCircle.getPaint().setColor(color);
-        smallerCircle.setPadding(18,18,18,18);
-        Drawable[] d = {smallerCircle,biggerCircle};
-
-        LayerDrawable composite1 = new LayerDrawable(d);
+//        ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
+//        biggerCircle.setIntrinsicHeight( 35 );
+//        biggerCircle.setIntrinsicWidth( 35 );
+//        biggerCircle.setBounds(new Rect(0, 0, 35, 35));
+//        biggerCircle.getPaint().setColor(Color.WHITE);
+//
+//        ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
+//        smallerCircle.setIntrinsicHeight( 5 );
+//        smallerCircle.setIntrinsicWidth( 5 );
+//        smallerCircle.setBounds(new Rect(0, 0, 5, 5));
+//        smallerCircle.getPaint().setColor(color);
+//        smallerCircle.setPadding(18,18,18,18);
+//        Drawable[] d = {smallerCircle,biggerCircle};
+//
+//        LayerDrawable composite1 = new LayerDrawable(d);
 
         btn = new Button(getActivity().getApplicationContext());
+
+        btn.setLayoutParams(new LinearLayout.LayoutParams((int) (40 * scale), (int) (40 * scale)));
         btn.setX(pixelsX);
         btn.setY(pixelY);
-        btn.setLayoutParams(new LinearLayout.LayoutParams(90, 90));
-        btn.setBackgroundDrawable(composite1);
-        btn.setBackground(composite1);
+        final int ad = btn.getLayoutParams().width;
+        final int hei = btn.getLayoutParams().height;
+//        btn.setBackground(composite1);
+//        Proba sa novim dugmicima
+        if(color == Color.GREEN)
+            btn.setBackgroundResource(R.drawable.circle_green);
+        else
+            btn.setBackgroundResource(R.drawable.circle_red);
         btn.setText("4");
         btn.setTextColor(Color.BLACK);
         edit_content.addView(btn);
@@ -147,6 +155,7 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity().getApplicationContext(), "x: " + pixelsX + " y: " + pixelY, Toast.LENGTH_LONG).show();
+                Log.i("x i y: MOJ ", " x: " + ad + " y: " + hei);
                 showDialog(obj);
             }
         });
@@ -265,25 +274,32 @@ public class EditPosition extends Fragment implements EmployeeReservationDialog.
     }
 
     public Button setButton(int color){
-        ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
-        biggerCircle.setIntrinsicHeight( 35 );
-        biggerCircle.setIntrinsicWidth( 35 );
-        biggerCircle.setBounds(new Rect(0, 0, 35, 35));
-        biggerCircle.getPaint().setColor(Color.WHITE);
+//        ShapeDrawable biggerCircle= new ShapeDrawable( new OvalShape());
+//        biggerCircle.setIntrinsicHeight( 35 );
+//        biggerCircle.setIntrinsicWidth( 35 );
+//        biggerCircle.setBounds(new Rect(0, 0, 35, 35));
+//        biggerCircle.getPaint().setColor(Color.WHITE);
+//
+//        ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
+//        smallerCircle.setIntrinsicHeight( 5 );
+//        smallerCircle.setIntrinsicWidth( 5 );
+//        smallerCircle.setBounds(new Rect(0, 0, 5, 5));
+//        smallerCircle.getPaint().setColor(color);
+//        smallerCircle.setPadding(18,18,18,18);
+//        Drawable[] d = {smallerCircle,biggerCircle};
+//
+//        LayerDrawable composite1 = new LayerDrawable(d);
 
-        ShapeDrawable smallerCircle= new ShapeDrawable( new OvalShape());
-        smallerCircle.setIntrinsicHeight( 5 );
-        smallerCircle.setIntrinsicWidth( 5 );
-        smallerCircle.setBounds(new Rect(0, 0, 5, 5));
-        smallerCircle.getPaint().setColor(color);
-        smallerCircle.setPadding(18,18,18,18);
-        Drawable[] d = {smallerCircle,biggerCircle};
-
-        LayerDrawable composite1 = new LayerDrawable(d);
         Button btn = new Button(getActivity().getApplicationContext());
-        btn.setLayoutParams(new LinearLayout.LayoutParams(90, 90));
-        btn.setBackgroundDrawable(composite1);
-        btn.setBackground(composite1);
+        btn.setLayoutParams(new LinearLayout.LayoutParams((int) (40 * scale), (int) (40 * scale)));
+        if(color == Color.GREEN)
+            btn.setBackgroundResource(R.drawable.circle_green);
+        else
+            btn.setBackgroundResource(R.drawable.circle_red);
+
+//        btn.setLayoutParams(new LinearLayout.LayoutParams(90, 90));
+//        btn.setBackgroundDrawable(composite1);
+//        btn.setBackground(composite1);
         btn.setText("4");
         btn.setTextColor(Color.BLACK);
 

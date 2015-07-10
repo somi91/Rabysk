@@ -384,16 +384,18 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     @Override
     public void OnGetFilterTypesCompleted(String array) {
         partnerTypes = new ArrayList<>();
-        try {
-            JSONArray jsonArray = new JSONArray(array);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                PartnerType pt = new PartnerType();
-                pt.setId(obj.getInt("id"));
-                pt.setName(obj.getString("type"));
-                partnerTypes.add(pt);
+        if(array != null) {
+            try {
+                JSONArray jsonArray = new JSONArray(array);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        PartnerType pt = new PartnerType();
+                        pt.setId(obj.getInt("id"));
+                        pt.setName(obj.getString("type"));
+                        partnerTypes.add(pt);
+                    }
+            } catch (JSONException e) {
             }
-        } catch (JSONException e) {
         }
     }
 
