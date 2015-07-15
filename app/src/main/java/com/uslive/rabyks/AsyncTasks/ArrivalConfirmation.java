@@ -2,6 +2,7 @@ package com.uslive.rabyks.AsyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.uslive.rabyks.R;
@@ -67,6 +68,7 @@ public class ArrivalConfirmation extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        Log.i("BITNO!", "Barem znam da se poslalo i stiglo sa servera"+result);
         Toast.makeText(context, "Confirmed arrival!", Toast.LENGTH_LONG).show();
     }
 }

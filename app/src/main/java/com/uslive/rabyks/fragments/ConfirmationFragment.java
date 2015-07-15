@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.uslive.rabyks.R;
 import com.uslive.rabyks.Services.ProximityReciever;
+import com.uslive.rabyks.activities.MainActivity;
 import com.uslive.rabyks.helpers.SQLiteHandler;
 
 import java.util.Date;
@@ -45,7 +46,14 @@ public class ConfirmationFragment extends Fragment {
     private LocationManager lm;
 
     //Defining Latitude & Longitude (NBG)
-    private double lat=44.816218 ,long1=20.413793;
+    // JA NBG
+//    private double lat=44.816218, long1=20.413793;
+    // COMTRADE
+    private double lat=44.802830, long1=20.417394;
+    // studenjak
+//    private double lat=44.823846, long1=20.401158;
+
+
     //Defining Radius
     private float radius=300;
 
@@ -77,7 +85,7 @@ public class ConfirmationFragment extends Fragment {
         Long createdAt = args.getLong("createdAt");
         Long expiresAt = args.getLong("expiresAt");
         Log.i("Razlika moja racunica", ""+ (expiresAt - createdAt));
-        timerCount = new MyCount(15 * 60 * 1000, 1000);
+        timerCount = new MyCount(25 * 1000, 1000);
         timerCount.start();
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -93,11 +101,14 @@ public class ConfirmationFragment extends Fragment {
 //        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
 
         //Setting up My Broadcast Intent
-        Intent i= new Intent(ACTION_FILTER);
+//        Intent i= new Intent(ACTION_FILTER);
+        Intent i= new Intent(getActivity().getApplicationContext(), MainActivity.class);
+//        Intent i = getActivity().getIntent();
+
         PendingIntent pi = PendingIntent.getBroadcast(getActivity().getApplicationContext(), -1, i, 0);
 
         //setting up proximituMethod
-        lm.addProximityAlert(lat, long1, radius, 5 * 60 * 1000, pi);
+        lm.addProximityAlert(lat, long1, radius, 35 * 1000, pi);
 
         return view;
     }
