@@ -55,6 +55,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     private static final String RESERVATION_ID = "id";
     private static final String RESERVATION_CLUB_NAME = "name";
+    private static final String RESERVATION_PARTNER_ID = "partnerId";
+    private static final String RESERVATION_OBJECT_ID = "objectId";
+    private static final String RESERVATION_TYPE = "type";
     private static final String RESERVATION_CREATED_AT = "created_at";
     private static final String RESERVATION_EXPIRES_AT = "expires_at";
     private static final String RESERVATION_CURRENT_STATUS = "current_status";
@@ -84,8 +87,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         String CREATE_TABLE_RESERVATION = "CREATE TABLE " + TABLE_RESERVATION + "("
                 + RESERVATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + RESERVATION_CLUB_NAME + " TEXT,"
-                + RESERVATION_CREATED_AT + " TIMESTAMP," + RESERVATION_EXPIRES_AT + " INTEGER,"
-                + RESERVATION_CURRENT_STATUS + " NUMERIC" + ")";
+                + RESERVATION_PARTNER_ID + " INTEGER," + RESERVATION_OBJECT_ID + " INTEGER,"
+                + RESERVATION_TYPE + " TEXT," + RESERVATION_CREATED_AT + " TIMESTAMP,"
+                + RESERVATION_EXPIRES_AT + " INTEGER," + RESERVATION_CURRENT_STATUS + " NUMERIC" + ")";
         db.execSQL(CREATE_TABLE_RESERVATION);
 
         String CREATE_USER_PARTNER_TABLE = "CREATE TABLE " + TABLE_USER_PARTNER + "("
@@ -354,12 +358,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addReservation(String club_name, Long reservation_duration) {
+    public void addReservation(String club_name, Long reservation_duration, int partnerId, int objectId, String type) {
         SQLiteDatabase db = this.getWritableDatabase();
         Long tsLong = System.currentTimeMillis()/1000;
         Long expires_at = tsLong + reservation_duration;
         ContentValues values = new ContentValues();
         values.put(RESERVATION_CLUB_NAME, club_name);
+        values.put(RESERVATION_PARTNER_ID, partnerId);
+        values.put(RESERVATION_OBJECT_ID, objectId);
+        values.put(RESERVATION_TYPE, type);
         values.put(RESERVATION_CREATED_AT, tsLong);
         values.put(RESERVATION_EXPIRES_AT, expires_at);
         values.put(RESERVATION_CURRENT_STATUS, 1);
@@ -382,6 +389,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             reservation = new Reservation();
             reservation.setId(cursor.getInt(cursor.getColumnIndex("id")));
             reservation.setName(cursor.getString(cursor.getColumnIndex("name")));
+            reservation.setPartnerId(cursor.getInt(cursor.getColumnIndex("partnerId")));
+            reservation.setObjectId(cursor.getInt(cursor.getColumnIndex("objectId")));
+            reservation.setType(cursor.getString(cursor.getColumnIndex("type")));
             reservation.setCreatedAt(cursor.getLong(cursor.getColumnIndex("created_at")));
             reservation.setExpiresAt(cursor.getLong(cursor.getColumnIndex("expires_at")));
             reservation.setCurrentStatus(cursor.getInt(cursor.getColumnIndex("current_status"))>0);

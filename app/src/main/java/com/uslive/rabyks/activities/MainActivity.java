@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     GridView gridview;
 
     private ProgressBar bar;
-    Reservation res = null;
+    private Reservation res = null;
 
     private GetTypes getTypes;
 
@@ -471,6 +471,9 @@ public class MainActivity extends ActionBarActivity implements OnTaskCompletedUp
     private void CheckLiveReservations(byte[] logo) {
         Bundle args = new Bundle();
         args.putString("partnerName", res.getName());
+        args.putInt("partnerId", res.getPartnerId());
+        args.putInt("objectId", res.getObjectId());
+        args.putString("type", res.getType());
         args.putLong("createdAt", res.getCreatedAt());
         args.putLong("expiresAt", res.getExpiresAt());
         args.putByteArray("logoImg", logo);

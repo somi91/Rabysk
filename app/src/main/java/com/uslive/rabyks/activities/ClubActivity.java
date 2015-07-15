@@ -338,7 +338,7 @@ public class ClubActivity extends ActionBarActivity implements ReservationDialog
 
 //            db.deleteReservations();
 
-            db.addReservation(club_name, (long) timeOut * 60);
+            db.addReservation(club_name, (long) timeOut * 60, pId, oId, type);
             Reservation res = db.getReservation();
             Log.i("MOJA PROVERA ", res.getName() + " , " + res.getExpiresAt() );
 

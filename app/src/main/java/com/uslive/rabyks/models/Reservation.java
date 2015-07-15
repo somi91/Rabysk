@@ -6,6 +6,9 @@ package com.uslive.rabyks.models;
 public class Reservation {
     private int id;
     private String name;
+    private int partnerId;
+    private int objectId;
+    private String type;
     private long createdAt;
     private long expiresAt;
     private boolean currentStatus;
@@ -24,6 +27,30 @@ public class Reservation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(int partnerId) {
+        this.partnerId = partnerId;
+    }
+
+    public int getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public long getCreatedAt() {

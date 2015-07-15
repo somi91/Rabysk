@@ -42,17 +42,17 @@ public class ConfirmationFragment extends Fragment {
     private TextView txtDate;
     private ImageView imgConfirmationLogo;
 
-    LocationManager lm;
+    private LocationManager lm;
 
     //Defining Latitude & Longitude (NBG)
-    double lat=44.816218 ,long1=20.413793;
+    private double lat=44.816218 ,long1=20.413793;
     //Defining Radius
-    float radius=300;
+    private float radius=300;
 
-    ProximityReciever proximityReciever;
+    private ProximityReciever proximityReciever;
 
     //Intent Action
-    String ACTION_FILTER = "com.uslive.rabyks.MAIN";
+    private String ACTION_FILTER = "com.uslive.rabyks.MAIN";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +66,9 @@ public class ConfirmationFragment extends Fragment {
 
         Bundle args = getArguments();
         txtPartnerName.setText(args.getString("partnerName"));
+        int partnerId = args.getInt("partnerId");
+        int objectId = args.getInt("objectId");
+        String type = args.getString("type");
         byte[] img = args.getByteArray("logoImg");
         Bitmap image = BitmapFactory.decodeByteArray(img, 0, img.length);
         imgConfirmationLogo.setImageBitmap(image);
@@ -74,13 +77,13 @@ public class ConfirmationFragment extends Fragment {
         Long createdAt = args.getLong("createdAt");
         Long expiresAt = args.getLong("expiresAt");
         Log.i("Razlika moja racunica", ""+ (expiresAt - createdAt));
-        timerCount = new MyCount(15 * 1000, 1000);
+        timerCount = new MyCount(15 * 60 * 1000, 1000);
         timerCount.start();
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //i'm registering my Receiver First
-        proximityReciever = new ProximityReciever();
+        proximityReciever = new ProximityReciever(partnerId, objectId, type);
         getActivity().registerReceiver(proximityReciever, new IntentFilter(ACTION_FILTER));
 
         //i'm calling ther service Location Manager
